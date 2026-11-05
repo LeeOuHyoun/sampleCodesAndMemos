@@ -35,7 +35,7 @@ define("...", [
 |---|---|
 | `MultiSelectComboColumn.js` | **기존 그리드의 한 컬럼에 적용하는 헬퍼** (`apply`) |
 | `MultiSelectComboTweaker.js` | 셀 편집기(Tweaker) 본체. 편집할 때는 `ComboBox(multiSelFlag)`, 평소에는 "라벨1, 라벨2" 텍스트 |
-| `MultiSelectComboGridSample.js` | 공통 모듈이 만든 그리드를 받아 `apply`하는 흐름의 예제 |
+| `MultiSelectComboGridSample.js` | 헬퍼 없이 [1] 템플릿 등록, [2] 타입+`semantics` 등록, [3] 한 컬럼 교체를 모두 직접 보여 주는 예제. 기존 소스에 그대로 옮길 수 있음 |
 
 ## 근거 (zip 분석)
 

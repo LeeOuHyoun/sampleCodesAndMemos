@@ -40,6 +40,13 @@ columns: [{ dataIndex: "disciplines", typeRepresentation: "multiSelectCombo",
 | `MultiSelectComboTweaker.js` | Tweaker 본체. 편집 모드는 `ComboBox(multiSelFlag)`, 읽기 모드는 "라벨1, 라벨2" 텍스트 |
 | `MultiSelectComboGridSample.js` | DataGridView 생성, 타입 등록, 컬럼 설정 예제 |
 
+## lodash 사용
+
+두 파일 모두 `define`에서 `"DS/sdxENOChgGovernanceUX/custom/lib/lodash-amd/lodashConfig"`를 받아 `_`로 사용합니다.
+이 모듈이 lodash 전체 객체를 반환한다고 가정했습니다. 해당 모듈은 zip 안에 없어 직접 확인하지 못했습니다.
+
+주로 쓴 함수: `castArray`, `isNil`, `keyBy`, `mapValues`, `get`, `pick`, `assign`, `defaults`, `isEqual`, `filter`, `includes`, `uniq`, `reject`, `cloneDeep`.
+
 ## 적용 시 주의
 
 - `define("DS/MyApp/...")`의 모듈 이름은 실제 위젯 모듈 경로에 맞게 바꾸세요.

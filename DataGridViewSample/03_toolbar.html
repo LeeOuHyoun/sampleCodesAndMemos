@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>03. 툴바 + 그리드</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    .page { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    /* 툴바와 그리드를 위아래로 붙여서 하나의 화면처럼 보이게 한다 */
+    #toolbar { border: 1px solid #d1d4d4; border-bottom: none; }
+    #grid { flex: 1; min-height: 300px; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>03. 툴바 + 그리드</h2>
+    <p>
+      왼쪽: 검색창, 상태 콤보 / 오른쪽: 추가, 삭제, 선택 보기, 새로고침 버튼.
+      버튼 동작은 같은 폴더의 ToolbarActions.js 에 있습니다. <a href="index.html">목록으로</a>
+    </p>
+    <div id="toolbar"></div>
+    <div id="grid"></div>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      /* [1] 데이터 */
+      var treeDocument = new TreeDocument();
+      treeDocument.prepareUpdate();
+      [
+        { label: 'PRT-0001', grid: { title: '브라켓', status: '작업중', progress: 20,  qty: 10 } },
+        { label: 'PRT-0002', grid: { title: '샤프트', status: '검토중', progress: 55,  qty: 4 } },
+        { label: 'PRT-0003', grid: { title: '하우징', status: '승인',   progress: 100, qty: 1 } },
+        { label: 'PRT-0004', grid: { title: '커버',   status: '작업중', progress: 0,   qty: 2 } },
+        { label: 'PRT-0005', grid: { title: '베어링', status: '폐기',   progress: 80,  qty: 8 } },
+        { label: 'PRT-0006', grid: { title: '볼트',   status: '승인',   progress: 100, qty: 50 } }
+      ].forEach(function (row) {
+        treeDocument.addRoot(new TreeNodeModel(row));
+      });
+      treeDocument.pushUpdate();
+
+      /* [2] 그리드 생성 (설정은 모두 생성자 옵션) */
+      var grid = new DataGridView({
+        treeDocument: treeDocument,
+        showSelectionCheckBoxesFlag: true,   // 행 머리에 선택 체크박스 항상 표시 (기본 'OnOver' = 마우스 올릴 때만)
+        cellActivationFeedback: 'row',       // 클릭 시 셀 대신 행 전체를 강조 ('cell' 이 기본)
+        columns: [
+          { text: '품번', dataIndex: 'tree', width: 130 },
+          { text: '품명', dataIndex: 'title', width: 160, editableFlag: true },
+          {
+            text: '상태',
+            dataIndex: 'status',
+            width: 120,
+            typeRepresentation: 'customEnumMember',
+            editableFlag: true,
+            editionPolicy: 'EditionOnClick',
+            semantics: { possibleValues: ['작업중', '검토중', '승인', '폐기'] }
+          },
+          { text: '진행률', dataIndex: 'progress', width: 150, typeRepresentation: 'progress' },
+          { text: '수량', dataIndex: 'qty', width: 90, typeRepresentation: 'integer', editableFlag: true }
+        ]
+      });
+      grid.inject(document.getElementById('grid'));
+
+      /*
+       * [3] 툴바
+       *   DataGridView 에는 툴바용 생성자 옵션이 없고 grid.setToolbar(JSON) 만 제공된다. (DataGridView.js setToolbar)
+       *   setToolbar 가 툴바 객체를 만들어 돌려주면, 그 화면 요소(getContent())를 원하는 위치에 붙인다.
+       *
+       *   entries 의 항목 하나 = 툴바 칸 하나
+       *     id           : 항목 고유 id
+       *     position     : 'near'(왼쪽, 기본) / 'far'(오른쪽)
+       *     dataElements : 항목 내용
+       *        typeRepresentation : 'functionIcon'(아이콘 버튼) / 'string'(입력칸) / 'customEnumMember'(콤보) 등
+       *        label / tooltip     : 글자 / 툴팁
+       *        displayLabel        : 라벨 글자를 같이 보일지 여부
+       *        icon                : { iconName: 'plus', fontIconFamily: 1 }  (1 = 3DS 폰트 아이콘)
+       *        value               : 입력칸, 콤보의 초기값
+       *        possibleValues      : 콤보 목록
+       *        action              : 버튼 클릭 시 호출 { module: 'AMD 모듈명', func: '함수명' }
+       *     onNodeUpdate : 입력칸, 콤보 값이 바뀔 때 호출 { module, func }
+       *
+       *   module 은 webapps 기준 경로다. 'DS/DataGridViewSample/ToolbarActions' -> webapps/DataGridViewSample/ToolbarActions.js
+       */
+      var toolbar = grid.setToolbar({
+        entries: [
+          {
+            id: 'searchPartNo',
+            position: 'near',
+            dataElements: {
+              typeRepresentation: 'string',
+              label: '품번 검색',
+              placeholder: '품번 입력 후 Enter',
+              value: ''
+            },
+            onNodeUpdate: { module: 'DS/DataGridViewSample/ToolbarActions', func: 'searchByPartNo' }
+          },
+          {
+            id: 'statusFilter',
+            position: 'near',
+            dataElements: {
+              typeRepresentation: 'customEnumMember',
+              label: '상태',
+              value: '전체',
+              possibleValues: ['전체', '작업중', '검토중', '승인', '폐기']
+            },
+            onNodeUpdate: { module: 'DS/DataGridViewSample/ToolbarActions', func: 'filterByStatus' }
+          },
+          {
+            id: 'addRow',
+            position: 'far',
+            dataElements: {
+              typeRepresentation: 'functionIcon',
+              label: '추가',
+              tooltip: '행 추가',
+              icon: { iconName: 'plus', fontIconFamily: 1 },
+              action: { module: 'DS/DataGridViewSample/ToolbarActions', func: 'addRow' }
+            }
+          },
+          {
+            id: 'deleteRow',
+            position: 'far',
+            dataElements: {
+              typeRepresentation: 'functionIcon',
+              label: '삭제',
+              tooltip: '선택 행 삭제',
+              icon: { iconName: 'trash', fontIconFamily: 1 },
+              action: { module: 'DS/DataGridViewSample/ToolbarActions', func: 'deleteSelected' }
+            }
+          },
+          {
+            id: 'showSelected',
+            position: 'far',
+            dataElements: {
+              typeRepresentation: 'functionIcon',
+              label: '선택 보기',
+              tooltip: '선택 행 값 보기',
+              icon: { iconName: 'eye', fontIconFamily: 1 },
+              action: { module: 'DS/DataGridViewSample/ToolbarActions', func: 'showSelected' }
+            }
+          },
+          {
+            id: 'resetView',
+            position: 'far',
+            dataElements: {
+              typeRepresentation: 'functionIcon',
+              label: '새로고침',
+              tooltip: '검색 조건 초기화',
+              icon: { iconName: 'refresh', fontIconFamily: 1 },
+              action: { module: 'DS/DataGridViewSample/ToolbarActions', func: 'resetView' }
+            }
+          }
+        ]
+      });
+      document.getElementById('toolbar').appendChild(toolbar.getContent());
+    });
+  </script>
+</body>
+</html>

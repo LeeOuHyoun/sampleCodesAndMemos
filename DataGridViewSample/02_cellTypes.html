@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>02. 셀 타입 모음</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    .page { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    #grid { flex: 1; min-height: 320px; border: 1px solid #d1d4d4; }
+    #dump { height: 140px; margin: 8px 0 0; padding: 8px; overflow: auto; font-size: 12px; background: #f4f5f6; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>02. 셀 타입 모음 (콤보 싱글/멀티, 버튼그룹, 프로그레스, 체크, 날짜, 숫자, 색상, 링크, 여러 줄 문자열)</h2>
+    <p>
+      편집 가능한 셀은 클릭(또는 더블클릭)하면 편집기가 열립니다.
+      <button id="btnDump">현재 데이터 보기</button>
+      <a href="index.html">목록으로</a>
+    </p>
+    <div id="grid"></div>
+    <pre id="dump"></pre>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      /*
+       * [1] 데이터
+       *   - 콤보(싱글)  : 문자열 1개
+       *   - 콤보(멀티)  : 문자열 배열
+       *   - 프로그레스 : 0 ~ 100 숫자
+       *   - 날짜       : Date 객체
+       */
+      var treeDocument = new TreeDocument();
+      treeDocument.prepareUpdate();
+      [
+        { label: 'PRT-0001', grid: { title: '브라켓', status: '작업중', owners: ['김철수'],          priority: '높음', progress: 20,  approved: false, dueDate: new Date(2026, 10, 10), qty: 10, weight: 1.25, color: '#368ec4', url: 'https://www.3ds.com', note: '1차 설계' } },
+        { label: 'PRT-0002', grid: { title: '샤프트', status: '검토중', owners: ['이영희', '박민수'], priority: '보통', progress: 55,  approved: false, dueDate: new Date(2026, 10, 20), qty: 4,  weight: 3.5,  color: '#57b847', url: 'https://www.3ds.com', note: '' } },
+        { label: 'PRT-0003', grid: { title: '하우징', status: '승인',   owners: ['박민수'],          priority: '낮음', progress: 100, approved: true,  dueDate: new Date(2026, 9, 31),  qty: 1,  weight: 12.0, color: '#e87b00', url: 'https://www.3ds.com', note: '양산 적용' } },
+        { label: 'PRT-0004', grid: { title: '커버',   status: '작업중', owners: [],                  priority: '보통', progress: 0,   approved: false, dueDate: new Date(2026, 11, 5),  qty: 2,  weight: 0.8,  color: '#ea4f37', url: 'https://www.3ds.com', note: '' } },
+        { label: 'PRT-0005', grid: { title: '베어링', status: '폐기',   owners: ['최지훈', '김철수'], priority: '높음', progress: 80,  approved: true,  dueDate: new Date(2026, 11, 15), qty: 8,  weight: 0.3,  color: '#77797c', url: 'https://www.3ds.com', note: '대체품 검토' } }
+      ].forEach(function (row) {
+        treeDocument.addRoot(new TreeNodeModel(row));
+      });
+      treeDocument.pushUpdate();
+
+      /*
+       * [2] 그리드 생성
+       *
+       * 컬럼 공통 옵션 (DataGridView.js 의 defaultColumnDef 기준)
+       *   text              : 헤더 글자
+       *   dataIndex         : 값을 가져올 키 (TreeNodeModel 의 grid 안 키)
+       *   typeRepresentation: 셀을 어떤 모양/편집기로 그릴지 (Tweakers/assets/defaultTypeRepresentations.json 에 목록이 있음)
+       *   editableFlag      : true 면 편집 가능 (기본 false)
+       *   editionPolicy     : 편집 시작 방식
+       *                       'EditionOnDoubleClick'(기본) / 'EditionOnClick' / 'EditionOnOver'(마우스를 올리면 바로 편집기) / 'EditionInPlace'
+       *   semantics         : 타입별 세부 설정 (콤보 목록, 최소/최대값 등)
+       *   width / minWidth  : 너비 (숫자 px 또는 'auto')
+       *   pinned            : 'left' / 'right' 로 고정 (기본 'unpinned')
+       *   visibleFlag / resizableFlag / sortableFlag : 표시 / 크기조절 / 정렬 가능 여부
+       */
+      var grid = new DataGridView({
+        treeDocument: treeDocument,
+
+        /* ---- 그리드 전체 표시 옵션 ---- */
+        showRowIndexFlag: true,              // 행 번호 표시 (기본 true)
+        showColumnBorderFlag: true,          // 컬럼 세로 구분선 (기본 false)
+        showAlternateBackgroundFlag: true,   // 행 줄무늬 배경 (기본 true)
+        showEditableFeedbackFlag: true,      // 편집 가능한 셀 표시 (기본 true)
+        cellSelection: 'multiple',           // 셀 선택 방식 'none' / 'single' / 'multiple'(기본)
+
+        columns: [
+          /* 품번 : 첫 컬럼을 왼쪽에 고정 */
+          { text: '품번', dataIndex: 'tree', width: 120, pinned: 'left' },
+
+          /* 문자열 : 기본 타입. editableFlag 만 켜면 텍스트 입력칸 */
+          { text: '품명 (문자열)', dataIndex: 'title', width: 130, typeRepresentation: 'string', editableFlag: true },
+
+          /*
+           * 콤보박스 (싱글 선택)
+           *   typeRepresentation 'customEnumMember' = 콤보 편집기 (Tweakers: comboSelector)
+           *   semantics.possibleValues 에 선택 목록을 넣는다.
+           *   목록은 문자열 배열 또는 { label: '표시값', value: '저장값' } 배열 모두 가능
+           */
+          {
+            text: '상태 (콤보-싱글)',
+            dataIndex: 'status',
+            width: 130,
+            typeRepresentation: 'customEnumMember',
+            editableFlag: true,
+            editionPolicy: 'EditionOnClick',
+            semantics: {
+              possibleValues: ['작업중', '검토중', '승인', '폐기']
+            }
+          },
+
+          /*
+           * 콤보박스 (멀티 선택)
+           *   싱글 콤보와 같고 semantics.allowMultipleValuesFlag: true 만 추가한다.
+           *   셀 값은 배열로 저장된다.
+           *
+           *   화면 표시 구분자 : semantics.viewOptions.multipleValuesSeparator (기본 '|')
+           *     Tweakers.js TweakerBase.getStringFromValue 에서 " " + 구분자 + " " 로 이어 붙인다.
+           *     구분자 앞뒤에 공백이 항상 붙으므로 ',' 를 주면 "김철수 , 이영희" 로 표시된다.
+           *     (CompareWidget2, DELWKOViewBehaviors, ENOXEngineer 등 ENOVIA 앱도 같은 방식으로 사용)
+           */
+          {
+            text: '담당자 (콤보-멀티)',
+            dataIndex: 'owners',
+            width: 180,
+            typeRepresentation: 'customEnumMember',
+            editableFlag: true,
+            editionPolicy: 'EditionOnClick',
+            semantics: {
+              possibleValues: ['김철수', '이영희', '박민수', '최지훈'],
+              allowMultipleValuesFlag: true,
+              viewOptions: { multipleValuesSeparator: ',' }
+            }
+          },
+
+          /*
+           * 버튼 그룹 (라디오처럼 하나 선택)
+           *   typeRepresentation 'customSmallEnumMember' = 버튼 그룹 편집기 (Tweakers: editSelector)
+           *   선택지가 적을 때 콤보 대신 사용
+           */
+          {
+            text: '우선순위 (버튼그룹)',
+            dataIndex: 'priority',
+            width: 170,
+            typeRepresentation: 'customSmallEnumMember',
+            editableFlag: true,
+            editionPolicy: 'EditionOnOver',
+            semantics: {
+              possibleValues: ['높음', '보통', '낮음']
+            }
+          },
+
+          /*
+           * 프로그레스 바
+           *   typeRepresentation 'progress' : 0~100, 단위 % 가 기본 (semantics 로 바꿀 수 있음)
+           *   editableFlag: true 면 더블클릭 시 숫자 입력으로 변경 가능
+           */
+          {
+            text: '진행률 (프로그레스)',
+            dataIndex: 'progress',
+            width: 150,
+            typeRepresentation: 'progress',
+            editableFlag: true,
+            semantics: { minValue: 0, maxValue: 100, stepValue: 5 }
+          },
+
+          /* 체크박스 : typeRepresentation 'boolean'. EditionOnOver 로 바로 클릭해서 토글 */
+          { text: '승인 (체크)', dataIndex: 'approved', width: 90, typeRepresentation: 'boolean', editableFlag: true, editionPolicy: 'EditionOnOver' },
+
+          /* 날짜 : typeRepresentation 'date' (시간까지는 'datetime'). 값은 Date 객체 */
+          { text: '납기 (날짜)', dataIndex: 'dueDate', width: 130, typeRepresentation: 'date', editableFlag: true },
+
+          /* 정수 : typeRepresentation 'integer'. semantics 로 범위 제한 */
+          { text: '수량 (정수)', dataIndex: 'qty', width: 100, typeRepresentation: 'integer', editableFlag: true, semantics: { minValue: 0, maxValue: 999 } },
+
+          /* 실수 : typeRepresentation 'float' (또는 'double'). units 로 단위 표시 */
+          { text: '중량 (실수)', dataIndex: 'weight', width: 110, typeRepresentation: 'float', editableFlag: true, semantics: { units: 'kg' } },
+
+          /* 색상 : typeRepresentation 'color'. 값은 '#rrggbb' 문자열 */
+          { text: '색상', dataIndex: 'color', width: 90, typeRepresentation: 'color', editableFlag: true },
+
+          /* 링크 : typeRepresentation 'url'. 셀이 클릭 가능한 링크로 표시 */
+          { text: '링크 (url)', dataIndex: 'url', width: 160, typeRepresentation: 'url' },
+
+          /* 여러 줄 문자열 : typeRepresentation 'multilineString' */
+          { text: '비고 (여러 줄)', dataIndex: 'note', width: 160, typeRepresentation: 'multilineString', editableFlag: true }
+        ]
+      });
+      grid.inject(document.getElementById('grid'));
+
+      /*
+       * [3] 편집 결과 확인용 (그리드 설정과는 무관)
+       *   셀을 편집하면 TreeNodeModel 의 값이 바로 바뀐다.
+       *   node.getAttributeValue(dataIndex) 로 읽을 수 있다.
+       */
+      document.getElementById('btnDump').addEventListener('click', function () {
+        var rows = treeDocument.getRoots().map(function (node) {
+          return {
+            partNo: node.options.label,
+            title: node.getAttributeValue('title'),
+            status: node.getAttributeValue('status'),
+            owners: node.getAttributeValue('owners'),
+            priority: node.getAttributeValue('priority'),
+            progress: node.getAttributeValue('progress'),
+            approved: node.getAttributeValue('approved'),
+            dueDate: node.getAttributeValue('dueDate'),
+            qty: node.getAttributeValue('qty'),
+            weight: node.getAttributeValue('weight'),
+            color: node.getAttributeValue('color'),
+            note: node.getAttributeValue('note')
+          };
+        });
+        document.getElementById('dump').textContent = JSON.stringify(rows, null, 2);
+      });
+    });
+  </script>
+</body>
+</html>

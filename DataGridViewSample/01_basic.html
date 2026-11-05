@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>01. 기본 그리드</title>
+
+  <!--
+    [로딩 구조]
+    이 폴더는 webapps/DataGridViewSample/ 에 두는 것을 전제로 한다.
+    - ../Core/wux.css            : WebUX 공통 스타일 (그리드/컨트롤 모양)
+    - ../AmdLoader/AmdLoader.js  : require() 로더. 'DS/모듈/파일' -> webapps/모듈/파일.js 로 해석한다.
+                                   (예: DS/DataGridView/DataGridView -> webapps/DataGridView/DataGridView.js 묶음 파일 안의 정의)
+  -->
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    .page { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    /* DataGridView 는 부모 영역의 크기를 그대로 사용하므로 높이를 꼭 지정한다 */
+    #grid { flex: 1; min-height: 300px; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>01. 기본 그리드</h2>
+    <p>컬럼 3개 + 데이터 5행. DataGridView 를 띄우기 위한 최소 구성입니다. <a href="index.html">목록으로</a></p>
+    <div id="grid"></div>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      /*
+       * [1] 데이터 준비 : TreeDocument(데이터 묶음) 에 TreeNodeModel(행) 을 넣는다.
+       *   - label : 첫 번째 트리 컬럼(dataIndex: 'tree') 에 표시되는 값
+       *   - grid  : 나머지 컬럼 값. 키 이름이 columns 의 dataIndex 와 연결된다.
+       */
+      var treeDocument = new TreeDocument();
+      treeDocument.prepareUpdate();
+      [
+        { label: 'PRT-0001', grid: { title: '브라켓',   owner: '김철수' } },
+        { label: 'PRT-0002', grid: { title: '샤프트',   owner: '이영희' } },
+        { label: 'PRT-0003', grid: { title: '하우징',   owner: '박민수' } },
+        { label: 'PRT-0004', grid: { title: '커버',     owner: '김철수' } },
+        { label: 'PRT-0005', grid: { title: '베어링',   owner: '최지훈' } }
+      ].forEach(function (row) {
+        treeDocument.addRoot(new TreeNodeModel(row));
+      });
+      treeDocument.pushUpdate();
+
+      /*
+       * [2] 그리드 생성 : 설정은 모두 생성자 옵션으로 넣는다.
+       *   - treeDocument : 표시할 데이터
+       *   - columns      : 컬럼 정의. text = 헤더 글자, dataIndex = 값을 가져올 키
+       *                    dataIndex 'tree' 는 행의 label 을 보여주는 특별한 컬럼
+       */
+      new DataGridView({
+        treeDocument: treeDocument,
+        columns: [
+          { text: '품번',   dataIndex: 'tree',  width: 150 },
+          { text: '품명',   dataIndex: 'title', width: 200 },
+          { text: '담당자', dataIndex: 'owner', width: 120 }
+        ]
+      }).inject(document.getElementById('grid'));
+    });
+  </script>
+</body>
+</html>

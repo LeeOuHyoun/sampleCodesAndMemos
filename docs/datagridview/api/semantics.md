@@ -14,7 +14,7 @@ title: semantics
 ```
 
 ::: info 근거
-Tweakers.js 의 TweakerBase / TweakerString / TweakerNumber / TweakerDate / TweakerBoolean publishedProperties
+Tweakers.js 의 TweakerBase / TweakerString / TweakerNumber / TweakerDate / TweakerBoolean publishedProperties, 편집기별 setViewOptions 허용 키 목록
 :::
 
 ## 공통 (TweakerBase)
@@ -23,8 +23,7 @@ Tweakers.js 의 TweakerBase / TweakerString / TweakerNumber / TweakerDate / Twea
 | --- | --- | --- | --- | --- |
 | <code>possibleValues</code> | <code>array</code> | - | 콤보, 버튼그룹, 토글아이콘 | 선택 목록. ['A','B'] 또는 [{ label, value, icon }] |
 | <code>allowMultipleValuesFlag</code> | <code>boolean</code> | <code>false</code> | 콤보 | 멀티 선택 (값은 배열) |
-| <code>viewOptions.multipleValuesSeparator</code> | <code>string</code> | <code>'&#124;'</code> | 멀티 값 (allowMultipleValuesFlag) | 멀티 값 화면 표시 구분자. 앞뒤 공백이 자동으로 붙어 ',' → "A , B" 로 표시. 예: semantics: { allowMultipleValuesFlag: true, viewOptions: { multipleValuesSeparator: ',' } } |
-| <code>viewOptions</code> | <code>object</code> | - | 전체 | 편집기 화면(view) 옵션. multipleValuesSeparator 외에 displayStyle, controlType 등 편집기별 화면 옵션 |
+| <code>viewOptions</code> | <code>object</code> | - | 전체 | 편집기 화면(view) 옵션. 편집기별로 허용 키가 다름 ([viewOptions](#viewoptions) 참고) |
 | <code>allowFreeInputFlag</code> | <code>boolean</code> | <code>false</code> | 콤보 | 목록에 없는 값 직접 입력 허용 |
 | <code>minValue / maxValue</code> | <code>number&#124;Date</code> | - | 숫자, 날짜 | 최소 / 최대 |
 | <code>placeholder</code> | <code>string</code> | - | 문자열 | 빈 칸 안내 문구 |
@@ -39,6 +38,41 @@ Tweakers.js 의 TweakerBase / TweakerString / TweakerNumber / TweakerDate / Twea
 | <code>allowResetToUndefinedByUIFlag</code> | <code>boolean</code> | - | 전체 | 값 비우기 허용 |
 | <code>referenceValue / showReferenceValueFlag</code> | <code>any / boolean</code> | <code>- / false</code> | 전체 | 기준값과 비교 표시 |
 | <code>editorTitle / dialogOptions / augmentedDisplay</code> | - | <code>'' / - / 'popup'</code> | 전체 | 확장 편집 팝업 설정 |
+
+## viewOptions
+
+`semantics.viewOptions` 에 넣는 키입니다. 편집기마다 허용 키 목록이 고정되어 있어, 목록에 없는 키는 화면 컨트롤에 전달되지 않습니다.
+
+```js
+semantics: {
+  allowMultipleValuesFlag: true,
+  viewOptions: { multipleValuesSeparator: ',' }
+}
+```
+
+| 키 | 타입 | 기본값 | 대상 편집기 | 설명 |
+| --- | --- | --- | --- | --- |
+| <code>multipleValuesSeparator</code> | <code>string</code> | <code>'&#124;'</code> | 멀티 값 (allowMultipleValuesFlag) | 멀티 값 화면 표시 구분자. 앞뒤 공백이 자동으로 붙어 ',' → "A , B" 로 표시 |
+| <code>maxLength</code> | <code>number</code> | <code>-1</code> | 문자열 (한 줄, 확장 편집기) | 최대 입력 길이. -1 은 제한 없음 |
+| <code>resizableFlag</code> | <code>boolean</code> | <code>false</code> | 문자열 (여러 줄) | 입력 칸 크기 조절 허용 |
+| <code>newLineMode</code> | <code>string</code> | <code>'shiftEnter'</code> | 문자열 (여러 줄) | 줄바꿈 입력 키 |
+| <code>uniqueValue / customValidator / selection</code> | - | 컨트롤 기본값 | 문자열 (확장 편집기) | 확장 편집기 컨트롤에 전달 |
+| <code>onDrop</code> | <code>function</code> | - | 문자열 (한 줄, 여러 줄) | 드롭 처리. 2026 버전부터 |
+| <code>showWeekNumbers</code> | <code>boolean</code> | - | 날짜 | 달력에 주차 표시 |
+| <code>hideTodayOrNowButton</code> | <code>boolean</code> | <code>false</code> | 날짜 | 오늘/현재 버튼 숨김. 2026 버전부터 |
+| <code>enableSearchFlag</code> | <code>boolean</code> | <code>true</code> | 콤보 | 목록 검색 |
+| <code>mainElementVisibleFlag</code> | <code>boolean</code> | <code>true</code> | 콤보 | 메인 요소 표시 |
+| <code>expanderIcon</code> | <code>string</code> | <code>'expand-down'</code> | 콤보 | 펼침 아이콘 |
+| <code>customValidator</code> | <code>function</code> | - | 숫자 | 입력값 검증 함수 |
+| <code>customFormatter</code> | <code>function</code> | - | 숫자 | 표시 문자열 변환 함수. 문자열을 반환하면 그 값으로 표시 |
+| <code>externallyDriven</code> | <code>boolean</code> | - | 숫자 | 값을 숫자로 변환하지 않고 그대로 설정 |
+| <code>bigIcon</code> | <code>boolean</code> | - | 함수 (버튼) | 큰 아이콘 |
+| <code>showLabelFlag / labelPosition</code> | <code>boolean / string</code> | <code>true / 'bottom'</code> | 함수 (버튼) | 라벨 표시 / 위치. 2026 버전부터 |
+| <code>descriptionHeight / orientation</code> | - | - | URL | 설명 영역 높이 / 배치 방향. 2026 버전부터 |
+
+::: tip 내부 키
+`displayStyle`(불리언), `controlType`(문자열 버튼), `identifier` 는 소스에서 `viewOptions` 로 읽지만 Tweakers 가 편집기 등록 시 직접 채우는 값입니다. 모양 지정은 `semantics.displayStyle` 을 사용합니다.
+:::
 
 ## 문자열 (TweakerString)
 

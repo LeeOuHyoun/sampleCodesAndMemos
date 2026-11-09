@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>01. PubSub (Events, ModelEvents)</title>
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page h3 { margin: 16px 0 8px; font-size: 14px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    button { margin: 0 6px 6px 0; }
+    #log { height: 260px; overflow: auto; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>01. PubSub (Events, ModelEvents)</h2>
+    <p>DS/CoreEvents 의 전역 Events 와 객체별 ModelEvents 동작을 확인합니다. <a href="index.html">목록으로</a></p>
+
+    <h3>Events (전역)</h3>
+    <button id="btnName">이름 정규화</button>
+    <button id="btnOrder">호출 순서</button>
+    <button id="btnError">예외 시 중단</button>
+    <button id="btnOnce">subscribeOnce</button>
+
+    <h3>ModelEvents (부모 전파)</h3>
+    <button id="btnPropagate">전파</button>
+    <button id="btnStop">stopPropagation</button>
+
+    <h3>정리</h3>
+    <button id="btnClear">구독 모두 해제</button>
+
+    <h3>로그</h3>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    require(['DS/CoreEvents/Events', 'DS/CoreEvents/ModelEvents'], function (Events, ModelEvents) {
+      'use strict';
+
+      var logEl = document.getElementById('log');
+      var tokens = [];
+
+      function log(text) {
+        logEl.textContent = new Date().toLocaleTimeString() + '  ' + text + '\n' + logEl.textContent;
+      }
+
+      function on(id, fn) {
+        document.getElementById(id).addEventListener('click', fn);
+      }
+
+      function sub(eventName, fn) {
+        tokens.push(Events.subscribe({ event: eventName }, fn));
+      }
+
+      /* [1] 'sample/name' 으로 구독, '/sample//name/' 으로 발행해도 같은 이벤트 */
+      sub('sample/name', function (data) { log('[1] 받음 data = ' + JSON.stringify(data)); });
+      on('btnName', function () {
+        Events.publish({ event: '/sample//name/', data: { id: 'PRT-0001' } });
+      });
+
+      /* [2] 나중에 구독한 함수가 먼저 호출됨 */
+      sub('sample/order', function () { log('[2] 첫 번째로 구독한 함수'); });
+      sub('sample/order', function () { log('[2] 두 번째로 구독한 함수'); });
+      on('btnOrder', function () {
+        Events.publish({ event: 'sample/order' });
+      });
+
+      /* [3] 구독 함수에서 예외가 나면 나머지는 호출되지 않음 */
+      sub('sample/error', function () { log('[3] 먼저 구독한 함수 (호출되지 않아야 함)'); });
+      sub('sample/error', function () { throw new Error('구독 함수 오류'); });
+      on('btnError', function () {
+        try {
+          Events.publish({ event: 'sample/error' });
+        } catch (e) {
+          log('[3] publish 가 예외를 그대로 던짐: ' + e.message);
+        }
+      });
+
+      /* [4] subscribeOnce: 두 번 눌러도 한 번만 */
+      tokens.push(Events.subscribeOnce({ event: 'sample/once' }, function () { log('[4] subscribeOnce 실행'); }));
+      on('btnOnce', function () {
+        Events.publish({ event: 'sample/once' });
+        log('[4] publish 호출함');
+      });
+
+      /* [5] ModelEvents: target 이 있으면 부모로 전파, 받는 값은 포장 객체 */
+      var root = new ModelEvents({ target: 'root' });
+      var child = new ModelEvents({ target: 'child', parent: root });
+      root.subscribe({ event: 'changed' }, function (e) {
+        log('[5] root 받음 target=' + e.target + ' data=' + JSON.stringify(e.data));
+      });
+      child.subscribe({ event: 'changed' }, function (e) {
+        log('[5] child 받음 data=' + JSON.stringify(e.data));
+        if (e.data.stop) { e.stopPropagation(); }
+      });
+      on('btnPropagate', function () {
+        child.publish({ event: 'changed', data: { stop: false } });
+      });
+      on('btnStop', function () {
+        child.publish({ event: 'changed', data: { stop: true } });
+      });
+
+      /* [6] Events 에는 unsubscribeAll 이 없으므로 토큰으로 해제 */
+      on('btnClear', function () {
+        tokens.forEach(function (t) { Events.unsubscribe(t); });
+        log('[6] 토큰 ' + tokens.length + ' 개 해제');
+        tokens = [];
+        root.destroy();
+        child.destroy();
+        ['btnPropagate', 'btnStop', 'btnClear'].forEach(function (id) {
+          document.getElementById(id).disabled = true;
+        });
+      });
+    });
+  </script>
+</body>
+</html>

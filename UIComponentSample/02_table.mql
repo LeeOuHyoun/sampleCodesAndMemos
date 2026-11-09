@@ -1,0 +1,150 @@
+################################################################################################
+# Admin Type : table
+# Name       : XX_MyPartSummary (목록), XX_MyPartBOM (구조)
+# 설명       : 01_command_menu.mql 의 XX_MyPartList, XX_MyPartBOM command 가 여는 table.
+#              attribute_XX_Grade, attribute_Quantity 의 심볼릭 이름은 등록되어 있다고 가정한다.
+################################################################################################
+
+#del table 'XX_MyPartSummary' system;
+add table 'XX_MyPartSummary' system
+    column
+        name 'Name'
+        label 'emxFramework.Basic.Name'
+        businessobject 'name'
+        href '${COMMON_DIR}/emxTree.jsp'
+        alt ''
+        range ''
+        update ''
+        sorttype 'none'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'Show Type Icon'   'true'
+        setting 'Target Location'  'popup'
+        setting 'Popup Size'       'Large'
+        setting 'Width'            '150'
+    column
+        name 'Revision'
+        label 'emxFramework.Basic.Revision'
+        businessobject 'revision'
+        sorttype 'none'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'Width'            '60'
+    column
+        name 'Title'
+        label 'emxFramework.Attribute.Title'
+        businessobject '$<attribute[attribute_Title].value>'
+        sorttype 'none'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'attribute'
+        setting 'Admin Type'       'attribute_Title'
+        setting 'Editable'         'true'
+        setting 'Input Type'       'textbox'
+        setting 'Width'            '200'
+    column
+        name 'XX_Grade'
+        label 'emxXXMyApp.Label.Grade'
+        businessobject '$<attribute[attribute_XX_Grade].value>'
+        sorttype 'none'
+        setting 'Registered Suite'     'XXMyApp'
+        setting 'Field Type'           'attribute'
+        setting 'Admin Type'           'attribute_XX_Grade'
+        setting 'Editable'             'true'
+        setting 'Input Type'           'combobox'
+        setting 'Range Program'        'XX_MyPartUI'
+        setting 'Range Function'       'getGradeRange'
+        setting 'Update Program'       'XX_MyPartUI'
+        setting 'Update Function'      'updateGrade'
+        setting 'Edit Access Program'  'XX_MyPartUI'
+        setting 'Edit Access Function' 'isGradeEditable'
+        setting 'Width'                '100'
+    column
+        name 'State'
+        label 'emxFramework.Basic.State'
+        businessobject 'current'
+        sorttype 'none'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'Admin Type'       'State'
+        setting 'Auto Filter'      'true'
+    column
+        name 'Owner'
+        label 'emxFramework.Basic.Owner'
+        businessobject 'owner'
+        sorttype 'none'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'format'           'user'
+    column
+        name 'Modified'
+        label 'emxFramework.Basic.Modified'
+        businessobject 'modified'
+        sorttype 'none'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'format'           'date'
+        setting 'Sort Type'        'date'
+    column
+        name 'XX_Status'
+        label 'emxXXMyApp.Label.Status'
+        sorttype 'none'
+        setting 'Registered Suite' 'XXMyApp'
+        setting 'Column Type'      'programHTMLOutput'
+        setting 'program'          'XX_MyPartUI'
+        setting 'function'         'getStatusColumn'
+        setting 'Sortable'         'false'
+        setting 'Export'           'true'
+    column
+        name 'NewWindow'
+        label ''
+        href '${COMMON_DIR}/emxTree.jsp'
+        sorttype 'none'
+        setting 'Registered Suite' 'Framework'
+        setting 'Column Type'      'icon'
+        setting 'Column Icon'      'images/iconNewWindow.gif'
+        setting 'Target Location'  'popup'
+        setting 'Window Width'     '900'
+        setting 'Window Height'    '650'
+    property 'original name' value 'XX_MyPartSummary'
+;
+add property table_XX_MyPartSummary on program eServiceSchemaVariableMapping.tcl to table XX_MyPartSummary system;
+
+# ---------------------------------------------------------------------------------------------
+# 구조 table: 연결(relationship) attribute 열과 Group Header
+# ---------------------------------------------------------------------------------------------
+#del table 'XX_MyPartBOM' system;
+add table 'XX_MyPartBOM' system
+    column
+        name 'Name'
+        label 'emxFramework.Basic.Name'
+        businessobject 'name'
+        href '${COMMON_DIR}/emxTree.jsp'
+        sorttype 'none'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'Show Type Icon'   'true'
+        setting 'Target Location'  'popup'
+    column
+        name 'Quantity'
+        label 'emxFramework.Attribute.Quantity'
+        relationship '$<attribute[attribute_Quantity].value>'
+        sorttype 'none'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'attribute'
+        setting 'Admin Type'       'attribute_Quantity'
+        setting 'Editable'         'true'
+        setting 'Data Type'        'numeric'
+        setting 'Group Header'     'emxXXMyApp.Grouping.Usage'
+    column
+        name 'XX_UsageNote'
+        label 'emxXXMyApp.Label.UsageNote'
+        relationship '$<attribute[attribute_XX_UsageNote].value>'
+        sorttype 'none'
+        setting 'Registered Suite' 'XXMyApp'
+        setting 'Field Type'       'attribute'
+        setting 'Admin Type'       'attribute_XX_UsageNote'
+        setting 'Editable'         'true'
+        setting 'Group Header'     'emxXXMyApp.Grouping.Usage'
+    property 'original name' value 'XX_MyPartBOM'
+;
+add property table_XX_MyPartBOM on program eServiceSchemaVariableMapping.tcl to table XX_MyPartBOM system;

@@ -1,0 +1,16 @@
+{
+  "title": "위젯 샘플",
+  "infoTitle": "위젯 값",
+  "logTitle": "이벤트",
+  "hello": "{name} 님, 안녕하세요",
+  "spaceUrl": "3DSpace 주소",
+  "securityContext": "SecurityContext",
+  "loading": "읽는 중...",
+  "error": "오류",
+  "prefPageSize": "페이지 크기",
+  "prefShowState": "상태 표시",
+  "prefViewMode": "보기 방식",
+  "viewModeList": "목록",
+  "viewModeTile": "타일",
+  "prefSecurityContext": "자격 증명"
+}

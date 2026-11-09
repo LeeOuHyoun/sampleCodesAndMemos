@@ -1,0 +1,50 @@
+add bus 'eService Trigger Program Parameters' 'TypeMyPartDeleteCheck' 'checkDelete'
+    policy 'eService Trigger Program Policy'
+    vault  'eService Administration'
+    owner  'creator'
+    'eService Program Name'       'MyPartTrigger'
+    'eService Method Name'        'checkDelete'
+    'eService Sequence Number'    '100'
+    'eService Error Type'         'Error'
+    'eService Program Argument 1' '${OBJECTID}'
+;
+promote bus 'eService Trigger Program Parameters' 'TypeMyPartDeleteCheck' 'checkDelete';
+
+mod type 'MyPart'
+    add trigger Delete Check emxTriggerManager input 'TypeMyPartDeleteCheck';
+
+add bus 'eService Trigger Program Parameters' 'PolicyMyPartStateInWorkPromoteCheck' 'checkTitle'
+    policy 'eService Trigger Program Policy'
+    vault  'eService Administration'
+    owner  'creator'
+    'eService Program Name'       'MyPartTrigger'
+    'eService Method Name'        'checkTitle'
+    'eService Sequence Number'    '100'
+    'eService Error Type'         'Error'
+    'eService Program Argument 1' '${OBJECTID}'
+    'eService Program Argument 2' '${TYPE}'
+;
+promote bus 'eService Trigger Program Parameters' 'PolicyMyPartStateInWorkPromoteCheck' 'checkTitle';
+
+add bus 'eService Trigger Program Parameters' 'PolicyMyPartStateInWorkPromoteAction' 'syncChildState'
+    policy 'eService Trigger Program Policy'
+    vault  'eService Administration'
+    owner  'creator'
+    'eService Program Name'       'MyPartTrigger'
+    'eService Method Name'        'syncChildState'
+    'eService Sequence Number'    '100'
+    'eService Error Type'         'Error'
+    'eService Program Argument 1' '${OBJECTID}'
+    'eService Program Argument 2' '${TYPE}'
+    'eService Program Argument 3' '${NEXTSTATE}'
+;
+promote bus 'eService Trigger Program Parameters' 'PolicyMyPartStateInWorkPromoteAction' 'syncChildState';
+
+mod policy 'MyPartPolicy' state 'In Work'
+    add trigger Promote Check emxTriggerManager input 'PolicyMyPartStateInWorkPromoteCheck';
+mod policy 'MyPartPolicy' state 'In Work'
+    add trigger Promote Action emxTriggerManager input 'PolicyMyPartStateInWorkPromoteAction';
+
+print bus 'eService Trigger Program Parameters' 'TypeMyPartDeleteCheck' 'checkDelete' select current dump;
+print type 'MyPart' select trigger dump;
+print policy 'MyPartPolicy' select state[In Work].trigger dump;

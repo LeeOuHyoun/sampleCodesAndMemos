@@ -8,33 +8,45 @@
 sampleCodesAndMemos/
 ├─ docs/
 │  ├─ .vitepress/config.mjs   상단 메뉴, 왼쪽 메뉴 설정
-│  ├─ index.md               홈
-│  ├─ guide/                 이 문서에 대해
-│  └─ datagridview/          모듈 하나 = 폴더 하나
+│  ├─ index.md               홈 (분야별 문서 표, 하고 싶은 일로 찾기)
+│  ├─ guide/                 이 문서에 대해, 처음 읽는 순서
+│  │
+│  ├─ schema/                3DSpace 서버: 데이터 모델 / MQL
+│  ├─ ui-components/         3DSpace 서버: command, table, webform ...
+│  ├─ jpo/                   3DSpace 서버: JPO
+│  ├─ trigger/, properties/  3DSpace 서버: 트리거, properties
+│  │
+│  ├─ amd/, widget/          webapps: AMD 로딩, 위젯과 플랫폼
+│  ├─ uwa/, controls/        webapps: UWA, 화면 컨트롤
+│  ├─ events/, rest-api/     webapps: 이벤트, REST API
+│  └─ datagridview/          webapps: 주제 하나 = 폴더 하나
 │     ├─ index.md            개요
 │     ├─ cell-types.md       가이드 페이지
-│     └─ api/                API 레퍼런스
-├─ DataGridViewSample/       실행 샘플 (ENOVIA 서버용)
+│     └─ api/                레퍼런스
+├─ DataGridViewSample/ ...   주제별 샘플 (주제이름Sample)
 └─ package.json
 ```
 
-## 기존 모듈에 페이지 추가
+## 기존 주제에 페이지 추가
 
-1. `docs/datagridview/` 아래에 `새페이지.md` 를 만듭니다.
-2. `docs/.vitepress/config.mjs` 의 `sidebar['/datagridview/']` 에서 알맞은 묶음에 한 줄을 추가합니다.
+1. 주제 폴더(예: `docs/jpo/`) 아래에 `새페이지.md` 를 만듭니다.
+2. `docs/.vitepress/config.mjs` 의 `sidebar['/jpo/']` 에서 알맞은 묶음에 한 줄을 추가합니다.
 
 ```js
-{ text: '새 페이지 제목', link: '/datagridview/새페이지' }
+{ text: '새 페이지 제목', link: '/jpo/새페이지' }
 ```
 
-## 새 모듈 추가
+3. 자주 찾을 페이지면 홈(`docs/index.md`)의 분야별 표나 "하고 싶은 일로 찾기" 표에도 링크를 넣습니다.
 
-1. `docs/모듈이름/index.md` 를 만듭니다 (폴더 이름은 소문자 권장).
-2. `config.mjs` 에 세 군데를 추가합니다.
-   - `nav` 의 "모듈" 목록
-   - `nav` 의 "API 레퍼런스" 목록 (API 페이지가 있으면)
-   - `sidebar['/모듈이름/']` 묶음
-3. 홈(`docs/index.md`)의 `features` 에 카드를 추가합니다.
+## 새 주제 추가
+
+1. `docs/주제이름/index.md` 를 만듭니다 (폴더 이름은 소문자, 단어는 `-` 로 연결).
+2. `config.mjs` 에 추가합니다.
+   - `nav` 의 "3DSpace 서버" 또는 "webapps" 목록
+   - `nav` 의 "API 레퍼런스" 목록 (레퍼런스 페이지가 있으면)
+   - `sidebar['/주제이름/']` 묶음
+3. 홈(`docs/index.md`)의 분야별 표에 한 줄을 추가합니다.
+4. [처음 읽는 순서](/guide/roadmap) 에 넣을 만하면 순서 표에도 추가합니다.
 
 ## 자주 쓰는 표기
 

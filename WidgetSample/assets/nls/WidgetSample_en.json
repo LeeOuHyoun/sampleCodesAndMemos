@@ -1,0 +1,16 @@
+{
+  "title": "Widget Sample",
+  "infoTitle": "Widget values",
+  "logTitle": "Events",
+  "hello": "Hello, {name}",
+  "spaceUrl": "3DSpace URL",
+  "securityContext": "SecurityContext",
+  "loading": "Loading...",
+  "error": "Error",
+  "prefPageSize": "Page size",
+  "prefShowState": "Show state",
+  "prefViewMode": "View mode",
+  "viewModeList": "List",
+  "viewModeTile": "Tile",
+  "prefSecurityContext": "Credentials"
+}

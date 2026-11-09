@@ -1,0 +1,186 @@
+################################################################################################
+# Admin Type : form, command, channel, portal
+# Name       : type_XX_MyPart (상세), XX_MyPartCreateForm (생성), XX_MyPartPortal (객체 첫 화면)
+# 설명       : 01_command_menu.mql 의 type_XX_MyPart menu href 가 XX_MyPartPortal 을 연다.
+#              등록 순서: form -> 탭 command -> channel -> portal
+################################################################################################
+
+# ---------------------------------------------------------------------------------------------
+# 1. 상세 form (emxForm.jsp 보기 / mode=edit 편집)
+# ---------------------------------------------------------------------------------------------
+#del form 'type_XX_MyPart';
+add form 'type_XX_MyPart' web
+    field
+        name 'BasicSection'
+        label 'emxXXMyApp.Section.Basic'
+        setting 'Registered Suite' 'XXMyApp'
+        setting 'Field Type'       'Section Header'
+        setting 'Section Level'    '1'
+    field
+        name 'Name'
+        label 'emxFramework.Basic.Name'
+        businessobject '$<name>'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'Editable'         'false'
+    field
+        name 'State'
+        label 'emxFramework.Basic.State'
+        businessobject '$<current>'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'Admin Type'       'State'
+        setting 'Editable'         'false'
+    field
+        name 'Description'
+        label 'emxFramework.Basic.Description'
+        businessobject 'description'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'Input Type'       'textarea'
+        setting 'Editable'         'true'
+    field
+        name 'XX_Grade'
+        label 'emxXXMyApp.Label.Grade'
+        businessobject '$<attribute[attribute_XX_Grade].value>'
+        setting 'Registered Suite' 'XXMyApp'
+        setting 'Field Type'       'attribute'
+        setting 'Admin Type'       'attribute_XX_Grade'
+        setting 'Input Type'       'combobox'
+        setting 'Required'         'true'
+        setting 'Editable'         'true'
+        setting 'Range Program'    'XX_MyPartUI'
+        setting 'Range Function'   'getGradeRange'
+        setting 'OnChange Handler' 'reloadGradeNote'
+    field
+        name 'XX_Supplier'
+        label 'emxXXMyApp.Label.Supplier'
+        range '${COMMON_DIR}/emxFullSearch.jsp?field=TYPES=type_Company&table=APPOrganizationSummary&selection=single&showInitialResults=true'
+        setting 'Registered Suite'  'XXMyApp'
+        setting 'Field Type'        'programHTMLOutput'
+        setting 'program'           'XX_MyPartUI'
+        setting 'function'          'getSupplierField'
+        setting 'Editable'          'true'
+        setting 'Show Clear Button' 'true'
+        setting 'Update Program'    'XX_MyPartUI'
+        setting 'Update Function'   'connectSupplier'
+    field
+        name 'DateSection'
+        label 'emxXXMyApp.Section.Schedule'
+        setting 'Registered Suite' 'XXMyApp'
+        setting 'Field Type'       'Section Header'
+        setting 'Section Level'    '1'
+    field
+        name 'XX_DueDate'
+        label 'emxXXMyApp.Label.DueDate'
+        businessobject '$<attribute[attribute_XX_DueDate].value>'
+        setting 'Registered Suite' 'XXMyApp'
+        setting 'Field Type'       'attribute'
+        setting 'Admin Type'       'attribute_XX_DueDate'
+        setting 'format'           'date'
+        setting 'Editable'         'true'
+        setting 'Access Expression' "current == 'In Work'"
+    property 'original name' value 'type_XX_MyPart'
+;
+add property form_type_XX_MyPart on program eServiceSchemaVariableMapping.tcl to form 'type_XX_MyPart';
+
+# ---------------------------------------------------------------------------------------------
+# 2. 생성 form (emxCreate.jsp). Group Name 이 같은 필드는 가로로 묶임
+# ---------------------------------------------------------------------------------------------
+#del form 'XX_MyPartCreateForm';
+add form 'XX_MyPartCreateForm' web
+    field
+        name 'Description'
+        label 'emxFramework.Basic.Description'
+        businessobject 'description'
+        setting 'Registered Suite' 'Framework'
+        setting 'Field Type'       'basic'
+        setting 'Input Type'       'textarea'
+    field
+        name 'XX_Grade'
+        label 'emxXXMyApp.Label.Grade'
+        businessobject '$<attribute[attribute_XX_Grade].value>'
+        setting 'Registered Suite' 'XXMyApp'
+        setting 'Field Type'       'attribute'
+        setting 'Admin Type'       'attribute_XX_Grade'
+        setting 'Input Type'       'combobox'
+        setting 'Required'         'true'
+        setting 'Group Name'       'Basic_1'
+    field
+        name 'XX_DueDate'
+        label 'emxXXMyApp.Label.DueDate'
+        businessobject '$<attribute[attribute_XX_DueDate].value>'
+        setting 'Registered Suite' 'XXMyApp'
+        setting 'Field Type'       'attribute'
+        setting 'Admin Type'       'attribute_XX_DueDate'
+        setting 'format'           'date'
+        setting 'Group Name'       'Basic_1'
+    property 'original name' value 'XX_MyPartCreateForm'
+;
+add property form_XX_MyPartCreateForm on program eServiceSchemaVariableMapping.tcl to form 'XX_MyPartCreateForm';
+
+# ---------------------------------------------------------------------------------------------
+# 3. 포털 탭 command
+# ---------------------------------------------------------------------------------------------
+add command 'XX_MyPartPropertiesPortalCmd'
+    label 'emxFramework.Command.Properties'
+    href  '${COMMON_DIR}/emxForm.jsp?form=type_XX_MyPart&toolbar=XX_MyPartPropertiesToolbar'
+    alt   ''
+    user  'all'
+    setting 'Registered Suite' 'XXMyApp'
+;
+add property command_XX_MyPartPropertiesPortalCmd on program eServiceSchemaVariableMapping.tcl to command XX_MyPartPropertiesPortalCmd;
+
+add command 'XX_MyPartBOMPortalCmd'
+    label 'emxXXMyApp.Command.BOM'
+    href  '${COMMON_DIR}/emxIndentedTable.jsp?table=XX_MyPartBOM&expandProgram=XX_MyPartUI:getBOM&header=emxXXMyApp.Header.BOM&freezePane=Name'
+    alt   ''
+    user  'all'
+    setting 'Registered Suite' 'XXMyApp'
+;
+add property command_XX_MyPartBOMPortalCmd on program eServiceSchemaVariableMapping.tcl to command XX_MyPartBOMPortalCmd;
+
+add command 'XX_MyPartHistoryPortalCmd'
+    label 'emxFramework.Command.History'
+    href  '${COMMON_DIR}/emxHistory.jsp?HistoryMode=CurrentRevision'
+    alt   ''
+    user  'all'
+    setting 'Registered Suite' 'Framework'
+;
+add property command_XX_MyPartHistoryPortalCmd on program eServiceSchemaVariableMapping.tcl to command XX_MyPartHistoryPortalCmd;
+
+# ---------------------------------------------------------------------------------------------
+# 4. channel (탭 묶음)
+# ---------------------------------------------------------------------------------------------
+add channel 'XX_MyPartInfoChannel'
+    label ''
+    command 'XX_MyPartPropertiesPortalCmd','XX_MyPartHistoryPortalCmd'
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Height' '45%'
+    property 'original name' value 'XX_MyPartInfoChannel'
+;
+add property channel_XX_MyPartInfoChannel on program eServiceSchemaVariableMapping.tcl to channel 'XX_MyPartInfoChannel';
+
+add channel 'XX_MyPartBOMChannel'
+    label ''
+    command 'XX_MyPartBOMPortalCmd'
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Height' '55%'
+    property 'original name' value 'XX_MyPartBOMChannel'
+;
+add property channel_XX_MyPartBOMChannel on program eServiceSchemaVariableMapping.tcl to channel 'XX_MyPartBOMChannel';
+
+# ---------------------------------------------------------------------------------------------
+# 5. portal (channel 한 줄 = 화면 한 행)
+# ---------------------------------------------------------------------------------------------
+add portal 'XX_MyPartPortal'
+    description 'XX_MyPart 객체 첫 화면'
+    channel 'XX_MyPartInfoChannel'
+    channel 'XX_MyPartBOMChannel'
+    setting 'Registered Suite' 'XXMyApp'
+    property 'original name' value 'XX_MyPartPortal'
+;
+add property portal_XX_MyPartPortal on program eServiceSchemaVariableMapping.tcl to portal 'XX_MyPartPortal';
+
+# 나중에 탭 끼우기
+# mod channel 'XX_MyPartInfoChannel' place 'XX_MyPartNewTabPortalCmd' after 'XX_MyPartPropertiesPortalCmd';

@@ -1,0 +1,77 @@
+################################################################################################
+# Created : 2025-01-01
+# Admin Type : attribute, type
+# Name : XXMyColor, XXMyWeight, XXMyUrgentYN, XXMyPart
+# Create by : developer
+################################################################################################
+
+#del type 'XXMyPart';
+#del attribute 'XXMyColor';
+#del attribute 'XXMyWeight';
+#del attribute 'XXMyUrgentYN';
+
+add attribute 'XXMyColor'
+    type string
+    description 'Color code'
+    default ''
+    range = 'RED'
+    range = 'BLUE'
+    range = 'GREEN'
+    notmultiline
+    nothidden
+    property version value 'R2025x'
+    property application value 'Framework'
+    property installer value 'XX'
+    property 'original name' value 'XXMyColor'
+    property 'installed date' value '2025-01-01'
+;
+add property attribute_XXMyColor on program eServiceSchemaVariableMapping.tcl to attribute XXMyColor;
+
+add attribute 'XXMyWeight'
+    type real
+    description 'Weight'
+    default 0
+    property version value 'R2025x'
+    property application value 'Framework'
+    property installer value 'XX'
+    property 'original name' value 'XXMyWeight'
+    property 'installed date' value '2025-01-01'
+;
+add property attribute_XXMyWeight on program eServiceSchemaVariableMapping.tcl to attribute XXMyWeight;
+
+add attribute 'XXMyUrgentYN'
+    type string
+    description 'Urgent flag'
+    default 'N'
+    range = 'Y'
+    range = 'N'
+    notmultiline
+    nothidden
+    resetonclone
+    resetonrevision
+    property version value 'R2025x'
+    property application value 'Framework'
+    property installer value 'XX'
+    property 'original name' value 'XXMyUrgentYN'
+    property 'installed date' value '2025-01-01'
+;
+add property attribute_XXMyUrgentYN on program eServiceSchemaVariableMapping.tcl to attribute XXMyUrgentYN;
+
+add type 'XXMyPart'
+    description 'My Part'
+    derived 'Part'
+    attribute 'XXMyColor'
+    attribute 'XXMyWeight'
+    property version value 'R2025x'
+    property application value 'Framework'
+    property installer value 'XX'
+    property 'original name' value 'XXMyPart'
+    property 'installed date' value '2025-01-01'
+;
+add property type_XXMyPart on program eServiceSchemaVariableMapping.tcl to type XXMyPart;
+
+mod type 'XXMyPart'
+    add attribute 'XXMyUrgentYN'
+;
+
+print type 'XXMyPart' select attribute derived dump |;

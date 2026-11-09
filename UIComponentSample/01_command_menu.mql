@@ -1,0 +1,164 @@
+################################################################################################
+# Admin Type : command, menu
+# Name       : XX_MyPart 목록 command, 툴바, 객체 트리 menu
+# 설명       : 앱 메뉴에서 목록을 열고, 툴바에서 생성 / 삭제, 이름을 누르면 객체 트리를 연다.
+#              XX_MyPart 타입, policy_XX_MyPart, JPO XX_MyPartUI, suite XXMyApp 은 가상의 이름이다.
+################################################################################################
+
+# ---------------------------------------------------------------------------------------------
+# 1. 목록 command (앱 메뉴에 붙임)
+# ---------------------------------------------------------------------------------------------
+add command 'XX_MyPartList'
+    description 'My Part 목록'
+    label   'emxXXMyApp.Command.MyPartList'
+    href    '${COMMON_DIR}/emxIndentedTable.jsp?table=XX_MyPartSummary&program=XX_MyPartUI:getMyPartList&toolbar=XX_MyPartListToolbar&selection=multiple&header=emxXXMyApp.Header.MyPartList&sortColumnName=Name&sortDirection=ascending&freezePane=Name&suiteKey=XXMyApp'
+    alt     ''
+    user    'all'
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Target Location'  'content'
+    property 'original name' value 'XX_MyPartList'
+;
+add property command_XX_MyPartList on program eServiceSchemaVariableMapping.tcl to command XX_MyPartList;
+
+# ---------------------------------------------------------------------------------------------
+# 2. 목록 툴바 command
+# ---------------------------------------------------------------------------------------------
+add command 'XX_MyPartCreate'
+    description 'My Part 생성 (슬라이드인)'
+    label   'emxXXMyApp.Command.Create'
+    href    '${COMMON_DIR}/emxCreate.jsp?type=type_XX_MyPart&policy=policy_XX_MyPart&form=XX_MyPartCreateForm&nameField=autoname&header=emxXXMyApp.Header.Create&submitAction=refreshCaller&suiteKey=XXMyApp'
+    alt     'emxXXMyApp.Command.Create'
+    user    'all'
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Target Location'  'slidein'
+    setting 'Slidein Width'    '450'
+    setting 'Image'            '${COMMON_DIR}/images/iconActionCreate.png'
+    setting 'Access Program'   'XX_MyPartUI'
+    setting 'Access Function'  'hasCreateAccess'
+    property 'original name' value 'XX_MyPartCreate'
+;
+add property command_XX_MyPartCreate on program eServiceSchemaVariableMapping.tcl to command XX_MyPartCreate;
+
+add command 'XX_MyPartDelete'
+    description '선택한 My Part 삭제 (숨은 프레임에서 처리)'
+    label   'emxXXMyApp.Command.Delete'
+    href    '${SUITE_DIR}/XX_MyPartDeleteProcess.jsp'
+    alt     'emxXXMyApp.Command.Delete'
+    user    'all'
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Target Location'  'listHidden'
+    setting 'Submit'           'true'
+    setting 'Row Select'       'multiple'
+    setting 'Confirm Message'  'emxXXMyApp.Confirm.Delete'
+    setting 'Image'            '${COMMON_DIR}/images/iconActionDelete.png'
+    property 'original name' value 'XX_MyPartDelete'
+;
+add property command_XX_MyPartDelete on program eServiceSchemaVariableMapping.tcl to command XX_MyPartDelete;
+
+# ---------------------------------------------------------------------------------------------
+# 3. 목록 툴바 menu (Toolbar -> Actions -> command 두 단)
+# ---------------------------------------------------------------------------------------------
+add menu 'XX_MyPartActions'
+    description '드롭다운'
+    label   'emxXXMyApp.Menu.Actions'
+    href    ''
+    alt     ''
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Image'            '${COMMON_DIR}/images/iconActionActions.png'
+    command 'XX_MyPartCreate'
+    command 'XX_MyPartDelete'
+    property 'original name' value 'XX_MyPartActions'
+;
+add property menu_XX_MyPartActions on program eServiceSchemaVariableMapping.tcl to menu XX_MyPartActions;
+
+add menu 'XX_MyPartListToolbar'
+    description '목록 툴바. URL 의 toolbar= 에 이 이름을 넘긴다'
+    label   ''
+    href    ''
+    alt     ''
+    setting 'Registered Suite' 'XXMyApp'
+    menu    'XX_MyPartActions'
+    property 'original name' value 'XX_MyPartListToolbar'
+;
+add property menu_XX_MyPartListToolbar on program eServiceSchemaVariableMapping.tcl to menu XX_MyPartListToolbar;
+
+# ---------------------------------------------------------------------------------------------
+# 4. 속성 화면 툴바 (objectId 는 트리가 붙여 줌)
+# ---------------------------------------------------------------------------------------------
+add command 'XX_MyPartEdit'
+    description '속성 편집 (슬라이드인)'
+    label   'emxXXMyApp.Command.Edit'
+    href    '${COMMON_DIR}/emxForm.jsp?form=type_XX_MyPart&mode=edit&formHeader=emxXXMyApp.Header.Edit'
+    alt     'emxXXMyApp.Command.Edit'
+    user    'all'
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Target Location'  'slidein'
+    setting 'Slidein Width'    '500'
+    setting 'Access Mask'      'modify'
+    setting 'Image'            '${COMMON_DIR}/images/iconActionEdit.png'
+    property 'original name' value 'XX_MyPartEdit'
+;
+add property command_XX_MyPartEdit on program eServiceSchemaVariableMapping.tcl to command XX_MyPartEdit;
+
+add menu 'XX_MyPartPropertiesToolbar'
+    description '속성 화면 툴바'
+    label   ''
+    href    ''
+    alt     ''
+    setting 'Registered Suite' 'XXMyApp'
+    command 'XX_MyPartEdit'
+    property 'original name' value 'XX_MyPartPropertiesToolbar'
+;
+add property menu_XX_MyPartPropertiesToolbar on program eServiceSchemaVariableMapping.tcl to menu XX_MyPartPropertiesToolbar;
+
+# ---------------------------------------------------------------------------------------------
+# 5. 객체 트리 menu (type_ + 타입 심볼릭 이름)
+# ---------------------------------------------------------------------------------------------
+add command 'XX_MyPartProperties'
+    description '속성 카테고리'
+    label   'emxFramework.Command.Properties'
+    href    '${COMMON_DIR}/emxForm.jsp?form=type_XX_MyPart&toolbar=XX_MyPartPropertiesToolbar'
+    alt     ''
+    user    'all'
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Target Location'  'content'
+    property 'original name' value 'XX_MyPartProperties'
+;
+add property command_XX_MyPartProperties on program eServiceSchemaVariableMapping.tcl to command XX_MyPartProperties;
+
+add command 'XX_MyPartBOM'
+    description 'BOM 카테고리 (구조 브라우저)'
+    label   'emxXXMyApp.Command.BOM'
+    href    '${COMMON_DIR}/emxIndentedTable.jsp?table=XX_MyPartBOM&expandProgram=XX_MyPartUI:getBOM&header=emxXXMyApp.Header.BOM&freezePane=Name'
+    alt     ''
+    user    'all'
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Target Location'  'content'
+    property 'original name' value 'XX_MyPartBOM'
+;
+add property command_XX_MyPartBOM on program eServiceSchemaVariableMapping.tcl to command XX_MyPartBOM;
+
+add menu 'type_XX_MyPart'
+    description 'XX_MyPart 객체 트리'
+    label   '${NAME} ${REVISION}'
+    href    '${COMMON_DIR}/emxPortal.jsp?portal=XX_MyPartPortal&showPageHeader=false'
+    alt     ''
+    setting 'Registered Suite' 'XXMyApp'
+    setting 'Show Type Icon'   'true'
+    command 'XX_MyPartProperties'
+    command 'XX_MyPartBOM'
+    command 'AEFLifecycle'
+    command 'AEFHistory'
+    property 'original name' value 'type_XX_MyPart'
+;
+add property menu_type_XX_MyPart on program eServiceSchemaVariableMapping.tcl to menu type_XX_MyPart;
+
+mod menu 'Tree' add menu 'type_XX_MyPart';
+
+# ---------------------------------------------------------------------------------------------
+# 6. OOTB 수정 예: 백업 후 숨기기, 순서 바꾸기
+# ---------------------------------------------------------------------------------------------
+# copy command 'PMCRiskMyDesk' 'PMCRiskMyDesk_OOTB';
+# mod command 'PMCRiskMyDesk' add setting 'Access Expression' 'false';
+#
+# mod menu 'XX_MyPartActions' order command 'XX_MyPartDelete' 1;

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>01. WebUX 컨트롤로 만든 입력 폼</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page h3 { margin: 16px 0 8px; font-size: 14px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .form { display: grid; grid-template-columns: 120px 320px; gap: 8px 12px; align-items: center; font-size: 13px; }
+    .row { display: flex; gap: 6px; align-items: center; margin: 8px 0; }
+    #log { height: 180px; overflow: auto; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>01. WebUX 컨트롤로 만든 입력 폼</h2>
+    <p>LineEditor, Editor, ComboBox, Toggle, ButtonGroup, Button 을 붙이고 값과 이벤트를 확인합니다. <a href="index.html">목록으로</a></p>
+
+    <h3>입력</h3>
+    <div class="form">
+      <label>품번 (PRT-0000)</label><div id="partNo"></div>
+      <label>품명</label><div id="title"></div>
+      <label>상태</label><div id="state"></div>
+      <label>구분</label><div id="kind"></div>
+      <label>사용</label><div id="useFlag"></div>
+      <label>비고</label><div id="memo"></div>
+      <label>유효</label><div id="valid"></div>
+    </div>
+    <div class="row" id="buttons"></div>
+
+    <h3>Expander, Popup, ProgressBar</h3>
+    <div id="expander" style="width: 452px;"></div>
+    <div class="row" id="popupArea"></div>
+    <div id="progress" style="width: 452px;"></div>
+
+    <h3>로그</h3>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'UWA/Core',
+      'DS/Controls/LineEditor',
+      'DS/Controls/Editor',
+      'DS/Controls/ComboBox',
+      'DS/Controls/Toggle',
+      'DS/Controls/ButtonGroup',
+      'DS/Controls/Button',
+      'DS/Controls/Label',
+      'DS/Controls/Expander',
+      'DS/Controls/Popup',
+      'DS/Controls/ProgressBar'
+    ], function (UWA, LineEditor, Editor, ComboBox, Toggle, ButtonGroup, Button, Label, Expander, Popup, ProgressBar) {
+      'use strict';
+
+      var logEl = document.getElementById('log');
+
+      function log(text) {
+        logEl.textContent = new Date().toLocaleTimeString() + '  ' + text + '\n' + logEl.textContent;
+      }
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      /* [1] 입력칸 */
+      var partNo = new LineEditor({ placeholder: 'PRT-0000', pattern: 'PRT-[0-9]{4}', requiredFlag: true }).inject(byId('partNo'));
+      var title = new LineEditor({ placeholder: '품명', displayClearFieldButtonFlag: true }).inject(byId('title'));
+      var memo = new Editor({ nbRows: 3, placeholder: '비고' }).inject(byId('memo'));
+
+      partNo.addEventListener('change', function (e) { log('partNo change: ' + e.dsModel.value); });
+      title.addEventListener('uncommittedChange', function (e) { log('title 입력 중: ' + e.options.uncommittedValue); });
+      title.addEventListener('change', function (e) { log('title change: ' + e.dsModel.value); });
+
+      /* [2] 목록, 토글, 버튼 묶음 */
+      var state = new ComboBox({
+        elementsList: [
+          { label: '작업중', value: 'WIP' },
+          { label: '검토중', value: 'REVIEW' },
+          { label: '승인', value: 'RELEASED' }
+        ],
+        placeholder: '상태 선택',
+        enableSearchFlag: false
+      }).inject(byId('state'));
+      state.addEventListener('change', function (e) { log('state change: ' + e.dsModel.value + ' (index ' + e.dsModel.selectedIndex + ')'); });
+
+      var kind = new ButtonGroup({ type: 'radio' }).inject(byId('kind'));
+      kind.addChild(new Button({ label: '부품', value: 'PART' }));
+      kind.addChild(new Button({ label: '조립품', value: 'ASSY' }));
+      kind.addChild(new Button({ label: '문서', value: 'DOC' }));
+      kind.addEventListener('change', function (e) { log('kind change: ' + JSON.stringify(e.dsModel.value)); });
+
+      var useFlag = new Toggle({ type: 'switch', label: '사용', checkFlag: true, fireOnlyFromUIInteractionFlag: true }).inject(byId('useFlag'));
+      useFlag.addEventListener('change', function (e) { log('useFlag change: ' + e.dsModel.checkFlag); });
+
+      /* [3] 유효 표시 */
+      var validChip = new Label({ value: '입력 필요', emphasize: 'warning' }).inject(byId('valid'));
+      partNo.addEventListener('validFlagChange', function (e) {
+        validChip.value = e.dsModel.validFlag ? '유효' : '입력 필요';
+        validChip.emphasize = e.dsModel.validFlag ? 'success' : 'warning';
+        save.disabled = !e.dsModel.validFlag;
+      });
+
+      /* [4] 버튼 */
+      var save = new Button({
+        label: '저장',
+        emphasize: 'primary',
+        disabled: true,
+        icon: { iconName: 'floppy', fontIconFamily: WUXManagedFontIcons.Font3DS },
+        tooltipInfos: { title: '저장', shortHelp: '품번이 유효할 때만 누를 수 있습니다' },
+        onClick: function () {
+          log('저장: ' + JSON.stringify({
+            partNo: partNo.value,
+            title: title.value,
+            state: state.value,
+            kind: kind.value,
+            useFlag: useFlag.checkFlag,
+            memo: memo.value
+          }));
+        }
+      }).inject(byId('buttons'));
+
+      var fill = new Button({ label: '코드로 값 넣기', displayStyle: 'lite' }).inject(byId('buttons'));
+      fill.addEventListener('buttonclick', function () {
+        log('--- 코드로 값 넣기 (useFlag 는 fireOnlyFromUIInteractionFlag 라 change 없음)');
+        partNo.value = 'PRT-0001';
+        title.value = '브라켓';
+        state.value = 'REVIEW';
+        kind.value = ['ASSY'];
+        useFlag.checkFlag = false;
+      });
+
+      new Button({ label: '삭제', emphasize: 'error', icon: { iconName: 'trash', fontIconFamily: WUXManagedFontIcons.Font3DS } })
+        .inject(byId('buttons'))
+        .addEventListener('buttonclick', function (e) { log('buttonclick ctrlKey=' + e.options.ctrlKey); });
+
+      /* [5] Expander */
+      var detail = UWA.createElement('div', { styles: { padding: 8, fontSize: '12px' }, text: '여기에 상세 속성을 넣습니다.' });
+      var expander = new Expander({ header: '상세', body: detail, expandedFlag: false }).inject(byId('expander'));
+      expander.addEventListener('expand', function () { log('expander expand'); });
+      expander.addEventListener('collapse', function () { log('expander collapse'); });
+
+      /* [6] Popup */
+      var filterBtn = new Button({ label: '필터 열기', displayStyle: 'lite' }).inject(byId('popupArea'));
+      var popupBody = UWA.createElement('div', { styles: { padding: 8, fontSize: '12px', width: 200 }, text: 'Popup 내용입니다. 바깥을 누르면 닫힙니다.' });
+      var popup = new Popup({ target: filterBtn.getContent(), trigger: 'click', position: 'bottom' });
+      popup.setBody(popupBody);
+      popup.addEventListener('show', function () { log('popup show'); });
+      popup.addEventListener('hide', function () { log('popup hide'); });
+
+      /* [7] ProgressBar */
+      var bar = new ProgressBar({ value: 0, emphasize: 'success' }).inject(byId('progress'));
+      var run = new Button({ label: '진행률 올리기', displayStyle: 'lite' }).inject(byId('popupArea'));
+      run.addEventListener('buttonclick', function () {
+        bar.value = bar.value >= 100 ? 0 : bar.value + 20;
+        log('progress ' + bar.value);
+      });
+    });
+  </script>
+</body>
+</html>

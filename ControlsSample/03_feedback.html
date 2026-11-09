@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>03. 로딩 가리개와 알림 메시지</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <link rel="stylesheet" type="text/css" href="../UIKIT/UIKIT.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page h3 { margin: 16px 0 8px; font-size: 14px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .row { display: flex; gap: 6px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+    .area { position: relative; height: 90px; border: 1px solid #d1d4d4; padding: 8px; font-size: 12px; width: 440px; }
+    #alertArea { position: relative; height: 140px; border: 1px dashed #d1d4d4; width: 456px; }
+    #log { height: 160px; overflow: auto; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>03. 로딩 가리개와 알림 메시지</h2>
+    <p>UIKIT Mask, WebUX ModalLoader, UIKIT Alert, Notifications, SuperModal 을 비교합니다. <a href="index.html">목록으로</a></p>
+
+    <h3>가리개</h3>
+    <div class="row" id="maskButtons"></div>
+    <div class="row">
+      <div class="area" id="maskArea">UIKIT Mask 대상 영역</div>
+      <div class="area" id="loaderArea">WebUX ModalLoader 대상 영역 (position: relative)</div>
+    </div>
+
+    <h3>UIKIT Alert (영역 위쪽)</h3>
+    <div class="row" id="alertButtons"></div>
+    <div id="alertArea"></div>
+
+    <h3>Notifications (화면 오른쪽 위)</h3>
+    <div class="row" id="notifButtons"></div>
+
+    <h3>UIKIT SuperModal</h3>
+    <div class="row" id="modalButtons"></div>
+
+    <h3>로그</h3>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'UWA/Core',
+      'DS/Controls/Button',
+      'DS/Controls/ModalLoader',
+      'DS/UIKIT/Mask',
+      'DS/UIKIT/Alert',
+      'DS/UIKIT/SuperModal',
+      'DS/Notifications/NotificationsManagerUXMessages',
+      'DS/Notifications/NotificationsManagerViewOnScreen'
+    ], function (UWA, Button, ModalLoader, Mask, Alert, SuperModal, UXMessages, ViewOnScreen) {
+      'use strict';
+
+      var logEl = document.getElementById('log');
+
+      function log(text) {
+        logEl.textContent = new Date().toLocaleTimeString() + '  ' + text + '\n' + logEl.textContent;
+      }
+
+      function addButton(parentId, label, fn) {
+        new Button({ label: label, displayStyle: 'lite', onClick: fn }).inject(document.getElementById(parentId));
+      }
+
+      /* [1] UIKIT Mask: UWA 요소로 감싸서 넘김 */
+      var maskArea = UWA.extendElement(document.getElementById('maskArea'));
+      addButton('maskButtons', 'Mask 2초', function () {
+        Mask.mask(maskArea, '불러오는 중...');
+        log('isMasked=' + Mask.isMasked(maskArea));
+        setTimeout(function () { Mask.unmask(maskArea); log('unmask'); }, 2000);
+      });
+
+      /* [2] WebUX ModalLoader: 같은 글자로 지움 */
+      var loaderArea = document.getElementById('loaderArea');
+      addButton('maskButtons', 'ModalLoader 2초', function () {
+        ModalLoader.displayModalLoader(loaderArea, '저장 중...');
+        setTimeout(function () { ModalLoader.removeModalLoader(loaderArea, '저장 중...'); log('removeModalLoader (같은 글자)'); }, 2000);
+      });
+      addButton('maskButtons', 'ModalLoader 글자 다르게 지우기', function () {
+        ModalLoader.displayModalLoader(loaderArea, '저장 중...');
+        setTimeout(function () {
+          ModalLoader.removeModalLoader(loaderArea);
+          log('removeModalLoader (글자 생략) → 가리개가 남음. 아래 버튼으로 정리');
+        }, 1000);
+      });
+      addButton('maskButtons', 'ModalLoader 정리', function () {
+        ModalLoader.removeModalLoader(loaderArea, '저장 중...');
+        log('removeModalLoader (같은 글자)');
+      });
+
+      /* [3] UIKIT Alert */
+      var alertArea = document.getElementById('alertArea');
+      var alertBox = new Alert({ visible: true, autoHide: true, hideDelay: 3000 }).inject(alertArea, 'top');
+      alertBox.addEvent('onRemoveMessage', function () { log('alert onRemoveMessage'); });
+      ['primary', 'success', 'warning', 'error'].forEach(function (cls) {
+        addButton('alertButtons', 'Alert ' + cls, function () {
+          alertBox.add({ className: cls, message: cls + ' 메시지입니다.' });
+        });
+      });
+
+      /* [4] Notifications: 화면 쪽을 관리자에 연결 */
+      ViewOnScreen.setNotificationManager(UXMessages);
+      ['info', 'success', 'warning', 'error'].forEach(function (level) {
+        addButton('notifButtons', 'addNotif ' + level, function () {
+          var id = UXMessages.addNotif({ level: level, title: level, message: '<b>HTML</b> 은 allowUnsafeHTML: false 로 글자 그대로', allowUnsafeHTML: false });
+          log('addNotif id=' + id);
+        });
+      });
+
+      var uploadId;
+      addButton('notifButtons', '진행 알림 (modifyNotif)', function () {
+        uploadId = UXMessages.addNotif({ level: 'info', message: '업로드 중... 0%', sticky: true, category: 'upload' });
+        setTimeout(function () { UXMessages.modifyNotif(uploadId, { level: 'info', message: '업로드 중... 60%', sticky: true, category: 'upload' }); }, 1000);
+        setTimeout(function () { UXMessages.modifyNotif(uploadId, { level: 'success', message: '업로드 완료', category: 'upload' }); }, 2000);
+      });
+      addButton('notifButtons', '모두 지우기', function () {
+        ViewOnScreen.removeNotifications();
+      });
+
+      /* [5] UIKIT SuperModal */
+      var sm = new SuperModal();
+      addButton('modalButtons', 'alert', function () {
+        sm.alert('저장했습니다.', '완료', function () { log('alert 닫힘'); });
+      });
+      addButton('modalButtons', 'confirm', function () {
+        sm.confirm('삭제할까요?', '삭제', function (ok) { log('confirm: ' + ok); });
+      });
+      addButton('modalButtons', 'prompt', function () {
+        sm.prompt('새 이름', '이름 바꾸기', function (value) { log('prompt: ' + value); });
+      });
+      addButton('modalButtons', 'confirm 2개 연속 (대기열)', function () {
+        sm.confirm('첫 번째', '1', function (ok) { log('1: ' + ok); });
+        sm.confirm('두 번째 (첫 번째가 닫힌 뒤 뜸)', '2', function (ok) { log('2: ' + ok); });
+      });
+    });
+  </script>
+</body>
+</html>

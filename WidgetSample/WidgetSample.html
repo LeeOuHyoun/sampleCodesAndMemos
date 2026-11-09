@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Widget Sample</title>
+  <meta name="author" content="sample" />
+  <meta name="description" content="UWA widget sample: preferences, events, 3DSpace URL, SecurityContext" />
+  <meta name="autoRefresh" content="0" />
+
+  <link rel="stylesheet" type="text/css" href="../c/UWA/assets/css/standalone.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <script type="text/javascript" src="../c/UWA/js/UWA_Standalone_Alone.js"></script>
+
+  <widget:preferences>
+    <widget:preference name="x3dPlatformId" type="hidden" defaultValue=""></widget:preference>
+    <widget:preference name="securityContext" type="hidden" defaultValue=""></widget:preference>
+    <widget:preference name="pageSize" type="range" label="prefPageSize" defaultValue="20" min="10" max="100" step="10"></widget:preference>
+    <widget:preference name="showState" type="boolean" label="prefShowState" defaultValue="true"></widget:preference>
+    <widget:preference name="viewMode" type="list" label="prefViewMode" defaultValue="list">
+      <widget:option value="list" label="viewModeList"></widget:option>
+      <widget:option value="tile" label="viewModeTile"></widget:option>
+    </widget:preference>
+  </widget:preferences>
+
+  <script type="text/javascript">
+  //<![CDATA[
+    require(['DS/WidgetSample/WidgetSample'], function (WidgetSample) {
+      'use strict';
+      WidgetSample.start(widget);
+    });
+  //]]>
+  </script>
+</head>
+<body>
+  <p>Loading...</p>
+</body>
+</html>

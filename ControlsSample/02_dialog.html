@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>02. 다이얼로그 (Windows)</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page h3 { margin: 16px 0 8px; font-size: 14px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .row { display: flex; gap: 6px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+    #frameArea { position: relative; height: 280px; border: 1px solid #d1d4d4; }
+    .bg { padding: 12px; font-size: 12px; color: #777; }
+    #log { height: 160px; overflow: auto; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>02. 다이얼로그 (Windows)</h2>
+    <p>Dialog 의 표준 버튼, 사용자 버튼, 체크박스, 확인 묻기, ImmersiveFrame 과 Panel 을 확인합니다. <a href="index.html">목록으로</a></p>
+
+    <h3>document.body 에 띄우기</h3>
+    <div class="row" id="bodyButtons"></div>
+
+    <h3>ImmersiveFrame 안에 띄우기</h3>
+    <div class="row" id="frameButtons"></div>
+    <div id="frameArea"></div>
+
+    <h3>로그</h3>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'UWA/Core',
+      'DS/Windows/Dialog',
+      'DS/Windows/Panel',
+      'DS/Windows/ImmersiveFrame',
+      'DS/Controls/Button',
+      'DS/Controls/LineEditor'
+    ], function (UWA, Dialog, Panel, ImmersiveFrame, Button, LineEditor) {
+      'use strict';
+
+      var logEl = document.getElementById('log');
+
+      function log(text) {
+        logEl.textContent = new Date().toLocaleTimeString() + '  ' + text + '\n' + logEl.textContent;
+      }
+
+      function addButton(parentId, label, fn) {
+        new Button({ label: label, onClick: fn }).inject(document.getElementById(parentId));
+      }
+
+      function textBody(text) {
+        return UWA.createElement('div', { styles: { padding: 12, fontSize: '13px' }, text: text });
+      }
+
+      /* [1] 표준 버튼 Ok / Cancel */
+      addButton('bodyButtons', 'Ok / Cancel', function () {
+        var editor = new LineEditor({ placeholder: '변경 사유', requiredFlag: true });
+        var body = UWA.createElement('div', { styles: { padding: 12 } });
+        editor.inject(body);
+
+        var dlg = new Dialog({
+          title: '승인',
+          content: body,
+          modalFlag: true,
+          width: 360,
+          buttons: {
+            Cancel: new Button({ onClick: function (e) { log('Cancel'); e.dsModel.dialog.close(); } }),
+            Ok: new Button({
+              onClick: function (e) {
+                if (!editor.validFlag) { log('사유를 입력하세요'); return; }
+                log('Ok: ' + editor.value);
+                e.dsModel.dialog.close();
+              }
+            })
+          }
+        });
+        dlg.addEventListener('close', function () { log('close 이벤트 (이후 destroy)'); });
+      });
+
+      /* [2] 사용자 버튼 (customButtonsDefinition) */
+      addButton('bodyButtons', '사용자 버튼', function () {
+        new Dialog({
+          title: '변경 확인',
+          content: textBody('저장하지 않은 변경이 있습니다.'),
+          modalFlag: true,
+          customButtonsDefinition: [
+            { label: '저장 후 닫기', emphasize: 'primary', role: 'validate', onClick: function (e) { log('저장 후 닫기'); e.dsModel.dialog.close(); } },
+            { label: '저장 안 함', emphasize: 'error', onClick: function (e) { log('저장 안 함'); e.dsModel.dialog.close(); } },
+            { label: '돌아가기', role: 'escape', onClick: function (e) { log('돌아가기 (Esc)'); e.dsModel.dialog.close(); } }
+          ]
+        });
+      });
+
+      /* [3] 체크박스 */
+      addButton('bodyButtons', '체크박스', function () {
+        var dlg = new Dialog({
+          title: '삭제',
+          content: textBody('PRT-0001 을 삭제합니다.'),
+          modalFlag: true,
+          checkboxInfos: { label: '다시 묻지 않음', checkFlag: false },
+          buttons: {
+            Ok: new Button({ label: '삭제', onClick: function (e) { log('삭제, 다시 묻지 않음=' + dlg.checkboxInfos.checkFlag); e.dsModel.dialog.close(); } }),
+            Cancel: new Button({ onClick: function (e) { e.dsModel.dialog.close(); } })
+          }
+        });
+      });
+
+      /* [4] 확인 묻기 */
+      function confirmDialog(title, message, callback) {
+        var answered = false;
+        var dlg = new Dialog({
+          title: title,
+          content: textBody(message),
+          modalFlag: true,
+          buttons: {
+            Yes: new Button({ onClick: function (e) { answered = true; e.dsModel.dialog.close(); callback(true); } }),
+            No: new Button({ onClick: function (e) { answered = true; e.dsModel.dialog.close(); callback(false); } })
+          }
+        });
+        dlg.addEventListener('close', function () {
+          if (!answered) { callback(false); }
+        });
+      }
+
+      addButton('bodyButtons', '확인 묻기', function () {
+        confirmDialog('삭제', 'PRT-0001 을 삭제할까요? (X 로 닫아도 false)', function (ok) { log('confirm 결과: ' + ok); });
+      });
+
+      /* [5] 숨겼다 다시 보이기 (autoCloseFlag: false) */
+      var reusable;
+      addButton('bodyButtons', '다시 쓰는 창', function () {
+        if (!reusable) {
+          reusable = new Dialog({
+            title: '다시 쓰는 창',
+            content: textBody('닫아도 destroy 되지 않습니다. 다시 누르면 같은 창이 보입니다.'),
+            autoCloseFlag: false,
+            buttons: { Close: new Button({ onClick: function (e) { e.dsModel.dialog.visibleFlag = false; } }) }
+          });
+          reusable.addEventListener('close', function () { reusable.visibleFlag = false; log('X: 숨김'); });
+          return;
+        }
+        reusable.visibleFlag = true;
+      });
+
+      /* [6] ImmersiveFrame 과 Panel */
+      var frameArea = document.getElementById('frameArea');
+      var frame = new ImmersiveFrame();
+      frame.inject(frameArea);
+      frame.setContentInBackgroundLayer(UWA.createElement('div', { 'class': 'bg', text: '배경 층 (그리드 같은 본 화면 자리)' }));
+
+      addButton('frameButtons', '틀 안 모달', function () {
+        new Dialog({
+          title: '틀 안 모달',
+          content: textBody('가리개가 틀 안만 덮습니다.'),
+          immersiveFrame: frame,
+          modalFlag: true,
+          buttons: { Close: new Button({ onClick: function (e) { e.dsModel.dialog.close(); } }) }
+        });
+      });
+
+      var panel;
+      addButton('frameButtons', '오른쪽 Panel', function () {
+        if (panel) { return; }
+        panel = new Panel({
+          title: '속성',
+          content: textBody('오른쪽에 붙은 패널입니다.'),
+          immersiveFrame: frame,
+          currentDockArea: WUXDockAreaEnum.RightDockArea,
+          width: 220
+        });
+        panel.addEventListener('close', function () { panel = null; log('panel close'); });
+      });
+    });
+  </script>
+</body>
+</html>

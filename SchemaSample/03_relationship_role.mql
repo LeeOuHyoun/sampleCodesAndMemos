@@ -1,0 +1,84 @@
+################################################################################################
+# Created : 2025-01-01
+# Admin Type : attribute, relationship, role, businessobject (eService Object/Number Generator)
+# Name : XXMySeq, XXRelMyPartToDocument, XXMyEngineer, type_XXMyPart
+# Create by : developer
+################################################################################################
+
+#del relationship 'XXRelMyPartToDocument';
+#del attribute 'XXMySeq';
+#del role 'XXMyEngineer';
+#del bus 'eService Object Generator' 'type_XXMyPart' '';
+#del bus 'eService Number Generator' 'type_XXMyPart' '';
+
+add attribute 'XXMySeq'
+    type integer
+    description 'Sequence on relationship'
+    default 0
+    property version value 'R2025x'
+    property application value 'Framework'
+    property installer value 'XX'
+    property 'original name' value 'XXMySeq'
+    property 'installed date' value '2025-01-01'
+;
+add property attribute_XXMySeq on program eServiceSchemaVariableMapping.tcl to attribute XXMySeq;
+
+add relationship 'XXRelMyPartToDocument'
+    description 'XXMyPart to Document'
+    attribute 'XXMySeq'
+    nothidden
+    from
+        type        'XXMyPart'
+        cardinality 'many'
+        revision    'none'
+        clone       'none'
+    to
+        type        'Document'
+        cardinality 'many'
+        revision    'float'
+        clone       'none'
+    property version value 'R2025x'
+    property application value 'Framework'
+    property installer value 'XX'
+    property 'original name' value 'XXRelMyPartToDocument'
+    property 'installed date' value '2025-01-01'
+;
+add property relationship_XXRelMyPartToDocument on program eServiceSchemaVariableMapping.tcl to relationship 'XXRelMyPartToDocument';
+
+copy relationship 'Object Route' 'Object Route_OOTB';
+mod relationship 'Object Route' from add type 'XXMyPart';
+
+add role 'XXMyEngineer'
+    description 'XXMyPart create, edit'
+    property version value 'R2025x'
+    property application value 'Framework'
+    property installer value 'XX'
+    property 'original name' value 'XXMyEngineer'
+    property 'installed date' value '2025-01-01'
+;
+add property role_XXMyEngineer on program eServiceSchemaVariableMapping.tcl to role 'XXMyEngineer';
+
+add bus 'eService Object Generator' 'type_XXMyPart' ''
+    policy 'eService Object Generator'
+    vault  'eService Administration'
+    'eService Name Prefix'           'MP-'
+    'eService Name Suffix'           ''
+    'eService Processing Time Limit' '60'
+    'eService Retry Count'           '5'
+    'eService Retry Delay'           '60'
+    'eService Safety Policy'         'policy_XXMyPartPolicy'
+    'eService Safety Vault'          'vault_eServiceAdministration'
+;
+
+add bus 'eService Number Generator' 'type_XXMyPart' ''
+    policy 'eService Object Generator'
+    vault  'eService Administration'
+    'eService Next Number' '0000000001'
+;
+
+connect bus 'eService Object Generator' 'type_XXMyPart' ''
+    relationship 'eService Number Generator'
+    to 'eService Number Generator' 'type_XXMyPart' ''
+;
+
+print relationship 'XXRelMyPartToDocument' select fromtype totype attribute dump |;

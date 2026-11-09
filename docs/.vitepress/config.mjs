@@ -5,7 +5,7 @@ const REPO = 'https://github.com/LeeOuHyoun/sampleCodesAndMemos'
 export default defineConfig({
   lang: 'ko-KR',
   title: 'ENOVIA 분석 사양서',
-  description: 'ENOVIA(3DEXPERIENCE) webapps 모듈 사용법 분석 문서',
+  description: 'ENOVIA(3DEXPERIENCE) 3DSpace 서버와 webapps 개발 사양 분석 문서',
   base: '/sampleCodesAndMemos/',
   cleanUrls: true,
   lastUpdated: true,
@@ -13,16 +13,35 @@ export default defineConfig({
     nav: [
       { text: '이 문서에 대해', link: '/guide/', activeMatch: '/guide/' },
       {
-        text: '모듈',
+        text: '3DSpace 서버',
         items: [
+          { text: '데이터 모델 / MQL', link: '/schema/' },
+          { text: 'UI 구성 요소', link: '/ui-components/' },
+          { text: 'JPO', link: '/jpo/' },
+          { text: '트리거', link: '/trigger/' },
+          { text: 'properties', link: '/properties/' }
+        ]
+      },
+      {
+        text: 'webapps',
+        items: [
+          { text: 'AMD 로딩', link: '/amd/' },
+          { text: '위젯과 플랫폼', link: '/widget/' },
+          { text: 'UWA', link: '/uwa/' },
+          { text: '화면 컨트롤', link: '/controls/' },
+          { text: '이벤트, 선택, 끌어 놓기', link: '/events/' },
+          { text: '3DSpace REST API', link: '/rest-api/' },
           { text: 'DataGridView', link: '/datagridview/' },
-          { text: 'Tweakers', link: '/tweakers/' },
-          { text: 'UWA', link: '/uwa/' }
+          { text: 'Tweakers', link: '/tweakers/' }
         ]
       },
       {
         text: 'API 레퍼런스',
         items: [
+          { text: 'UI settings', link: '/ui-components/settings' },
+          { text: 'JPO 인자 구조', link: '/jpo/args' },
+          { text: 'REST 엔드포인트', link: '/rest-api/catalog' },
+          { text: '화면 컨트롤', link: '/controls/api/webux-controls' },
           { text: 'DataGridView', link: '/datagridview/api/grid-options' },
           { text: 'Tweakers', link: '/tweakers/api/tweaker' }
         ]
@@ -34,6 +53,7 @@ export default defineConfig({
           text: '이 문서에 대해',
           items: [
             { text: '소개', link: '/guide/' },
+            { text: '처음 읽는 순서', link: '/guide/roadmap' },
             { text: '문서 추가 방법', link: '/guide/contributing' }
           ]
         }
@@ -127,6 +147,183 @@ export default defineConfig({
             { text: 'Promise', link: '/uwa/promise' },
             { text: '서버 호출 (WAFData)', link: '/uwa/request' },
             { text: '위젯 간 통신 (InterCom)', link: '/uwa/intercom' }
+          ]
+        }
+      ],
+      '/schema/': [
+        {
+          text: '시작하기',
+          items: [
+            { text: '개요', link: '/schema/' }
+          ]
+        },
+        {
+          text: '스키마 정의',
+          items: [
+            { text: 'Attribute, Type, Relationship, Role', link: '/schema/admin' },
+            { text: 'Policy (상태와 권한)', link: '/schema/policy' }
+          ]
+        },
+        {
+          text: 'MQL',
+          items: [
+            { text: 'MQL 문법과 조회', link: '/schema/mql' },
+            { text: 'mql 폴더 작성 규칙', link: '/schema/conventions' }
+          ]
+        }
+      ],
+      '/ui-components/': [
+        {
+          text: '시작하기',
+          items: [
+            { text: '개요', link: '/ui-components/' }
+          ]
+        },
+        {
+          text: '구성 요소',
+          items: [
+            { text: 'command, menu', link: '/ui-components/command-menu' },
+            { text: 'table (목록, 구조)', link: '/ui-components/table' },
+            { text: 'webform (상세, 생성)', link: '/ui-components/webform' },
+            { text: 'portal, channel', link: '/ui-components/portal-channel' }
+          ]
+        },
+        {
+          text: '레퍼런스',
+          items: [
+            { text: 'URL 파라미터', link: '/ui-components/url-parameters' },
+            { text: 'settings 레퍼런스', link: '/ui-components/settings' }
+          ]
+        }
+      ],
+      '/jpo/': [
+        {
+          text: '시작하기',
+          items: [
+            { text: '개요', link: '/jpo/' }
+          ]
+        },
+        {
+          text: '작성',
+          items: [
+            { text: '호출 종류별 인자 구조', link: '/jpo/args' },
+            { text: 'DomainObject 와 select', link: '/jpo/domain-object' },
+            { text: 'MqlUtil', link: '/jpo/mql-util' }
+          ]
+        },
+        {
+          text: '실행 환경',
+          items: [
+            { text: 'Context, 트랜잭션, 권한 전환', link: '/jpo/transaction-context' },
+            { text: '다국어, 예외, 로그', link: '/jpo/i18n-exception' }
+          ]
+        }
+      ],
+      '/trigger/': [
+        {
+          text: '트리거',
+          items: [
+            { text: '개요', link: '/trigger/' },
+            { text: '트리거 등록', link: '/trigger/register' },
+            { text: 'JPO 와 인자', link: '/trigger/jpo-args' },
+            { text: '라이프사이클과 promote', link: '/trigger/lifecycle' },
+            { text: '채번기', link: '/trigger/generator' }
+          ]
+        }
+      ],
+      '/properties/': [
+        {
+          text: 'properties',
+          items: [
+            { text: '개요', link: '/properties/' },
+            { text: '문자열 리소스 (다국어)', link: '/properties/string-resource' },
+            { text: '시스템 설정과 page 객체', link: '/properties/system-settings' }
+          ]
+        }
+      ],
+      '/controls/': [
+        {
+          text: '시작하기',
+          items: [
+            { text: '개요 (무엇을 쓸까)', link: '/controls/' }
+          ]
+        },
+        {
+          text: '가이드',
+          items: [
+            { text: 'WebUX 컨트롤', link: '/controls/webux-controls' },
+            { text: '다이얼로그 (Windows)', link: '/controls/dialog' },
+            { text: 'UIKIT', link: '/controls/uikit' },
+            { text: '알림 메시지', link: '/controls/notifications' }
+          ]
+        },
+        {
+          text: 'API 레퍼런스',
+          items: [
+            { text: 'WebUX 컨트롤 API', link: '/controls/api/webux-controls' },
+            { text: 'Windows API', link: '/controls/api/windows' },
+            { text: 'UIKIT API', link: '/controls/api/uikit' }
+          ]
+        }
+      ],
+      '/events/': [
+        {
+          text: '이벤트, 선택, 끌어 놓기',
+          items: [
+            { text: '개요', link: '/events/' },
+            { text: 'PubSub (Events, ModelEvents)', link: '/events/pubsub' },
+            { text: '선택 (CSOManager)', link: '/events/selection' },
+            { text: '끌어 놓기 (3DXContent)', link: '/events/drag-and-drop' }
+          ]
+        }
+      ],
+      '/rest-api/': [
+        {
+          text: '3DSpace REST API',
+          items: [
+            { text: '공통 규칙', link: '/rest-api/' },
+            { text: '보안 컨텍스트', link: '/rest-api/security-context' },
+            { text: '엔드포인트 목록', link: '/rest-api/catalog' },
+            { text: '문서 (documents)', link: '/rest-api/documents' }
+          ]
+        }
+      ],
+      '/amd/': [
+        {
+          text: '시작하기',
+          items: [
+            { text: '개요 (AMD 로딩)', link: '/amd/' }
+          ]
+        },
+        {
+          text: '가이드',
+          items: [
+            { text: '플러그인 (i18n!, css!, text!)', link: '/amd/plugins' },
+            { text: 'WebappsUtils', link: '/amd/webapps-utils' }
+          ]
+        }
+      ],
+      '/widget/': [
+        {
+          text: '시작하기',
+          items: [
+            { text: '개요', link: '/widget/' }
+          ]
+        },
+        {
+          text: '위젯',
+          items: [
+            { text: 'widget 객체', link: '/widget/widget-api' },
+            { text: '위젯 설정 (preferences)', link: '/widget/preferences' }
+          ]
+        },
+        {
+          text: '플랫폼 서비스',
+          items: [
+            { text: 'PlatformAPI', link: '/widget/platform-api' },
+            { text: 'Compass 서비스', link: '/widget/compass-services' },
+            { text: 'WidgetServices', link: '/widget/widget-services' },
+            { text: '3DSpace 주소와 SecurityContext', link: '/widget/space-url' }
           ]
         }
       ]

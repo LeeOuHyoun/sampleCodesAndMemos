@@ -30,7 +30,7 @@ require(['DS/WAFData/WAFData'], function (WAFData) {
 });
 ```
 
-- `spaceUrl` 은 3DSpace 주소입니다. 위젯에서는 `i3DXCompassPlatformServices.getServiceURL('3DSpace', platformId)` 로 얻습니다.
+- `spaceUrl` 은 3DSpace 주소입니다. 위젯에서는 `i3DXCompassPlatformServices.getServiceUrl({ serviceName: '3DSpace', platformId: platformId, onComplete: function (url) { ... } })` 로 얻습니다. 자세한 순서는 [3DSpace 주소와 SecurityContext](/widget/space-url) 에 있습니다.
 - 로그인 세션(Passport)을 자동으로 붙여 보냅니다. ticket 이 만료되면(`invalid_grant`) 새 ticket 을 받아 **자동으로 다시 보냅니다**.
 
 ## 옵션

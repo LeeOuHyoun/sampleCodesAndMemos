@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>02. 끌어 놓기 (3DXContent)</title>
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page h3 { margin: 16px 0 8px; font-size: 14px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    label { font-size: 12px; margin-right: 12px; }
+    input { width: 260px; }
+    .card { display: inline-block; padding: 8px 12px; border: 1px solid #368ec4; background: #eef5fb; cursor: grab; }
+    .card.dragging { opacity: 0.5; }
+    #dropZone { margin-top: 8px; padding: 24px; border: 2px dashed #b4b6ba; text-align: center; color: #777; }
+    #dropZone.over { border-color: #368ec4; background: #f0f7fc; }
+    table { border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+    td, th { border: 1px solid #d1d4d4; padding: 4px 6px; text-align: left; }
+    #raw, #log { overflow: auto; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; white-space: pre-wrap; }
+    #raw { height: 120px; }
+    #log { height: 140px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>02. 끌어 놓기 (3DXContent)</h2>
+    <p>DataDragAndDrop 과 3DXContent JSON 을 확인합니다. 대시보드의 다른 위젯(검색 결과 등)에서 객체를 끌어 아래 영역에 놓아도 됩니다. <a href="index.html">목록으로</a></p>
+
+    <h3>설정</h3>
+    <label>플랫폼 id <input id="platformId" value="OnPremise" /></label>
+
+    <h3>끌기: 직접 만든 3DXContent</h3>
+    <label>objectId <input id="dragId" placeholder="physicalid" /></label>
+    <label>objectType <input id="dragType" value="Document" /></label>
+    <div><span id="card" class="card">이 카드를 끌어서 놓기 영역에 놓습니다</span></div>
+
+    <h3>놓기</h3>
+    <div id="dropZone">여기에 놓습니다</div>
+    <table id="items"><thead><tr><th>objectId</th><th>objectType</th><th>serviceId</th><th>envId</th><th>displayName</th><th></th></tr></thead><tbody></tbody></table>
+
+    <h3>받은 원본 문자열</h3>
+    <div id="raw"></div>
+
+    <h3>로그</h3>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    require(['DS/DataDragAndDrop/DataDragAndDrop', 'DS/WAFData/WAFData'], function (DnD, WAFData) {
+      'use strict';
+
+      var spaceUrl = window.location.href.split('/webapps/')[0];
+      var logEl = document.getElementById('log');
+      var securityContextPromise;
+
+      function log(text) {
+        logEl.textContent = new Date().toLocaleTimeString() + '  ' + text + '\n' + logEl.textContent;
+      }
+
+      function platformId() {
+        return document.getElementById('platformId').value || 'OnPremise';
+      }
+
+      /* [1] 끌기: start 에서 그때의 입력값으로 3DXContent 를 만들어 setData */
+      DnD.draggable(document.getElementById('card'), {
+        start: function (el, e) {
+          var content = {
+            protocol: '3DXContent',
+            version: '2.0',
+            source: 'EVENTS_SAMPLE',
+            data: {
+              items: [{
+                envId: platformId(),
+                serviceId: '3DSpace',
+                objectId: document.getElementById('dragId').value,
+                objectType: document.getElementById('dragType').value,
+                displayName: '샘플 카드'
+              }]
+            }
+          };
+          e.dataTransfer.setData('text', JSON.stringify(content));
+          log('[1] dragstart');
+        },
+        stop: function () { log('[1] dragend'); }
+      });
+
+      /* [2] 놓기: JSON 파싱 → protocol 확인 → 3DSpace / 같은 플랫폼 / 중복 제거 */
+      function parse3DXContent(text) {
+        var content;
+        try { content = JSON.parse(text); } catch (e) { return null; }
+        if (!content || content.protocol !== '3DXContent' || !content.data) return null;
+        var seen = {};
+        return (content.data.items || []).filter(function (item) {
+          var ok = item.serviceId === '3DSpace' && item.objectId && item.objectType &&
+            (!item.envId || item.envId === platformId()) && !seen[item.objectId];
+          seen[item.objectId] = true;
+          if (!ok) { log('[2] 건너뜀: ' + JSON.stringify(item)); }
+          return ok;
+        });
+      }
+
+      DnD.droppable(document.getElementById('dropZone'), {
+        enter: function (el) { el.classList.add('over'); },
+        leave: function (el) { el.classList.remove('over'); },
+        drop: function (text, el) {
+          el.classList.remove('over');
+          document.getElementById('raw').textContent = text;
+          var items = parse3DXContent(text);
+          if (!items) {
+            log('[2] 3DXContent 가 아닙니다');
+            return;
+          }
+          log('[2] 받은 3DSpace 객체 ' + items.length + ' 개');
+          items.forEach(addRow);
+        }
+      });
+
+      function addRow(item) {
+        var tr = document.createElement('tr');
+        [item.objectId, item.objectType, item.serviceId, item.envId, item.displayName].forEach(function (v) {
+          var td = document.createElement('td');
+          td.textContent = v || '';
+          tr.appendChild(td);
+        });
+        var btn = document.createElement('button');
+        btn.textContent = '기본 정보';
+        btn.addEventListener('click', function () { loadObjectInfo(item.objectId); });
+        var td = document.createElement('td');
+        td.appendChild(btn);
+        tr.appendChild(td);
+        document.querySelector('#items tbody').appendChild(tr);
+      }
+
+      /* [3] 선호 보안 컨텍스트: pno/person 의 preferredcredentials 로 만듦 */
+      function getSecurityContext() {
+        securityContextPromise = securityContextPromise || new Promise(function (resolve, reject) {
+          WAFData.authenticatedRequest(spaceUrl + '/resources/modeler/pno/person?current=true&select=preferredcredentials', {
+            type: 'json',
+            headers: { Accept: 'application/json' },
+            onComplete: function (res) {
+              var pc = res && res.preferredcredentials;
+              if (pc && pc.role && pc.organization && pc.collabspace) {
+                resolve('ctx::' + pc.role.name + '.' + pc.organization.name + '.' + pc.collabspace.name);
+              } else {
+                reject(new Error('선호 보안 컨텍스트가 없습니다'));
+              }
+            },
+            onFailure: function (error) { reject(error); },
+            onPassportError: function (error) { reject(error); }
+          });
+        });
+        return securityContextPromise;
+      }
+
+      /* [4] 놓인 객체 기본 정보: GET e6w/service/ObjectInfo/{id} → data[0] */
+      function loadObjectInfo(objectId) {
+        getSecurityContext().then(function (securityContext) {
+          log('[3] SecurityContext = ' + securityContext);
+          WAFData.authenticatedRequest(spaceUrl + '/resources/v2/e6w/service/ObjectInfo/' + encodeURIComponent(objectId) + '?tenant=' + encodeURIComponent(platformId()), {
+            type: 'json',
+            headers: { Accept: 'application/json', SecurityContext: securityContext },
+            onComplete: function (res) {
+              if (!res || res.success === false || !res.data || !res.data[0]) {
+                log('[4] 실패: ' + JSON.stringify(res));
+                return;
+              }
+              var de = res.data[0].dataelements || {};
+              log('[4] ' + res.data[0].type + ' / name=' + de.name + ' / title=' + de.title + ' / revision=' + de.revision);
+            },
+            onFailure: function (error) { log('[4] onFailure: ' + error.message); },
+            onPassportError: function (error) { log('[4] onPassportError: ' + error.message); }
+          });
+        }).catch(function (e) {
+          log('[3] ' + (e && e.message));
+        });
+      }
+    });
+  </script>
+</body>
+</html>

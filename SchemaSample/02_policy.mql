@@ -1,0 +1,99 @@
+################################################################################################
+# Created : 2025-01-01
+# Admin Type : policy
+# Name : XXMyPartPolicy
+# Create by : developer
+################################################################################################
+
+#del policy 'XXMyPartPolicy';
+add policy 'XXMyPartPolicy'
+    description 'My Part lifecycle'
+    store 'STORE'
+    type 'XXMyPart'
+    sequence '1,2,3,...'
+    state 'In Work'
+        revision  false
+        version   false
+        promote   true
+        checkouthistory  false
+        public   all
+    state 'In Approval'
+        revision  false
+        version   false
+        promote   true
+        checkouthistory  false
+        public   all
+    state 'Release'
+        revision  true
+        version   false
+        promote   true
+        checkouthistory  false
+        public   all
+    state 'Obsolete'
+        revision  false
+        version   false
+        promote   false
+        checkouthistory  false
+        public   all
+    property state_InWork value 'In Work'
+    property state_InApproval value 'In Approval'
+    property state_Release value 'Release'
+    property state_Obsolete value 'Obsolete'
+    property version value 'R2025x'
+    property application value 'Framework'
+    property installer value 'XX'
+    property 'original name' value 'XXMyPartPolicy'
+    property 'installed date' value '2025-01-01'
+;
+add property policy_XXMyPartPolicy on program 'eServiceSchemaVariableMapping.tcl' to policy 'XXMyPartPolicy';
+
+mod policy 'XXMyPartPolicy' add allstate public 'none' owner 'none';
+mod policy 'XXMyPartPolicy' state 'In Work' public 'none' owner 'none';
+mod policy 'XXMyPartPolicy' state 'In Approval' public 'none' owner 'none';
+mod policy 'XXMyPartPolicy' state 'Release' public 'none' owner 'none';
+mod policy 'XXMyPartPolicy' state 'Obsolete' public 'none' owner 'none';
+
+mod policy 'XXMyPartPolicy' allstate
+    add
+    #remove
+        user VPLMProjectLeader key XXMyPartAllStateLeaderRead01
+            checkout,show,read single organization single project filter "( type == 'XXMyPart' )"
+;
+
+mod policy 'XXMyPartPolicy' state 'In Work'
+    add
+    #remove
+        user VPLMCreator key XXMyPartVPLMCreatorInWorkOwnerAccess01
+            checkout,show,read,checkin,modify,lock,unlock,fromconnect,toconnect,fromdisconnect,todisconnect,create,delete,promote single organization single project context owner
+;
+
+mod policy 'XXMyPartPolicy' state 'In Approval'
+    add
+    #remove
+        user VPLMCreator key XXMyPartVPLMCreatorInApprovalOwnerAccess01
+            checkout,show,read,demote single organization single project context owner
+    add
+    #remove
+        user VPLMProjectLeader key XXMyPartVPLMProjectLeaderInApprovalAccess01
+            checkout,show,read,modify,promote,demote single organization single project
+;
+
+mod policy 'XXMyPartPolicy' state 'Release'
+    add
+    #remove
+        user VPLMCreator key XXMyPartVPLMCreatorReleasePublicAccess01
+            checkout,show,read,fromconnect,toconnect,fromdisconnect,todisconnect single organization single project
+    add
+    #remove
+        user VPLMCreator key XXMyPartVPLMCreatorReleaseOwnerAccess01
+            revise single organization single project context owner
+;
+
+mod policy 'XXMyPartPolicy' state 'Obsolete'
+    add
+    #remove
+        user VPLMCreator key XXMyPartVPLMCreatorObsoletePublicAccess01
+            checkout,show,read single organization single project
+;
+
+print policy 'XXMyPartPolicy';

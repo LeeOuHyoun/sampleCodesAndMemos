@@ -21,7 +21,7 @@
 | 색상 | `color` | `'#rrggbb'` | - |
 | 링크 | `url` | URL 문자열 | - |
 
-전체 목록은 [typeRepresentation](/datagridview/api/type-representation), 세부 설정은 [semantics](/datagridview/api/semantics) 에 있습니다.
+전체 목록은 [typeRepresentation](/datagridview/api/type-representation), 세부 설정은 [semantics](/tweakers/api/semantics) 에 있습니다.
 
 ## 콤보박스 (하나 선택)
 

@@ -4,7 +4,14 @@ title: semantics
 
 # semantics
 
-컬럼 `semantics` 또는 컬럼 함수 `getCellSemantics` 의 반환값에 넣는 키입니다. 편집기(Tweaker)에 그대로 전달되는 세부 옵션입니다.
+편집기(Tweaker)에 그대로 전달되는 세부 옵션입니다. 넣는 자리는 쓰는 곳마다 다르지만 키는 같습니다.
+
+| 쓰는 곳 | 넣는 자리 |
+| --- | --- |
+| DataGridView 컬럼 | 컬럼 `semantics`, 컬럼 함수 `getCellSemantics` 의 반환값 |
+| 편집기 직접 생성 | 생성자 옵션 (`new TweakerNumber({ minValue: 0 })`) |
+| 타입 이름으로 생성 | `factory.generateView(value, { semantics })` |
+| 사용자 타입 | `registerTypeRepresentations({ 이름: { semantics } })` |
 
 ```js
 {
@@ -57,9 +64,9 @@ semantics: {
 | <code>resizableFlag</code> | <code>boolean</code> | <code>false</code> | 문자열 (여러 줄) | 입력 칸 크기 조절 허용 |
 | <code>newLineMode</code> | <code>string</code> | <code>'shiftEnter'</code> | 문자열 (여러 줄) | 줄바꿈 입력 키 |
 | <code>uniqueValue / customValidator / selection</code> | - | 컨트롤 기본값 | 문자열 (확장 편집기) | 확장 편집기 컨트롤에 전달 |
-| <code>onDrop</code> | <code>function</code> | - | 문자열 (한 줄, 여러 줄) | 드롭 처리. 2026 버전부터 |
+| <code>onDrop</code> <Badge type="warning" text="2026" /> | <code>function</code> | - | 문자열 (한 줄, 여러 줄) | 드롭 처리 |
 | <code>showWeekNumbers</code> | <code>boolean</code> | - | 날짜 | 달력에 주차 표시 |
-| <code>hideTodayOrNowButton</code> | <code>boolean</code> | <code>false</code> | 날짜 | 오늘/현재 버튼 숨김. 2026 버전부터 |
+| <code>hideTodayOrNowButton</code> <Badge type="warning" text="2026" /> | <code>boolean</code> | <code>false</code> | 날짜 | 오늘/현재 버튼 숨김 |
 | <code>enableSearchFlag</code> | <code>boolean</code> | <code>true</code> | 콤보 | 목록 검색 |
 | <code>mainElementVisibleFlag</code> | <code>boolean</code> | <code>true</code> | 콤보 | 메인 요소 표시 |
 | <code>expanderIcon</code> | <code>string</code> | <code>'expand-down'</code> | 콤보 | 펼침 아이콘 |
@@ -67,8 +74,8 @@ semantics: {
 | <code>customFormatter</code> | <code>function</code> | - | 숫자 | 표시 문자열 변환 함수. 문자열을 반환하면 그 값으로 표시 |
 | <code>externallyDriven</code> | <code>boolean</code> | - | 숫자 | 값을 숫자로 변환하지 않고 그대로 설정 |
 | <code>bigIcon</code> | <code>boolean</code> | - | 함수 (버튼) | 큰 아이콘 |
-| <code>showLabelFlag / labelPosition</code> | <code>boolean / string</code> | <code>true / 'bottom'</code> | 함수 (버튼) | 라벨 표시 / 위치. 2026 버전부터 |
-| <code>descriptionHeight / orientation</code> | - | - | URL | 설명 영역 높이 / 배치 방향. 2026 버전부터 |
+| <code>showLabelFlag / labelPosition</code> <Badge type="warning" text="2026" /> | <code>boolean / string</code> | <code>true / 'bottom'</code> | 함수 (버튼) | 라벨 표시 / 위치 |
+| <code>descriptionHeight / orientation</code> <Badge type="warning" text="2026" /> | - | - | URL | 설명 영역 높이 / 배치 방향 |
 
 ::: tip 내부 키
 `displayStyle`(불리언), `controlType`(문자열 버튼), `identifier` 는 소스에서 `viewOptions` 로 읽지만 Tweakers 가 편집기 등록 시 직접 채우는 값입니다. 모양 지정은 `semantics.displayStyle` 을 사용합니다.

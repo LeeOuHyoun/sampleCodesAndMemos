@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>01. 편집기 단독 사용</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page h3 { margin: 16px 0 8px; font-size: 14px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .form { display: grid; grid-template-columns: 120px 260px; gap: 8px 12px; align-items: center; font-size: 13px; }
+    .buttons { margin: 12px 0; }
+    .buttons button { margin-right: 6px; }
+    #log { height: 180px; overflow: auto; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>01. 편집기 단독 사용</h2>
+    <p>그리드 없이 편집기를 직접 붙이고 값과 이벤트를 확인합니다. <a href="index.html">목록으로</a></p>
+
+    <h3>직접 생성 (new TweakerX)</h3>
+    <div class="form">
+      <label>품번 (PRT-0000)</label><div id="partNo"></div>
+      <label>품명</label><div id="title"></div>
+      <label>수량</label><div id="qty"></div>
+      <label>사용</label><div id="useFlag"></div>
+      <label>납기</label><div id="dueDate"></div>
+    </div>
+
+    <h3>타입 이름으로 생성 (generateView)</h3>
+    <div class="form">
+      <label>진행률 (percentage)</label><div id="rate"></div>
+      <label>상태 (customEnumMember)</label><div id="status"></div>
+    </div>
+
+    <div class="buttons">
+      <button id="btnRead">값 읽기</button>
+      <button id="btnWrite">코드로 값 넣기</button>
+      <button id="btnReadOnly">읽기 전용 전환</button>
+    </div>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/Tweakers/TweakerString',
+      'DS/Tweakers/TweakerNumber',
+      'DS/Tweakers/TweakerBoolean',
+      'DS/Tweakers/TweakerDate',
+      'DS/Tweakers/TypeRepresentationFactory'
+    ], function (TweakerString, TweakerNumber, TweakerBoolean, TweakerDate, TypeRepresentationFactory) {
+      'use strict';
+
+      var logEl = document.getElementById('log');
+
+      function log(text) {
+        logEl.textContent = new Date().toLocaleTimeString() + '  ' + text + '\n' + logEl.textContent;
+      }
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      /* [1] 직접 생성: 생성자 옵션 = 편집기 공개 속성, inject 는 자기 자신을 반환 */
+      var partNo = new TweakerString({ value: '', placeholder: 'PRT-0001', pattern: 'PRT-[0-9]{4}', requiredFlag: true })
+        .inject(byId('partNo'));
+      var title = new TweakerString({ value: '브라켓' }).inject(byId('title'));
+      var qty = new TweakerNumber({ value: 1, minValue: 0, maxValue: 999, stepValue: 1, decimals: 0 })
+        .inject(byId('qty'));
+      var useFlag = new TweakerBoolean({ value: true, label: '사용함', displayStyle: 'switch' })
+        .inject(byId('useFlag'));
+      var dueDate = new TweakerDate({ value: new Date(), fireOnlyFromUIInteractionFlag: true })
+        .inject(byId('dueDate'));
+
+      /* [2] 이벤트: DOM 이벤트, e.dsModel = 편집기 */
+      [['품번', partNo], ['품명', title], ['수량', qty], ['사용', useFlag], ['납기', dueDate]].forEach(function (pair) {
+        pair[1].addEventListener('change', function (e) {
+          log('change    ' + pair[0] + ' = ' + e.dsModel.value);
+        });
+      });
+      title.addEventListener('liveChange', function (e) {
+        log('liveChange 품명 = ' + e.options.value);
+      });
+      partNo.addEventListener('validStateChange', function (e) {
+        log('validStateChange 품번 validState = ' + e.dsModel.validState);
+      });
+
+      /* [3] 타입 이름으로 생성: onViewCreated 를 생략하면 Promise */
+      var factory = new TypeRepresentationFactory();
+      var rate;
+      var status;
+
+      factory.generateView(40, { typePath: 'percentage' }).then(function (tweaker) {
+        rate = tweaker.inject(byId('rate'));
+        rate.addEventListener('change', function (e) {
+          log('change    진행률 = ' + e.dsModel.value);
+        });
+      });
+
+      factory.generateView('작업중', {
+        typePath: 'customEnumMember',
+        semantics: { possibleValues: ['작업중', '검토중', '승인'] }
+      }).then(function (tweaker) {
+        status = tweaker.inject(byId('status'));
+        status.addEventListener('change', function (e) {
+          log('change    상태 = ' + e.dsModel.value);
+        });
+      });
+
+      /* [4] 값 읽기 / 쓰기: value 속성 하나 */
+      byId('btnRead').addEventListener('click', function () {
+        log('읽기  품번=' + partNo.value + ' (valid ' + partNo.validState + '), 품명=' + title.value +
+          ', 수량=' + qty.value + ', 사용=' + useFlag.value + ', 납기=' + dueDate.value +
+          ', 진행률=' + (rate && rate.value) + ', 상태=' + (status && status.value));
+      });
+
+      byId('btnWrite').addEventListener('click', function () {
+        log('--- 코드로 값 넣기 (납기는 fireOnlyFromUIInteractionFlag 라 change 없음)');
+        qty.value = qty.value + 1;
+        dueDate.value = new Date(Date.now() + 7 * 24 * 3600 * 1000);
+        title.disableEvents();
+        title.value = '브라켓 (수정)';
+        title.enableEvents();
+        log('    품명은 disableEvents 구간에서 바꿔서 change 없음');
+      });
+
+      byId('btnReadOnly').addEventListener('click', function () {
+        var next = !qty.readOnly;
+        [partNo, title, qty, useFlag, dueDate, rate, status].forEach(function (tweaker) {
+          if (tweaker) {
+            tweaker.readOnly = next;
+          }
+        });
+        log('readOnly = ' + next);
+      });
+    });
+  </script>
+</body>
+</html>

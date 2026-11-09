@@ -26,7 +26,7 @@ new DataGridView({
 | <code>text</code> | <code>string</code> | - | 문자열 | 헤더 글자 |
 | <code>dataIndex</code> | <code>string</code> | - | 'tree' &#124; grid 안의 키 | 값을 가져올 키. 'tree' = 행의 label + 트리 펼침 컬럼 |
 | <code>typeRepresentation</code> | <code>string</code> | <code>'string'</code> | [typeRepresentation](/datagridview/api/type-representation) 목록 | 셀 모양/편집기 종류 |
-| <code>semantics</code> | <code>object</code> | - | [semantics](/datagridview/api/semantics) 목록 | 편집기 세부 옵션 (콤보 목록, 최소/최대값 등) |
+| <code>semantics</code> | <code>object</code> | - | [semantics](/tweakers/api/semantics) 목록 | 편집기 세부 옵션 (콤보 목록, 최소/최대값 등) |
 | <code>description</code> | <code>string</code> | <code>''</code> | 문자열 | 헤더 설명(툴팁) |
 | <code>icon</code> | <code>string&#124;object</code> | - | '아이콘명' &#124; { iconName, fontIconFamily } | 헤더 아이콘 |
 | <code>children</code> | <code>array</code> | - | 컬럼 배열 | 컬럼 그룹. { text: '그룹명', dataIndex: '그룹키', children: [컬럼, 컬럼] } 형태로 헤더를 2단으로 묶음 (CATFLCockpitWidget 사용 예) |

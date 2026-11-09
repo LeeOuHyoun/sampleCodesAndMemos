@@ -15,13 +15,16 @@ export default defineConfig({
       {
         text: '모듈',
         items: [
-          { text: 'DataGridView', link: '/datagridview/' }
+          { text: 'DataGridView', link: '/datagridview/' },
+          { text: 'Tweakers', link: '/tweakers/' },
+          { text: 'UWA', link: '/uwa/' }
         ]
       },
       {
         text: 'API 레퍼런스',
         items: [
-          { text: 'DataGridView', link: '/datagridview/api/grid-options' }
+          { text: 'DataGridView', link: '/datagridview/api/grid-options' },
+          { text: 'Tweakers', link: '/tweakers/api/tweaker' }
         ]
       }
     ],
@@ -62,12 +65,68 @@ export default defineConfig({
             { text: '컬럼 옵션', link: '/datagridview/api/column-options' },
             { text: '컬럼 함수', link: '/datagridview/api/column-functions' },
             { text: 'typeRepresentation', link: '/datagridview/api/type-representation' },
-            { text: 'semantics', link: '/datagridview/api/semantics' },
+            { text: 'semantics (Tweakers)', link: '/tweakers/api/semantics' },
             { text: '하위 옵션 객체', link: '/datagridview/api/sub-options' },
             { text: '필터 (filterId)', link: '/datagridview/api/filter' },
             { text: '툴바 (setToolbar)', link: '/datagridview/api/toolbar' },
             { text: '데이터 (TreeDocument)', link: '/datagridview/api/data' },
             { text: '이벤트', link: '/datagridview/api/events' }
+          ]
+        }
+      ],
+      '/tweakers/': [
+        {
+          text: '시작하기',
+          items: [
+            { text: '개요', link: '/tweakers/' }
+          ]
+        },
+        {
+          text: '가이드',
+          items: [
+            { text: '편집기 단독 사용', link: '/tweakers/standalone' },
+            { text: '사용자 타입 등록', link: '/tweakers/custom-type' },
+            { text: 'GeneratedToolbar', link: '/tweakers/generated-toolbar' }
+          ]
+        },
+        {
+          text: 'API 레퍼런스',
+          items: [
+            { text: 'Tweaker', link: '/tweakers/api/tweaker' },
+            { text: 'semantics', link: '/tweakers/api/semantics' },
+            { text: 'TypeRepresentationFactory', link: '/tweakers/api/type-representation-factory' },
+            { text: 'GeneratedToolbar', link: '/tweakers/api/generated-toolbar' },
+            { text: 'typeRepresentation 목록', link: '/datagridview/api/type-representation' }
+          ]
+        }
+      ],
+      '/uwa/': [
+        {
+          text: '시작하기',
+          items: [
+            { text: '개요', link: '/uwa/' }
+          ]
+        },
+        {
+          text: '기반',
+          items: [
+            { text: 'Core 유틸', link: '/uwa/core' },
+            { text: 'DOM (Element, Event)', link: '/uwa/element' }
+          ]
+        },
+        {
+          text: '클래스',
+          items: [
+            { text: '클래스 (UWA/Class)', link: '/uwa/class' },
+            { text: 'Model, Collection, View', link: '/uwa/mvc' }
+          ]
+        },
+        {
+          text: '비동기와 통신',
+          items: [
+            { text: 'Promise', link: '/uwa/promise' },
+            { text: '서버 호출 (WAFData)', link: '/uwa/request' },
+            { text: '위젯 간 통신 (InterCom)', link: '/uwa/intercom' }
           ]
         }
       ]

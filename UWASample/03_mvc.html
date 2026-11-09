@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>03. Model, Collection, View</title>
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .buttons { margin: 8px 0; }
+    .buttons button, .buttons input { margin-right: 6px; }
+    .part-list { border: 1px solid #d1d4d4; width: 520px; }
+    .part-row { display: flex; gap: 8px; align-items: center; padding: 4px 8px; border-bottom: 1px solid #eee; font-size: 13px; }
+    .part-row .title { flex: 1; cursor: pointer; }
+    .part-row.released { background: #eef8ee; }
+    #log { height: 180px; overflow: auto; margin-top: 8px; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>03. Model, Collection, View</h2>
+    <p>데이터(Collection)를 바꾸면 이벤트로 화면(View)이 다시 그려집니다. 서버 호출은 없습니다. <a href="index.html">목록으로</a></p>
+    <div class="buttons">
+      <input id="newTitle" placeholder="품명" />
+      <input id="newQty" type="number" value="1" style="width: 60px" />
+      <button id="btnAdd">추가</button>
+      <button id="btnSortTitle">품명순</button>
+      <button id="btnSortQty">수량순</button>
+      <button id="btnReleaseAll">전체 승인</button>
+    </div>
+    <div id="list"></div>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'UWA/Core',
+      'UWA/Element',
+      'UWA/Class/Model',
+      'UWA/Class/Collection',
+      'UWA/Class/View'
+    ], function (UWA, Element, Model, Collection, View) {
+      'use strict';
+
+      var logEl = document.getElementById('log');
+
+      function log(text) {
+        logEl.textContent = new Date().toLocaleTimeString() + '  ' + text + '\n' + logEl.textContent;
+      }
+
+      /* [1] Model: defaults, validate. 초기화는 init 이 아니라 setup */
+      var Part = Model.extend({
+        defaults: { title: '', state: 'WIP', qty: 0 },
+
+        validate: function (attrs) {
+          if (!attrs.title) {
+            return '품명을 입력하세요';
+          }
+          if (attrs.qty < 0) {
+            return '수량은 0 이상';
+          }
+        }
+      });
+
+      /* [2] Collection: comparator 는 속성 이름 또는 함수 */
+      var Parts = Collection.extend({ model: Part, comparator: 'title' });
+
+      var parts = new Parts([
+        { id: 'PRT-0002', title: '샤프트', qty: 4 },
+        { id: 'PRT-0001', title: '브라켓', qty: 10 },
+        { id: 'PRT-0003', title: '하우징', qty: 1, state: 'RELEASED' }
+      ]);
+
+      parts.addEvent('onChange:state', function (model, value) {
+        log('Collection 이 받은 모델 이벤트 onChange:state  ' + model.id + ' → ' + value);
+      });
+
+      /* [3] 행 View: domEvents + listenTo. destroy 에서 stopListening 직접 호출 */
+      var PartRow = View.extend({
+        tagName: 'div',
+        className: 'part-row',
+
+        domEvents: {
+          'click .title': 'onTitleClick',
+          'click .btn-release': 'onReleaseClick',
+          'click .btn-remove': 'onRemoveClick'
+        },
+
+        setup: function () {
+          this.listenTo(this.model, 'onChange', this.render);
+        },
+
+        render: function () {
+          var released = this.model.get('state') === 'RELEASED';
+          this.container.toggleClassName('released', released);
+          this.container.setContent([
+            { tag: 'span', 'class': 'title', text: this.model.id + '  ' + this.model.get('title') },
+            { tag: 'span', text: '수량 ' + this.model.get('qty') },
+            { tag: 'span', text: this.model.get('state') },
+            { tag: 'button', 'class': 'btn-release', text: released ? '되돌리기' : '승인' },
+            { tag: 'button', 'class': 'btn-remove', text: '삭제' }
+          ]);
+          return this;
+        },
+
+        onTitleClick: function () {
+          log('행 클릭 ' + this.model.id + ' ' + this.model.get('title'));
+        },
+
+        onReleaseClick: function () {
+          this.model.set('state', this.model.get('state') === 'RELEASED' ? 'WIP' : 'RELEASED');
+        },
+
+        onRemoveClick: function () {
+          parts.remove(this.model);
+        },
+
+        destroy: function () {
+          this.stopListening();
+          return this._parent();
+        }
+      });
+
+      /* [4] 목록 View: Collection 이벤트를 듣고 행 View 를 다시 만듦. render 는 직접 호출 */
+      var PartList = View.extend({
+        className: 'part-list',
+
+        setup: function () {
+          this.rows = [];
+          this.listenTo(this.collection, {
+            onAdd: this.render,
+            onRemove: this.render,
+            onSort: this.render,
+            onReset: this.render
+          });
+        },
+
+        render: function () {
+          this.rows.forEach(function (row) { row.destroy(); });
+          this.rows = this.collection.map(function (model) {
+            return new PartRow({ model: model }).render().inject(this.container);
+          }, this);
+          log('PartList.render  ' + this.collection.size() + ' 행');
+          return this;
+        }
+      });
+
+      new PartList({ collection: parts }).render().inject(document.getElementById('list'));
+
+      /* [5] 버튼 */
+      var seq = 4;
+
+      document.getElementById('btnAdd').addEventListener('click', function () {
+        var part = new Part({ id: 'PRT-000' + seq, title: document.getElementById('newTitle').value, qty: Number(document.getElementById('newQty').value) });
+        var error = part.validate(part.toJSON());
+        if (error) {
+          log('추가 안 됨: ' + error);
+          return;
+        }
+        seq += 1;
+        parts.add(part);
+      });
+
+      document.getElementById('btnSortTitle').addEventListener('click', function () {
+        parts.comparator = 'title';
+        parts.sort();
+      });
+
+      document.getElementById('btnSortQty').addEventListener('click', function () {
+        parts.comparator = function (a, b) { return b.get('qty') - a.get('qty'); };
+        parts.sort();
+      });
+
+      document.getElementById('btnReleaseAll').addEventListener('click', function () {
+        parts.forEach(function (model) { model.set('state', 'RELEASED'); });
+      });
+    });
+  </script>
+</body>
+</html>

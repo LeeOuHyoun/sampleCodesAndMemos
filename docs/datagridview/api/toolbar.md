@@ -29,7 +29,7 @@ Tweakers.js 의 GeneratedToolbar
 :::
 
 ::: tip
-버튼 동작 모듈을 만드는 방법은 [툴바](/datagridview/toolbar) 가이드를 보세요.
+버튼 동작 모듈을 만드는 방법은 [툴바](/datagridview/toolbar) 가이드를 보세요. 그리드 없이 툴바만 만들거나 만든 뒤 항목을 바꾸는 방법은 [GeneratedToolbar](/tweakers/generated-toolbar) 에 있습니다.
 :::
 
 | 키 | 위치 | 기본값 | 값 | 설명 |
@@ -46,5 +46,6 @@ Tweakers.js 의 GeneratedToolbar
 | <code>dataElements.label / tooltip / displayLabel</code> | 항목 | - | 문자열 / 문자열 / boolean | 글자 / 툴팁 / 라벨 표시 여부 |
 | <code>dataElements.icon</code> | 항목 | - | <code>{ iconName: 'plus', fontIconFamily: 1 }</code> | 아이콘 (1 = 3DS 폰트) |
 | <code>dataElements.value / possibleValues / placeholder</code> | 항목 | - | - | 입력/콤보 초기값, 목록, 안내 문구 |
-| <code>dataElements.action</code> | 항목 | - | <code>{ module: 'DS/...', func: '...', argument } &#124; function</code> | 버튼 클릭 시 호출. 인자 e.context.executionContext = 그리드 |
+| <code>dataElements.action</code> | 항목 | - | <code>{ module: 'DS/...', func: '...', argument }</code> | 버튼 클릭 시 호출. 인자 e.context.executionContext = 그리드. 함수를 넣으면 동작하지 않음 → 함수는 <code>dataElements.value</code> 에 |
+| <code>dataElements.value</code> (버튼) | 항목 | - | <code>function (e)</code> | 버튼 클릭 시 호출하는 함수. 인자 e.context 는 action 과 같음 |
 | <code>dataElements.visibleFlag / disabled / readOnly</code> | 항목 | <code>true / false / false</code> | <code>boolean</code> | 표시 / 비활성 / 읽기전용 |

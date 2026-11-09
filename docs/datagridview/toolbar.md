@@ -75,7 +75,7 @@ document.getElementById('toolbar').appendChild(toolbar.getContent());
 | `dataElements.action` | 버튼 클릭 시 호출 `{ module, func }` |
 | `onNodeUpdate` | 입력칸, 콤보 값이 바뀔 때 호출 `{ module, func }` |
 
-전체 키는 [툴바 (setToolbar)](/datagridview/api/toolbar) 에 있습니다.
+전체 키는 [툴바 (setToolbar)](/datagridview/api/toolbar) 에 있습니다. 만든 뒤 버튼을 비활성화하거나 값을 바꾸는 방법(`toolbar.updateNodeModel`)은 [GeneratedToolbar](/tweakers/generated-toolbar#항목-바꾸기) 에 있습니다.
 
 ## 동작 모듈 만들기
 

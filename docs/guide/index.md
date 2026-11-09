@@ -32,6 +32,8 @@ ENOVIA(3DEXPERIENCE) 의 webapps 소스는 난독화(minify)되어 있어 공식
 | 모듈 | 샘플 폴더 |
 | --- | --- |
 | DataGridView | [DataGridViewSample](https://github.com/LeeOuHyoun/sampleCodesAndMemos/tree/master/DataGridViewSample) |
+| Tweakers | [TweakersSample](https://github.com/LeeOuHyoun/sampleCodesAndMemos/tree/master/TweakersSample) |
+| UWA | [UWASample](https://github.com/LeeOuHyoun/sampleCodesAndMemos/tree/master/UWASample) |
 
 ::: warning 샘플은 ENOVIA 서버에서만 동작합니다
 샘플은 형제 폴더의 `AmdLoader`, `Core` 등을 상대 경로로 불러옵니다. `<3DSpace>/webapps/` 아래에 폴더째 넣고 서버 주소로 열어야 합니다.

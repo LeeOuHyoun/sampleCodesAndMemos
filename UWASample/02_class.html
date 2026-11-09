@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>02. 클래스와 Core 유틸</title>
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .buttons { margin: 8px 0; }
+    .buttons button { margin-right: 6px; }
+    #log { height: 420px; overflow: auto; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>02. 클래스와 Core 유틸</h2>
+    <p>버튼을 누르면 결과가 아래에 쌓입니다. <a href="index.html">목록으로</a></p>
+    <div class="buttons">
+      <button id="btnClass">Class / _parent / Options</button>
+      <button id="btnEvents">Events</button>
+      <button id="btnCore">merge / extend / clone / is</button>
+    </div>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'UWA/Core',
+      'UWA/Class',
+      'UWA/Class/Options',
+      'UWA/Class/Events'
+    ], function (UWA, Class, Options, Events) {
+      'use strict';
+
+      var logEl = document.getElementById('log');
+
+      function log(text) {
+        logEl.textContent += text + '\n';
+      }
+
+      function json(value) {
+        return JSON.stringify(value);
+      }
+
+      /* [1] Class.extend(mixin..., 정의): init = 생성자 */
+      var PartLoader = Class.extend(Options, Events, {
+        name: 'part-loader',
+        defaultOptions: { pageSize: 50, filter: { state: 'WIP' } },
+
+        init: function (options) {
+          this.setOptions(options);
+          log('  PartLoader.init options = ' + json(this.options));
+        },
+
+        load: function () {
+          log('  PartLoader.load');
+          this.dispatchEvent('onLoad', [['PRT-0001', 'PRT-0002']]);
+        },
+
+        onLoad: function (items) {
+          log('  onLoad 메서드 자동 실행 (이벤트 이름과 같은 메서드) items=' + items.length);
+        }
+      });
+
+      /* [2] 상속: defaultOptions 는 깊게 합쳐짐, _parent = 부모의 같은 이름 메서드 */
+      var ReleasedPartLoader = PartLoader.extend({
+        defaultOptions: { filter: { state: 'RELEASED' } },
+
+        init: function (options) {
+          log('  ReleasedPartLoader.init → _parent');
+          this._parent(options);
+        },
+
+        load: function () {
+          var parentLoad = this._parent;
+          var self = this;
+          log('  ReleasedPartLoader.load → 100ms 뒤 부모 load (_parent 를 변수에 담아 둠)');
+          setTimeout(function () { parentLoad.call(self); }, 100);
+        }
+      });
+
+      document.getElementById('btnClass').addEventListener('click', function () {
+        log('--- new ReleasedPartLoader({ filter: { owner: "me" } })');
+        var loader = new ReleasedPartLoader({ filter: { owner: 'me' } });
+        log('  instanceof PartLoader = ' + (loader instanceof PartLoader) + ', instanceof Events = ' + (loader instanceof Events));
+        log('  getOption("pageSize") = ' + loader.getOption('pageSize'));
+        loader.load();
+      });
+
+      /* [3] Events: 인자 배열이 펼쳐짐, false 를 돌려주면 뒤 리스너 중단, priority */
+      document.getElementById('btnEvents').addEventListener('click', function () {
+        log('--- Events');
+        var loader = new PartLoader();
+        loader.addEvent('onSave', function (id, title) { log('  리스너 A (priority 0, 등록 1번째) ' + id + ' ' + title + ' → false 반환'); return false; });
+        loader.addEvent('onSave', function () { log('  리스너 B (priority 5, 등록 2번째) → 먼저 실행'); }, loader, 5);
+        loader.addEvent('onSave', function () { log('  리스너 C (A 가 false 를 돌려줘서 실행되지 않음)'); });
+        loader.dispatchEvent('onSave', ['PRT-0001', '브라켓']);
+      });
+
+      /* [4] Core 유틸 비교 */
+      document.getElementById('btnCore').addEventListener('click', function () {
+        log('--- Core');
+        log('  merge  ' + json(UWA.merge({ a: 1, b: null, d: 0 }, { a: 2, b: 2, d: 2, g: 2 })) + '   (빈 키만 채움)');
+        log('  extend ' + json(UWA.extend({ o: { x: 1, y: 1 } }, { o: { x: 9 } })) + '   (얕게 덮어씀)');
+        log('  extend deep ' + json(UWA.extend({ o: { x: 1, y: 1 } }, { o: { x: 9 } }, true)));
+        log('  extend(t, a, b) ' + json(UWA.extend({}, { a: 1 }, { b: 2 })) + '   (b 는 합쳐지지 않음)');
+
+        var src = { list: [1, 2], when: new Date(0) };
+        var deep = UWA.clone(src);
+        var shallow = UWA.clone(src, false);
+        log('  clone 깊게: list 같은 배열? ' + (deep.list === src.list) + ', 얕게: ' + (shallow.list === src.list));
+        log('  clone(new Map()) → ' + UWA.typeOf(UWA.clone(new Map([['k', 1]]))) + ' ' + json(UWA.clone(new Map([['k', 1]]))));
+
+        log('  is(0)=' + UWA.is(0) + ', is("")=' + UWA.is('') + ', is(null)=' + UWA.is(null) + ', is(NaN)=' + UWA.is(NaN));
+        log('  is([], "object")=' + UWA.is([], 'object') + ', is([], "array")=' + UWA.is([], 'array') + ', is({}, "plain")=' + UWA.is({}, 'plain'));
+        log('  is(true, "Boolean")=' + UWA.is(true, 'Boolean') + '   (대문자 오타 → 항상 false)');
+        log('  typeOf(NaN)=' + UWA.typeOf(NaN) + ', typeOf(PartLoader)=' + UWA.typeOf(PartLoader));
+      });
+    });
+  </script>
+</body>
+</html>

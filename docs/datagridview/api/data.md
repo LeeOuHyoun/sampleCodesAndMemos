@@ -1,0 +1,52 @@
+---
+title: 데이터 (TreeDocument)
+---
+
+# 데이터 (TreeDocument / TreeNodeModel)
+
+그리드에 표시할 데이터입니다. `TreeDocument` 가 데이터 묶음, `TreeNodeModel` 이 행 하나입니다.
+
+```js
+var treeDocument = new TreeDocument();
+treeDocument.prepareUpdate();
+treeDocument.addRoot(new TreeNodeModel({ label: 'PRT-0001', grid: { title: '브라켓' } }));
+treeDocument.pushUpdate();
+```
+
+::: tip
+서버 저장 후 행 값을 바꾸거나 변경 이력을 관리하는 함수는 [저장 후 화면 반영](/datagridview/save-and-reflect) 에 정리되어 있습니다.
+:::
+
+## new TreeNodeModel({ ... }) — 행
+
+| 키 / 함수 | 대상 | 기본값 | 값 | 설명 |
+| --- | --- | --- | --- | --- |
+| <code>label</code> | <code>TreeNodeModel</code> | - | 문자열 | 트리 컬럼(dataIndex 'tree') 값 |
+| <code>grid</code> | <code>TreeNodeModel</code> | - | { dataIndex: 값, ... } | 나머지 컬럼 값 |
+| <code>icons</code> | <code>TreeNodeModel</code> | - | 아이콘 배열 | 트리 셀 아이콘 |
+| <code>badges</code> | <code>TreeNodeModel</code> | - | 객체 | 아이콘 배지 |
+| <code>children</code> | <code>TreeNodeModel</code> | - | TreeNodeModel 배열 | 하위 행 (트리 구조) |
+
+## new TreeDocument({ ... }) — 데이터 묶음
+
+| 키 / 함수 | 대상 | 기본값 | 값 | 설명 |
+| --- | --- | --- | --- | --- |
+| <code>useAsyncPreExpand</code> | <code>TreeDocument</code> | - | <code>true &#124; false</code> | 비동기 펼치기 |
+| <code>shouldAcceptDrop</code> | <code>TreeDocument</code> | - | <code>function (info) → boolean</code> | 행 드래그앤드롭 허용 판단 |
+| <code>nodeModelClass</code> | <code>TreeDocument</code> | - | 클래스 | 행 클래스 교체 |
+
+## 자주 쓰는 함수
+
+| 키 / 함수 | 대상 | 기본값 | 값 | 설명 |
+| --- | --- | --- | --- | --- |
+| <code>prepareUpdate() / pushUpdate()</code> | <code>TreeDocument</code> | - | - | 여러 변경을 묶어 한 번에 화면 반영 |
+| <code>addRoot(node) / removeRoot(node)</code> | <code>TreeDocument</code> | - | - | 행 추가 / 삭제 |
+| <code>getRoots() / getAllDescendants()</code> | <code>TreeDocument</code> | - | - | 최상위 행 / 전체 행 |
+| <code>getSelectedNodes()</code> | <code>TreeDocument</code> | - | - | 선택된 행 |
+| <code>setFilterModel({...})</code> | <code>TreeDocument</code> | - | [필터](/datagridview/api/filter) | 컬럼 필터 지정 |
+| <code>expandAll() / collapseAll()</code> | <code>TreeDocument</code> | - | - | 트리 전체 펼치기 / 접기 |
+| <code>addChild(node)</code> | <code>TreeNodeModel</code> | - | - | 하위 행 추가 |
+| <code>getAttributeValue(dataIndex)</code> | <code>TreeNodeModel</code> | - | - | 셀 값 읽기 |
+| <code>updateOptions({ grid: {...} })</code> | <code>TreeNodeModel</code> | - | - | 셀 값 바꾸기 (화면 자동 반영) |
+| <code>show() / hide()</code> | <code>TreeNodeModel</code> | - | - | 행 보이기 / 숨기기 |
+| <code>select() / unselect() / isSelected()</code> | <code>TreeNodeModel</code> | - | - | 행 선택 제어 |

@@ -50,6 +50,14 @@ CoreEvents/CoreEvents.js, Selection/Selection.js, DataDragAndDrop/DataDragAndDro
 | `XSO.isInUniqueTransaction()` <Badge type="warning" text="2026" /> | `unique()` 처리 중인지. 새로 추가 |
 | `DataDragAndDrop` | 사실상 변경 없음 |
 
+## 이 섹션의 문서
+
+| 문서 | 내용 |
+| --- | --- |
+| [PubSub (Events, ModelEvents)](/events/pubsub) | 전역 `Events` 와 객체별 `ModelEvents` 의 publish / subscribe |
+| [선택 (CSOManager, HSOManager, PSOManager)](/events/selection) | 창 안에서 공유하는 선택, 강조, 미리 선택 목록 |
+| [끌어 놓기 (DataDragAndDrop, 3DXContent)](/events/drag-and-drop) | 위젯 사이로 객체 넘기기, 3DXContent JSON |
+
 ## 샘플
 
 | 샘플 | 내용 | 관련 문서 |

@@ -28,6 +28,9 @@
 | `DS/i3DXCompassPlatformServices/OpenWith` | "다른 앱으로 열기" 메뉴 | [Compass 서비스](/widget/compass-services#openwith) |
 | `DS/WidgetServices/WidgetServices` | 3DSpace 주소, SecurityContext 보조 함수 | [WidgetServices](/widget/widget-services) |
 | `DS/WidgetServices/securityContextServices/SecurityContextServices` | SecurityContext 목록과 선택 값 | [WidgetServices](/widget/widget-services) · [3DSpace 주소와 SecurityContext](/widget/space-url) |
+| `RunYourApp/RunYourApp.html` | 주소를 넣으면 그 위젯으로 바뀌는 OOTB 위젯 | [Run Your App](/widget/dashboard-register#run-your-app-으로-열기) |
+| `DS/PlatformManagement/Modal/ThirdPartyApps` | Additional App 등록 창 (Platform Management) | [Additional App](/widget/dashboard-register#additional-app-으로-등록) |
+| `DS/PlatformManagement/Model/AppModel`, `Collection/AppsCollection` | 등록한 앱의 저장, 목록 조회 (`app/custom`) | [저장 요청](/widget/dashboard-register#저장-요청) |
 
 ## 서버 호출
 

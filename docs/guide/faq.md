@@ -44,6 +44,9 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | typeRepresentation 을 다시 등록해도 그대로 | 같은 이름은 처음 것이 남음. 등록된 객체를 직접 고침 | [사용자 타입 등록](/tweakers/custom-type#등록은-전역에-한-번) |
 | 위젯 설정 항목이 안 생김 | type 은 7 가지만. 그 밖의 type 은 조용히 무시 | [위젯 설정 type](/widget/preferences#type) |
 | HTML 의 설정 `onchange` 가 안 됨 | 위젯 읽기 코드가 일부 속성만 남김. `addPreference` 로 정의 | [항목 키](/widget/preferences#항목-키) |
+| Additional App 의 Type 을 못 바꿈 | 수정 창에서 Type 은 비활성. 지우고 다시 등록 | [입력 항목](/widget/dashboard-register#입력-항목) |
+| Internal 로 올린 위젯이 js, css 를 못 찾음 | HTML 한 장만 올라감. `webapps/` 모듈을 쓰는 위젯은 External (주소) 로 등록 | [Internal 저장](/widget/dashboard-register#internal-저장) |
+| `widget.mutate` 가 `do not support` 오류 | 프레임 안 `widget` 에는 `mutate` 가 없음. 부모 창의 위젯 인스턴스로 호출 | [Run Your App 동작](/widget/dashboard-register#동작) |
 
 ### 3DSpace 서버 (settings, MQL)
 

@@ -14,7 +14,7 @@ UWA2/js/Widget.js, Environment.js, Environments/Frame.js, Environments/Standalon
 
 | 환경 | 여는 방법 | `widget` 을 만드는 것 | `widget.environment.name` |
 | --- | --- | --- | --- |
-| 3DDashboard | 대시보드에 위젯 주소를 등록 | 대시보드의 위젯 프레임 (iframe, 주소에 `/api/widget/frame` 이 들어간 것으로 보임 <Badge type="danger" text="검증 필요" />) | `'frame'` |
+| 3DDashboard | 대시보드에 위젯 주소를 등록 ([3DDashboard 에 위젯 올리기](/widget/dashboard-register)) | 대시보드의 위젯 프레임 (iframe, 주소에 `/api/widget/frame` 이 들어간 것으로 보임 <Badge type="danger" text="검증 필요" />) | `'frame'` |
 | 단독 실행 | 브라우저로 `<3DSpace>/webapps/내폴더/위젯.html` 직접 열기 | `c/UWA/js/UWA_Standalone_Alone.js` | `'uwa'` |
 
 - 3DDashboard 는 위젯 HTML 을 읽어 제목, 메타, 설정 항목, 본문, 스크립트를 뽑아 프레임 안에서 다시 실행하는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (UWA `Environment.convertSourceToJson` 기준). 이때 주소에 `Standalone` 이 들어간 스크립트와 `standalone.css`, `UWA/assets` CSS 는 **건너뜁니다**. 그래서 단독 실행용 파일을 넣어 두어도 대시보드에서 충돌하지 않습니다. ENOVIA 위젯 HTML 226 개 중 133 개가 `UWA_Standalone_Alone.js` 를, 165 개가 `AmdLoader.js` 를 넣어 둡니다.
@@ -117,6 +117,18 @@ UWA2/js/Widget.js, Environment.js, Environments/Frame.js, Environments/Standalon
 | `PlatformAPI.getUser()` 는 언제나 사용자를 줌 | 대시보드 밖에서는 `undefined` | [PlatformAPI](/widget/platform-api) |
 | `getServiceUrl` 은 실패하면 `onFailure` | 단독 실행에서는 둘 다 안 불리고 끝나지 않을 수 있음 | [Compass 서비스](/widget/compass-services#getserviceurl) |
 | `getGrantedRoles({ onComplete })` | 인자는 콜백 함수 하나 | [Compass 서비스](/widget/compass-services#getgrantedroles) |
+
+## 이 섹션의 문서
+
+| 문서 | 내용 |
+| --- | --- |
+| [widget 객체](/widget/widget-api) | 화면 영역, 제목, 값 읽기 / 쓰기, 이벤트 (`onLoad`, `onRefresh` ...) |
+| [위젯 설정 (preferences)](/widget/preferences) | 설정 항목 정의, type, 값의 형태, 플랫폼이 넣어 주는 값 |
+| [3DDashboard 에 위젯 올리기](/widget/dashboard-register) | 배포 위치와 주소, Run Your App, Additional App 등록 |
+| [PlatformAPI](/widget/platform-api) | 로그인 사용자, 테넌트, 대시보드 설정, 위젯 간 publish / subscribe |
+| [Compass 서비스](/widget/compass-services) | 서비스 주소, 부여된 역할, 앱 정보, 다른 앱으로 열기 |
+| [WidgetServices](/widget/widget-services) | ENOVIA 앱 공용 도우미. 플랫폼 id, 언어, 3DSpace 주소 |
+| [3DSpace 주소와 SecurityContext](/widget/space-url) | 플랫폼 id → 3DSpace 주소 → SecurityContext 를 얻는 순서 |
 
 ## 샘플
 

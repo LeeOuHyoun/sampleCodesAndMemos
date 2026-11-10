@@ -2,13 +2,6 @@
 
 3DSpace 서버는 `/resources/...` 아래에 REST 서비스를 제공합니다. ENOVIA 화면 코드는 대부분 이것을 `WAFData.authenticatedRequest` 로 부릅니다. 이 페이지는 **화면 코드가 실제로 보내는 헤더, 파라미터, 본문, 응답 모양**을 정리합니다. 호출 함수 자체는 [서버 호출 (WAFData)](/uwa/request) 을 봅니다.
 
-| 페이지 | 내용 |
-| --- | --- |
-| 이 페이지 | URL, 헤더, 응답 형식, 쓰기 본문, 오류 |
-| [보안 컨텍스트](/rest-api/security-context) | `SecurityContext` 값 얻기 |
-| [엔드포인트 목록](/rest-api/catalog) | 소스에서 찾은 엔드포인트 표 |
-| [문서 (documents)](/rest-api/documents) | 가장 많이 쓰는 `modeler/documents` 상세 |
-
 ::: info 근거
 Foundation2/Foundation2.js (`applyUpdates`, `__generateUpdateWidget`, `__copyModifiedObject`, `__postprocessServerFailureMessage`), Foundation/Foundation.js `ajaxRequest`, DocumentManagement (`DocumentFoundationAjax`, `IndependentServiceBase`), VCXWebPlatform `runRequest` / `WSInformation`, IssueServices (dslib 호출), CAT3DWebStoreyComponents (dscstr 호출), DELWKOModelServices, DELPPWWebServices `getHeaders`
 :::
@@ -232,3 +225,11 @@ function spaceRequest(spaceUrl, path, options) {
   });
 }
 ```
+
+## 이 섹션의 문서
+
+| 문서 | 내용 |
+| --- | --- |
+| [보안 컨텍스트 (SecurityContext)](/rest-api/security-context) | `SecurityContext` 값 얻기 |
+| [엔드포인트 목록](/rest-api/catalog) | 소스에서 찾은 엔드포인트 표 |
+| [문서 (modeler/documents)](/rest-api/documents) | 가장 많이 쓰는 `modeler/documents` 상세 |

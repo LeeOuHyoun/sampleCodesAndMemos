@@ -1,6 +1,6 @@
 # 검증 대기 목록
 
-본문에 <Badge type="danger" text="검증 필요" /> 배지가 붙은 추정 사양 135 곳을 모은 목록입니다. 실무에 쓰기 전에 서버에서 확인합니다.
+본문에 <Badge type="danger" text="검증 필요" /> 배지가 붙은 추정 사양 147 곳을 모은 목록입니다. 실무에 쓰기 전에 서버에서 확인합니다.
 
 - 각 줄 앞의 링크는 그 문장이 있는 절로 갑니다.
 - 확인했으면 원래 페이지에서 배지를 지우고 문장을 단정형으로 고칩니다. 다르게 동작하면 내용을 고칩니다.
@@ -231,11 +231,26 @@
 
 - [로드될 때 하는 일](/amd/webapps-utils#로드될-때-하는-일) : 3DDashboard 위젯 프레임에서는 AmdLoader 를 프레임이 먼저 읽으므로 webapps 주소도 프레임이 정하는 것으로 보입니다.
 
-## 위젯과 플랫폼 (10)
+## 위젯과 플랫폼 (22)
 
 ### Compass 서비스 (i3DXCompassPlatformServices) (1)
 
 - [OpenWith](/widget/compass-services#openwith) : 열리는 앱은 이 `content` 를 위젯 값 `X3DContentId` (JSON 문자열)로 받는 것으로 보입니다
+
+### 3DDashboard 에 위젯 올리기 (12)
+
+- [배포 위치와 주소](/widget/dashboard-register#배포-위치와-주소) : 반영 : 정적 파일이라 서버를 다시 시작하지 않아도 되는 것으로 보입니다
+- [배포 위치와 주소](/widget/dashboard-register#배포-위치와-주소) : 서버가 여러 대이면 모든 서버의 같은 위치에 넣어야 하는 것으로 보입니다.
+- [Run Your App 으로 열기](/widget/dashboard-register#run-your-app-으로-열기) : Run Your App 이 앱 목록에 보이는지는 부여된 역할에 따라 다른 것으로 보입니다.
+- [동작](/widget/dashboard-register#동작) : 바뀐 뒤에는 새 위젯의 설정 항목(`<widget:preferences>`)이 적용되고, 탭을 다시 열어도 바뀐 위젯으로 남는 것으로 보입니다.
+- [Additional App 으로 등록](/widget/dashboard-register#additional-app-으로-등록) : 등록 버튼이 보이려면 플랫폼 관리자 권한이 있어야 하는 것으로 보입니다.
+- [입력 항목](/widget/dashboard-register#입력-항목) : 위젯은 `Widget` 을 고르는 것으로 보입니다.
+- [입력 항목](/widget/dashboard-register#입력-항목) : 위젯 설정 초기값을 담은 파일 주소인 것으로 보입니다.
+- [입력 항목](/widget/dashboard-register#입력-항목) : Object Type Compatibility 는 그 type 의 객체에서 "다른 앱으로 열기" 를 했을 때 이 앱이 후보로 나오게 하는 값으로 보입니다.
+- [저장 요청](/widget/dashboard-register#저장-요청) : Platform Management 의 다른 요청이 Compass(My Apps) 주소 뒤에 `/resources/AppsMngt/` 를 붙여 쓰므로 전체 주소는 아래와 같은 것으로 보입니다.
+- [저장 요청](/widget/dashboard-register#저장-요청) : 수정은 `id` 를 넣은 같은 본문을 보내는 것으로 보입니다.
+- [Internal 저장](/widget/dashboard-register#internal-저장) : 3DSpace `webapps/` 의 AMD 모듈을 상대 경로로 부르는 위젯은 주소가 달라져 모듈을 찾지 못하므로 External 로 등록하는 편이 안전한 것으로 보입니다.
+- [등록한 뒤](/widget/dashboard-register#등록한-뒤) : 구성원은 Compass 에서 Short Name 으로 앱을 찾아 대시보드 탭에 올리는 것으로 보입니다.
 
 ### 위젯 (2)
 

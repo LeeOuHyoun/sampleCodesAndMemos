@@ -55,7 +55,7 @@ features:
 | 분야 | 내용 | 문서 |
 | --- | --- | --- |
 | AMD 로딩 | 모듈 이름 규칙, `i18n!` · `css!` · `text!` 플러그인 | [개요](/amd/) · [플러그인](/amd/plugins) · [WebappsUtils](/amd/webapps-utils) |
-| 위젯과 플랫폼 | `widget` 객체, 설정, 플랫폼 서비스 | [개요](/widget/) · [widget 객체](/widget/widget-api) · [설정](/widget/preferences) · [PlatformAPI](/widget/platform-api) · [Compass 서비스](/widget/compass-services) · [WidgetServices](/widget/widget-services) · [3DSpace 주소, SecurityContext](/widget/space-url) |
+| 위젯과 플랫폼 | `widget` 객체, 설정, 플랫폼 서비스 | [개요](/widget/) · [widget 객체](/widget/widget-api) · [설정](/widget/preferences) · [대시보드에 올리기](/widget/dashboard-register) · [PlatformAPI](/widget/platform-api) · [Compass 서비스](/widget/compass-services) · [WidgetServices](/widget/widget-services) · [3DSpace 주소, SecurityContext](/widget/space-url) |
 | UWA | 기반 라이브러리 | [개요](/uwa/) · [Core 유틸](/uwa/core) · [DOM](/uwa/element) · [클래스](/uwa/class) · [Model, View](/uwa/mvc) · [Promise](/uwa/promise) · [서버 호출](/uwa/request) · [InterCom](/uwa/intercom) |
 | 화면 컨트롤 | 버튼, 입력칸, 다이얼로그, 알림 | [개요](/controls/) · [WebUX 컨트롤](/controls/webux-controls) · [다이얼로그](/controls/dialog) · [UIKIT](/controls/uikit) · [알림](/controls/notifications) · [API](/controls/api/webux-controls) |
 | 이벤트 | 위젯 간 연동, 선택, 끌어 놓기 | [개요](/events/) · [PubSub](/events/pubsub) · [선택](/events/selection) · [끌어 놓기](/events/drag-and-drop) |
@@ -85,6 +85,7 @@ features:
 | 외부 시스템의 DB 테이블을 읽고 쓰고 싶다 | [외부 DB](/server-java/external-db) |
 | 서버에서 메일을 보내고 싶다 | [메일](/server-java/mail) |
 | 위젯을 처음 만들고 싶다 | [위젯 개요](/widget/) → [AMD 로딩](/amd/) |
+| 만든 위젯을 3DDashboard 에 올리고 싶다 | [3DDashboard 에 위젯 올리기](/widget/dashboard-register) |
 | 위젯 설정 화면(preferences)을 만들고 싶다 | [위젯 설정](/widget/preferences) |
 | 위젯 글자를 다국어로 바꾸고 싶다 | [플러그인 (i18n!)](/amd/plugins) |
 | 위젯에서 3DSpace 데이터를 읽고 쓰고 싶다 | [3DSpace 주소, SecurityContext](/widget/space-url) → [서버 호출](/uwa/request) → [REST API](/rest-api/) |

@@ -144,3 +144,10 @@ require(['DS/MyWidget/PartList'], function (PartList) {
 | 언어는 위젯 `widget.lang` 를 따름 | 로더 설정 `i18n.locale` 또는 브라우저 언어를 따름 | [i18n!](/amd/plugins#언어-정하기) |
 | 파일 안 `define` 이름이 틀리면 오류가 남 | 오류 없이 그 모듈 값이 `undefined` 로 들어옴 | [define / require](#define-require-쓰는-법) |
 | UWA 모듈은 `UWA/js/Core.js` | `UWA2/js/Core.js` | [모듈 이름](#모듈-이름과-파일) |
+
+## 이 섹션의 문서
+
+| 문서 | 내용 |
+| --- | --- |
+| [플러그인 (i18n!, css!, text!)](/amd/plugins) | 다국어, 스타일, 텍스트 파일 읽기. 언어를 찾는 순서 |
+| [WebappsUtils](/amd/webapps-utils) | webapps 폴더 주소, 이미지 / 아이콘 주소 만들기 |

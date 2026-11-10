@@ -158,7 +158,8 @@ const WEBAPPS_SIDEBAR = [
         text: '위젯',
         items: [
           { text: 'widget 객체', link: '/widget/widget-api' },
-          { text: '위젯 설정 (preferences)', link: '/widget/preferences' }
+          { text: '위젯 설정 (preferences)', link: '/widget/preferences' },
+          { text: '3DDashboard 에 올리기', link: '/widget/dashboard-register' }
         ]
       },
       {

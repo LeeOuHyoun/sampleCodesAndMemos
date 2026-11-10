@@ -11,6 +11,9 @@
 | 3DDashboard | 위젯을 올려 쓰는 화면. 위젯은 각자 iframe 에서 돎 | [위젯 개요](/widget/#실행-환경) |
 | 3DPassport | 로그인(SSO) 서버 | [서버 호출](/uwa/request) |
 | 3DCompass | 앱 목록과 서비스 주소를 알려 주는 서비스 | [i3DXCompassServices](/widget/compass-services) |
+| Platform Management | 구성원, 역할, 앱을 관리하는 관리자 화면 | [Additional App 으로 등록](/widget/dashboard-register#additional-app-으로-등록) |
+| Additional App | 관리자가 주소를 넣어 Compass 에 추가한 앱 (위젯, 웹 페이지, PC 프로그램) | [Additional App 으로 등록](/widget/dashboard-register#additional-app-으로-등록) |
+| Run Your App | 주소를 넣으면 그 위젯으로 바뀌는 OOTB 위젯. 개발 중 확인용 | [Run Your App 으로 열기](/widget/dashboard-register#run-your-app-으로-열기) |
 | OOTB | Out Of The Box. 제품이 처음부터 주는 것. "커스텀" 의 반대말 | [OOTB 수정 규칙](/schema/conventions#ootb-수정-규칙) |
 | tenant, 플랫폼 id | 한 서버 묶음을 가리키는 id. 온프레미스는 보통 `OnPremise` | [플랫폼 id](/widget/space-url#플랫폼-id) |
 | webapps | 3DSpace 의 `webapps/` 폴더. 웹 화면 모듈이 폴더 하나씩 들어 있음 | [모듈 경로 색인](/guide/module-index) |

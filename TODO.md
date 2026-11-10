@@ -26,7 +26,7 @@
 
 ## 실무 검증: 추정 사양 확인
 
-문서 본문에 <검증 필요> 배지가 붙은 문장(원본에서 확인하지 못한 추정, 135 곳)입니다. 확인하면 배지를 지우고 문장을 단정형으로 고친 뒤 `npm run docs:verify-list` 로 `docs/guide/verify-list.md` 를 다시 만듭니다. 문장별 목록은 그 페이지에 있습니다. 괄호 안은 배지 수입니다.
+문서 본문에 <검증 필요> 배지가 붙은 문장(원본에서 확인하지 못한 추정, 147 곳)입니다. 확인하면 배지를 지우고 문장을 단정형으로 고친 뒤 `npm run docs:verify-list` 로 `docs/guide/verify-list.md` 를 다시 만듭니다. 문장별 목록은 그 페이지에 있습니다. 괄호 안은 배지 수입니다.
 
 - [ ] server-java (18): `rest-service` 6, `mail` 4, `scheduler` 4, `index` 3, `external-db` 1
 - [ ] deploy (10): `index` 10 (JPO 컴파일 명령, 재시작 필요 여부, jar 위치 등)
@@ -34,7 +34,7 @@
 - [ ] schema (22): `conventions` 7, `mql` 7, `policy` 5, `admin` 2, `index` 1
 - [ ] jpo (19): `args` 5, `domain-object` 4, `i18n-exception` 4, `transaction-context` 3, `mql-util` 2, `index` 1
 - [ ] trigger (11): `generator` 3, `lifecycle` 3, `index` 2, `register` 2, `jpo-args` 1
-- [ ] widget (10): `index` 2, `preferences` 2, `space-url` 2, `widget-api` 2, `compass-services` 1, `platform-api` 1
+- [ ] widget (22): `dashboard-register` 12, `index` 2, `preferences` 2, `space-url` 2, `widget-api` 2, `compass-services` 1, `platform-api` 1
 - [ ] properties (7): `system-settings` 5, `string-resource` 2
 - [ ] events (4): `selection` 2, `drag-and-drop` 1, `index` 1
 - [ ] rest-api (3): `index` 2, `security-context` 1
@@ -46,8 +46,8 @@
 - [x] 찾아보기 보강: 홈 표 누락 보완, API 레퍼런스 메뉴, `guide/module-index.md`, `guide/verify-list.md`, `guide/glossary.md`
 - [x] 서버 반영 절차: `deploy/index.md`
 - [x] 서버 Java: `server-java/` (개요, 커스텀 REST 서비스, 스케줄러, 외부 DB, 메일)
-- [ ] 위젯을 3DDashboard 에 등록하는 방법 (앱 등록, 위젯 주소, 배포 위치)
-- [ ] 주제 개요 페이지의 "이 섹션의 문서" 표 형식 통일
+- [x] 위젯을 3DDashboard 에 등록하는 방법: `widget/dashboard-register.md` (배포 위치, Run Your App, Additional App)
+- [x] 주제 개요 페이지의 "이 섹션의 문서" 표 형식 통일
 - [ ] server-java 남은 분석: Slack 알림, 독립 실행 이관 프로그램 내부
 - [ ] server-java, deploy 샘플 폴더 (ServerJavaSample) 작성
 

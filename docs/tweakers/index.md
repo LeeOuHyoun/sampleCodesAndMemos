@@ -40,6 +40,15 @@ TweakerNumber (displayStyle 'spinBox', semantics { stepValue: 1, decimals: 0 })
 | semantics | 편집기에 넘기는 세부 옵션 (`possibleValues`, `minValue` ...). 전체 키는 [semantics](/tweakers/api/semantics) |
 | 템플릿 | typeRepresentation 이 가리키는 `{ path: 편집기 모듈, options }`. `Tweakers/assets/typeTemplates.json` |
 
+## 이 섹션의 문서
+
+| 문서 | 내용 |
+| --- | --- |
+| [편집기 단독 사용](/tweakers/standalone) | 그리드 없이 편집기 하나를 화면에 놓고 값 주고받기 |
+| [사용자 타입 등록](/tweakers/custom-type) | 콤보 목록, 아이콘 토글을 타입 이름으로 등록 |
+| [GeneratedToolbar](/tweakers/generated-toolbar) | JSON 으로 툴바 만들기, 항목 상태 변경, 값 읽기 |
+| [Tweaker](/tweakers/api/tweaker) · [semantics](/tweakers/api/semantics) · [TypeRepresentationFactory](/tweakers/api/type-representation-factory) · [GeneratedToolbar](/tweakers/api/generated-toolbar) | 레퍼런스 |
+
 ## 샘플
 
 | 샘플 | 내용 | 관련 문서 |

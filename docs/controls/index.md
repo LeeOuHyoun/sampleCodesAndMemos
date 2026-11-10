@@ -113,9 +113,9 @@ webapps 2025 전체에서 모듈 이름이 나오는 횟수입니다. 많이 쓰
 `DS/Controls/TooltipModel` 은 불러올 때마다 콘솔에 `'DS/Controls/TooltipModel' is deprecated, use 'DS/Core/TooltipModel' instead.` 오류를 찍고 `DS/Core/TooltipModel` 을 그대로 돌려줍니다 (2025, 2026 동일). 새 코드는 `DS/Core/TooltipModel` 을 쓰거나, 아예 `tooltipInfos: { shortHelp: '...' }` 처럼 일반 객체를 넘깁니다.
 :::
 
-## 페이지 안내
+## 이 섹션의 문서
 
-| 페이지 | 내용 |
+| 문서 | 내용 |
 | --- | --- |
 | [WebUX 컨트롤](/controls/webux-controls) | 공통 사용법, Button, Toggle, ButtonGroup, LineEditor, Editor, ComboBox, Label, Expander, Popup, ProgressBar, Loader |
 | [다이얼로그](/controls/dialog) | Dialog 열기 / 닫기, 표준 버튼, ImmersiveFrame, Panel |

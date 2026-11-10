@@ -56,7 +56,7 @@ ENOVIA(3DEXPERIENCE) 는 개발 사양서를 제공하지 않고, webapps 소스
 | JPO | [JPOSample](https://github.com/LeeOuHyoun/sampleCodesAndMemos/tree/master/JPOSample) |
 | 트리거 | [TriggerSample](https://github.com/LeeOuHyoun/sampleCodesAndMemos/tree/master/TriggerSample) |
 
-- 서버에서 동작을 확인한 것은 DataGridViewSample 입니다. 그 밖의 샘플은 원본 소스 분석으로 작성했고 아직 서버에서 확인하지 않았습니다. 다르게 동작하면 원본 쪽이 맞습니다.
+- 서버에서 동작을 확인한 것은 DataGridViewSample 의 01 ~ 05 입니다. DataGridViewSample 06 ~ 10 과 그 밖의 샘플은 원본 소스 분석으로 작성했고 아직 서버에서 확인하지 않았습니다. 다르게 동작하면 원본 쪽이 맞습니다.
 - 화면 샘플(`*.html`)은 `<3DSpace>/webapps/` 아래에 폴더째 넣고 서버 주소로 엽니다. 형제 폴더의 `AmdLoader`, `Core` 등을 상대 경로로 불러오기 때문입니다.
 - 서버 샘플(`*.mql`, `*_mxJPO.java`)은 형식 예시입니다. 이름(`XX_` 접두어)을 프로젝트 규칙에 맞게 바꿔서 씁니다.
 

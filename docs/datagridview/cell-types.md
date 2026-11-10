@@ -115,7 +115,7 @@ Tweakers.js 의 TweakerBase.getStringFromValue. 구분자 앞뒤에 항상 공�
 
 ## 행마다 다른 타입이나 목록
 
-컬럼 하나에서 행마다 셀 타입이나 콤보 목록이 달라야 하면 [컬럼 함수](/datagridview/api/column-functions) 의 `getCellTypeRepresentation`, `getCellSemantics` 를 씁니다.
+컬럼 하나에서 행마다 셀 타입이나 콤보 목록이 달라야 하면 컬럼 함수 `getCellTypeRepresentation`, `getCellSemantics` 를 씁니다. 예제는 [컬럼 함수](/datagridview/cell-functions) 가이드, 전체 목록은 [컬럼 함수 레퍼런스](/datagridview/api/column-functions) 에 있습니다.
 
 ```js
 {

@@ -60,7 +60,7 @@ features:
 | 화면 컨트롤 | 버튼, 입력칸, 다이얼로그, 알림 | [개요](/controls/) · [WebUX 컨트롤](/controls/webux-controls) · [다이얼로그](/controls/dialog) · [UIKIT](/controls/uikit) · [알림](/controls/notifications) · [API](/controls/api/webux-controls) |
 | 이벤트 | 위젯 간 연동, 선택, 끌어 놓기 | [개요](/events/) · [PubSub](/events/pubsub) · [선택](/events/selection) · [끌어 놓기](/events/drag-and-drop) |
 | REST API | 3DSpace REST 호출 규칙과 엔드포인트 | [공통 규칙](/rest-api/) · [보안 컨텍스트](/rest-api/security-context) · [엔드포인트 목록](/rest-api/catalog) · [documents](/rest-api/documents) |
-| DataGridView | 트리 / 표 그리드 | [개요](/datagridview/) · [기본 그리드](/datagridview/getting-started) · [셀 타입](/datagridview/cell-types) · [편집](/datagridview/editing) · [저장 후 반영](/datagridview/save-and-reflect) · [행 높이](/datagridview/row-height) · [정렬, 필터](/datagridview/sort-filter) · [툴바](/datagridview/toolbar) · [API](/datagridview/api/grid-options) |
+| DataGridView | 트리 / 표 그리드 | [개요](/datagridview/) · [기본 그리드](/datagridview/getting-started) · [셀 타입](/datagridview/cell-types) · [편집](/datagridview/editing) · [저장 후 반영](/datagridview/save-and-reflect) · [행 높이](/datagridview/row-height) · [정렬, 필터](/datagridview/sort-filter) · [툴바](/datagridview/toolbar) · [트리](/datagridview/tree) · [컬럼 함수](/datagridview/cell-functions) · [우클릭 메뉴](/datagridview/context-menu) · [셀 직접 그리기](/datagridview/custom-cell) · [상태바](/datagridview/status-bar) · [API](/datagridview/api/grid-options) |
 | Tweakers | 셀, 툴바, 폼의 편집기 | [개요](/tweakers/) · [단독 사용](/tweakers/standalone) · [사용자 타입](/tweakers/custom-type) · [GeneratedToolbar](/tweakers/generated-toolbar) · [API](/tweakers/api/tweaker) |
 
 ## 하고 싶은 일로 찾기
@@ -95,6 +95,10 @@ features:
 | 그리드 셀을 편집하고 서버에 저장하고 싶다 | [편집](/datagridview/editing) → [저장 후 화면 반영](/datagridview/save-and-reflect) |
 | 그리드 셀에 콤보, 날짜 같은 편집기를 넣고 싶다 | [셀 타입](/datagridview/cell-types) → [사용자 타입 등록](/tweakers/custom-type) |
 | 그리드에 툴바, 정렬, 필터를 넣고 싶다 | [툴바](/datagridview/toolbar) · [정렬과 필터](/datagridview/sort-filter) |
+| 그리드를 트리로 만들고, 펼칠 때 하위 행을 불러오고 싶다 | [트리 구조](/datagridview/tree) |
+| 그리드 행마다 콤보 목록, 편집 가능 여부, 색을 다르게 하고 싶다 | [컬럼 함수](/datagridview/cell-functions) |
+| 그리드 행에 우클릭 메뉴를 넣고, 선택된 행을 알고 싶다 | [우클릭 메뉴와 선택](/datagridview/context-menu) |
+| 그리드 셀을 직접 그리거나 아래에 행 수를 보여주고 싶다 | [셀 직접 그리기](/datagridview/custom-cell) · [상태바](/datagridview/status-bar) |
 | 확인 다이얼로그, 알림 메시지를 띄우고 싶다 | [다이얼로그](/controls/dialog) · [알림](/controls/notifications) |
 | 위젯끼리 값을 주고받고 싶다 | [PubSub](/events/pubsub) · [PlatformAPI](/widget/platform-api) · [InterCom](/uwa/intercom) |
 | 다른 위젯과 선택을 맞추고 싶다 | [선택 (CSOManager)](/events/selection) |

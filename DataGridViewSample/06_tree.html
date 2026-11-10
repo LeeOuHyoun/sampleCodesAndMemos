@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>06. 트리 구조</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    .page { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .buttons { margin: 0 0 8px; }
+    .buttons button { margin-right: 4px; }
+    #grid { flex: 1; min-height: 320px; border: 1px solid #d1d4d4; }
+    #log { height: 110px; margin: 8px 0 0; padding: 8px; overflow: auto; font-size: 12px; background: #f4f5f6; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>06. 트리 구조 (하위 행, 펼치기, 펼칠 때 불러오기, 행 아이콘)</h2>
+    <p>
+      ASM-0001, ASM-0002 는 하위 행을 처음부터 갖고 있습니다. ASM-0003 은 펼치는 순간 하위 행을 불러옵니다 (0.8초 뒤 도착하는 가짜 서버).
+      <a href="index.html">목록으로</a>
+    </p>
+    <div class="buttons">
+      <button id="btnExpandAll">전체 펼치기</button>
+      <button id="btnCollapseAll">전체 접기</button>
+      <button id="btnAddChild">선택 행에 하위 행 추가</button>
+      <button id="btnRemove">선택 행 삭제</button>
+      <button id="btnDump">트리 구조 보기</button>
+    </div>
+    <div id="grid"></div>
+    <pre id="log"></pre>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      function writeLog(text) {
+        var log = document.getElementById('log');
+        log.textContent = text + '\n' + log.textContent;
+      }
+
+      /*
+       * [행 아이콘]
+       *   icons : 트리 셀 글자 앞에 그리는 아이콘 배열
+       *     { iconName: '이름', fontIconFamily: 1 }  3DS 폰트 아이콘 (1 = 3DS 폰트)
+       *     '이미지 주소'                             타입 아이콘 이미지 (실제 ENOVIA 앱에서 가장 흔한 형태)
+       *   badges: 아이콘 모서리에 겹쳐 그리는 작은 아이콘 { topLeft, topRight, bottomLeft, bottomRight }
+       */
+      // #region icons
+      var ICON_ASSEMBLY = [{ iconName: 'folder', fontIconFamily: 1 }];
+      var ICON_PART = [{ iconName: 'doc', fontIconFamily: 1 }];
+
+      function createPart(label, title, qty) {
+        return new TreeNodeModel({ label: label, icons: ICON_PART, grid: { title: title, qty: qty } });
+      }
+      // #endregion icons
+
+      /*
+       * [1] 트리 데이터
+       *   children 에 TreeNodeModel 배열을 넣으면 하위 행이 된다. 만든 뒤에는 node.addChild(하위행) 로 붙인다.
+       *
+       *   children 값에 따라 펼침 아이콘이 달라진다. (TreeModel.js 의 TreeNodeModel 생성자)
+       *     없음(기본 null)  끝 행. 펼침 아이콘 없음
+       *     [하위행, ...]    하위 행이 있는 행. 펼침 아이콘 있음
+       *     []               "하위 행이 있지만 아직 안 불러온 행". 펼침 아이콘 있음 → 펼칠 때 불러오기에 사용
+       *
+       *   useAsyncPreExpand: true
+       *     행을 펼칠 때 node.preExpandDone() 이 불릴 때까지 기다린다. 기다리는 동안 펼침 아이콘은 "펼치는 중" 상태로 표시된다.
+       */
+      // #region data
+      var treeDocument = new TreeDocument({ useAsyncPreExpand: true });
+      treeDocument.prepareUpdate();
+
+      treeDocument.addRoot(new TreeNodeModel({
+        label: 'ASM-0001',
+        icons: ICON_ASSEMBLY,
+        grid: { title: '구동 어셈블리', qty: 1 },
+        children: [
+          createPart('PRT-0001', '브라켓', 2),
+          createPart('PRT-0002', '샤프트', 1),
+          new TreeNodeModel({
+            label: 'ASM-0011',
+            icons: ICON_ASSEMBLY,
+            grid: { title: '베어링 유닛', qty: 2 },
+            children: [
+              createPart('PRT-0005', '베어링', 2),
+              createPart('PRT-0006', '볼트', 8)
+            ]
+          })
+        ]
+      }));
+
+      var housing = new TreeNodeModel({ label: 'ASM-0002', icons: ICON_ASSEMBLY, grid: { title: '하우징 어셈블리', qty: 1 } });
+      housing.addChild(createPart('PRT-0003', '하우징', 1));
+      housing.addChild(createPart('PRT-0004', '커버', 1));
+      treeDocument.addRoot(housing);
+
+      treeDocument.addRoot(new TreeNodeModel({
+        label: 'ASM-0003',
+        icons: ICON_ASSEMBLY,
+        badges: { bottomRight: 'clock' },
+        grid: { title: '체결 부품 (펼칠 때 불러옴)', qty: 1 },
+        children: []
+      }));
+
+      treeDocument.pushUpdate();
+      // #endregion data
+
+      /*
+       * [2] 펼칠 때 하위 행 불러오기
+       *   treeDocument.onPreExpand(fn) : 행을 펼치기 직전에 호출된다. e.target = 펼치는 행
+       *   하위 행을 붙인 뒤 node.preExpandDone() 을 불러야 펼쳐진다. 부르지 않으면 "펼치는 중" 상태에서 멈춘다.
+       *   이미 하위 행이 있는 행, 불러오기에 실패한 행도 반드시 preExpandDone() 을 부른다.
+       *
+       *   onPreExpand 는 다시 등록하면 이전 콜백을 대체한다. (TreeModel.js TreeDocument.onPreExpand 가 unsubscribeAll 후 subscribe)
+       */
+      // #region lazy
+      function loadChildrenFromServer(parentLabel) {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            resolve([
+              { label: parentLabel + '-A', title: '육각 볼트', qty: 12 },
+              { label: parentLabel + '-B', title: '너트', qty: 12 },
+              { label: parentLabel + '-C', title: '와셔', qty: 24 }
+            ]);
+          }, 800);
+        });
+      }
+
+      treeDocument.onPreExpand(function (e) {
+        var node = e.target;
+        if (node.hasChildren()) {
+          node.preExpandDone();
+          return;
+        }
+        writeLog(node.getLabel() + ' 하위 행 불러오는 중...');
+        loadChildrenFromServer(node.getLabel()).then(function (rows) {
+          treeDocument.prepareUpdate();
+          rows.forEach(function (row) {
+            node.addChild(createPart(row.label, row.title, row.qty));
+          });
+          treeDocument.pushUpdate();
+          node.setBadges({ bottomRight: null });
+          node.preExpandDone();
+          writeLog(node.getLabel() + ' 하위 행 ' + rows.length + '개 추가');
+        }).catch(function () {
+          node.preExpandDone();
+        });
+      });
+      // #endregion lazy
+
+      /*
+       * [3] 그리드
+       *   dataIndex 'tree' 컬럼이 트리 컬럼이다. 들여쓰기, 펼침 아이콘, 행 아이콘이 이 컬럼에 그려진다.
+       *   treeNodeCellOptions 로 트리 컬럼 모양을 바꾼다. (expanderStyle: 'classic' 기본 / 'triangle' / 'none')
+       */
+      // #region grid
+      var grid = new DataGridView({
+        treeDocument: treeDocument,
+        rowSelection: 'single',
+        treeNodeCellOptions: { expanderStyle: 'triangle', depthIncrement: 22 },
+        columns: [
+          { text: '품번', dataIndex: 'tree', width: 260 },
+          { text: '품명', dataIndex: 'title', width: 240 },
+          { text: '수량', dataIndex: 'qty', width: 80, typeRepresentation: 'integer' }
+        ]
+      });
+      grid.inject(document.getElementById('grid'));
+      // #endregion grid
+
+      /*
+       * [4] 펼치기, 접기, 하위 행 추가, 삭제
+       *   전체 : treeDocument.expandAll() / collapseAll()
+       *   한 행 : node.expand() / node.collapse() / node.expandAll()
+       *   추가 : node.addChild(하위행)  끝 행에 붙이면 그 행에 펼침 아이콘이 생긴다.
+       *   삭제 : node.remove()          하위 행까지 같이 없어진다.
+       */
+      // #region actions
+      var newPartCount = 0;
+
+      document.getElementById('btnExpandAll').addEventListener('click', function () {
+        treeDocument.expandAll();
+      });
+      document.getElementById('btnCollapseAll').addEventListener('click', function () {
+        treeDocument.collapseAll();
+      });
+      document.getElementById('btnAddChild').addEventListener('click', function () {
+        var parent = treeDocument.getSelectedNodes()[0];
+        if (!parent) {
+          writeLog('하위 행을 붙일 행을 먼저 선택하세요.');
+          return;
+        }
+        newPartCount++;
+        parent.addChild(createPart('NEW-' + newPartCount, '신규 부품 ' + newPartCount, 1));
+        parent.expand();
+      });
+      document.getElementById('btnRemove').addEventListener('click', function () {
+        var node = treeDocument.getSelectedNodes()[0];
+        if (node) {
+          node.remove();
+        }
+      });
+      // #endregion actions
+
+      /*
+       * [5] 트리 읽기
+       *   treeDocument.getRoots()          최상위 행만
+       *   treeDocument.getAllDescendants() 하위까지 전체 행 (접혀 있어도 포함. 아직 안 불러온 행은 없음)
+       *   node.getNodeDepth() / getParent() / getChildren() / isRoot()
+       */
+      // #region read
+      document.getElementById('btnDump').addEventListener('click', function () {
+        var lines = treeDocument.getAllDescendants().map(function (node) {
+          var parent = node.getParent();
+          return new Array(node.getNodeDepth() + 1).join('    ') + node.getLabel()
+            + '  (부모: ' + (node.isRoot() ? '없음' : parent.getLabel()) + ', 하위 ' + (node.getChildren() || []).length + '개)';
+        });
+        document.getElementById('log').textContent = lines.join('\n');
+      });
+      // #endregion read
+    });
+  </script>
+</body>
+</html>

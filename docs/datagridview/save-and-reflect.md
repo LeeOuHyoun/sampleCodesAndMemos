@@ -4,8 +4,10 @@
 
 아래 예제에서 `saveToServer(...)` 는 이미 갖고 있는 저장 함수이고 Promise 를 돌려준다고 가정합니다.
 
+샘플: [09_save.html](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/DataGridViewSample/09_save.html) (가짜 저장 함수로 셀 단위 저장, 모아서 저장, 저장 실패를 재현)
+
 ::: info 근거
-TreeModel.js 의 TreeNodeModel.updateOptions / setValuesAsReference / acceptChanges / cancelChanges, TreeDocument.setUseChangeTransactionMode, DataGridView.js 의 setNodeModelValue
+TreeModel.js 의 TreeNodeModel.updateOptions / setValuesAsReference / acceptChanges / cancelChanges / removeChild (변경 트랜잭션 모드의 삭제 표시), TreeDocument.setUseChangeTransactionMode, DataGridView.js 의 setNodeModelValue. 호출부: ENOXEngineer, ENOXAlternateSubstitute (setCellValue), PADServices, ENXNav (setUseChangeTransactionMode), ENOCharacteristicsApp (acceptChanges).
 :::
 
 ## 응답 값으로 행 값 바꾸기
@@ -116,7 +118,7 @@ function handleSave() {
 | --- | --- | --- |
 | `setUseChangeTransactionMode(true)` | TreeDocument | 변경 기록 시작 |
 | `hasPendingChanges()` | TreeDocument | 저장 안 된 변경이 있는지 |
-| `getChangeStates()` | TreeNodeModel | 이 행의 변경 상태 (`WUXModelChangeStates.Unchanged` 면 변경 없음) |
+| `getChangeStates()` | TreeNodeModel | 이 행의 변경 상태. 아래 "행의 변경 상태" 참고 |
 | `getReferenceValues()` | TreeNodeModel | 바뀐 키의 원래 값 |
 | `acceptChanges()` | TreeDocument | 지금 값을 확정. "변경됨" 표시를 지우고, 삭제 표시된 행은 실제로 제거 |
 | `cancelChanges()` | TreeDocument | 원래 값으로 되돌리고, 추가했던 행은 제거 |
@@ -125,6 +127,29 @@ function handleSave() {
 
 ::: warning 순서가 중요합니다
 이 모드에서는 `updateOptions` 로 바꾼 값도 "변경됨" 으로 기록됩니다. 서버 응답 값을 먼저 반영한 뒤에 `acceptChanges()` 를 불러야 합니다.
+:::
+
+### 행의 변경 상태
+
+`node.getChangeStates()` 는 전역 `WUXModelChangeStates` 의 비트 값을 돌려줍니다. 한 행이 여러 상태를 같이 가질 수 있으므로(추가한 행을 다시 고친 경우 등) `&` 로 확인합니다.
+
+```js
+var isRemoved = (node.getChangeStates() & WUXModelChangeStates.NodeToBeRemoved) !== 0;
+```
+
+| 값 | 뜻 | `acceptChanges()` | `cancelChanges()` |
+| --- | --- | --- | --- |
+| `Unchanged` | 변경 없음 | - | - |
+| `AttributesChanged` | 셀 값이 바뀜. 원래 값은 `getReferenceValues()` | 지금 값을 확정 | 원래 값으로 되돌림 |
+| `NodeAdded` | 새로 추가한 행 | 행은 남기고 표시만 지움 | 행 제거 |
+| `NodeToBeRemoved` | 삭제 표시된 행 | 행을 실제로 제거 | 삭제 표시 해제 |
+
+::: warning 이 모드에서 node.remove() 는 바로 지우지 않습니다
+변경 트랜잭션 모드가 켜져 있으면 `node.remove()` 는 행에 삭제 표시(`NodeToBeRemoved`)만 하고 화면에 남겨 둡니다. 실제로 없어지는 것은 `acceptChanges()` 때입니다. 서버에 보낼 때 삭제할 행과 수정할 행을 나눠서 모아야 합니다.
+:::
+
+::: warning 모드를 켜는 시점
+처음 데이터를 넣은 **뒤에** `setUseChangeTransactionMode(true)` 를 켭니다. 먼저 켜면 처음 넣는 행이 모두 "추가된 행" 으로 기록됩니다.
 :::
 
 ## 주의: 이벤트 안에서 저장하지 않기

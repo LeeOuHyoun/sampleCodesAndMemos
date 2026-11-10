@@ -5,6 +5,14 @@
 ## 서버에서 확인할 것
 
 - [ ] `npm run docs:dev` 로 미리 보기: 제목 배지("서버 확인", "원본 분석") 때문에 브라우저 탭 제목이 이상해지지 않는지 확인. 이상하면 해당 페이지에 frontmatter `title` 추가
+- [ ] `npm run docs:dev` 로 미리 보기: 샘플 코드 불러오기(`<<< @/../DataGridViewSample/...#범위{js}`)가 제대로 보이는지 확인. 대상은 `datagridview/tree`, `cell-functions`, `context-menu`, `custom-cell`, `status-bar`. 코드 대신 파일 전체나 "not found" 가 보이면 범위 이름이나 경로가 틀린 것
+- [ ] DataGridViewSample 06 ~ 10 을 서버에서 실행 (원본 분석으로만 작성). 확인하면 링크하는 페이지의 배지를 "서버 확인" 으로 변경하고 `DataGridViewSample/index.html`, `datagridview/index.md`, `guide/index.md` 의 "06 ~ 10 은 확인하지 않았습니다" 문장 수정
+  - [ ] `06_tree.html` → `datagridview/tree` : 펼칠 때 불러오기(`useAsyncPreExpand`, `preExpandDone`), 행 아이콘 / 배지 모양, 끝 행에 `addChild` 했을 때 펼침 아이콘
+  - [ ] `07_columnFunctions.html` → `datagridview/cell-functions` : 수량을 편집하면 금액 셀이 다시 계산되는지, 계산 컬럼 정렬, 헤더 셀에서 컬럼 함수가 호출되는지
+  - [ ] `08_contextMenu.html` → `datagridview/context-menu` : 메뉴 항목 형식(`state`, `submenu`), 메뉴 버튼 컬럼이 같은 메뉴를 여는지, `getXSO().onEmpty`
+  - [ ] `09_save.html` → `datagridview/save-and-reflect` : 저장 중 변경 표시, 실패 시 되돌리기, 변경 트랜잭션 모드의 추가 / 삭제 표시
+  - [ ] `10_customCell.html` → `datagridview/custom-cell`, `status-bar` : 스크롤할 때 셀 내용 재사용, 칩 클릭 후 다시 그려지는지, 상태바 자동 갱신과 `updateNodeModel`
+- [ ] 스크린샷 추가 (서버 화면을 직접 찍어야 함): `02_cellTypes.html` 전체 화면 → `datagridview/cell-types` "한눈에 보기" 위, `05_options.html` 에서 `editionPolicy` 별 화면 → `datagridview/editing`. 이미지는 `docs/public/datagridview/` 에 넣고 `![설명](/datagridview/파일.png)` 로 넣음
 - [ ] 배지 기준 검토: 지금은 DataGridViewSample 을 링크하는 7개 페이지만 "서버 확인"
   - [ ] `datagridview/editing` : DataGridViewSample(02, 05)을 링크했지만 배지는 "원본 분석". 편집 동작을 서버에서 확인하면 "서버 확인"으로 변경
   - [ ] 그 밖에 서버에서 확인한 페이지가 있으면 배지 변경
@@ -14,7 +22,7 @@
 
 실무에서 제대로 동작해야 하는 기능입니다. 샘플을 만들고 서버에서 실행해 확인합니다.
 
-- [ ] `datagridview/save-and-reflect` : 그리드 편집 → 저장 → 반영, 실패 시 되돌리기 (updateOptions, 변경 트랜잭션 모드)
+- [ ] `datagridview/save-and-reflect` : 그리드 편집 → 저장 → 반영, 실패 시 되돌리기 (updateOptions, 변경 트랜잭션 모드). 샘플 `DataGridViewSample/09_save.html` 작성함, 서버 확인만 남음
 - [ ] `rest-api/documents` : 3DSpace 문서 조회 / 생성 (modeler/documents)
 - [ ] 위젯 간 통신
   - [ ] `widget/platform-api` : publish / subscribe, 사용자 정보
@@ -48,6 +56,9 @@
 - [x] 서버 Java: `server-java/` (개요, 커스텀 REST 서비스, 스케줄러, 외부 DB, 메일)
 - [x] 위젯을 3DDashboard 에 등록하는 방법: `widget/dashboard-register.md` (배포 위치, Run Your App, Additional App)
 - [x] 주제 개요 페이지의 "이 섹션의 문서" 표 형식 통일
+- [x] DataGridView 보완: 트리, 컬럼 함수, 우클릭 메뉴와 선택, 셀 직접 그리기, 상태바 가이드와 샘플 06 ~ 10, 레퍼런스 표 정리, 사용 파일 수, `npm run docs:coverage`
+- [ ] DataGridView 남은 분석 (`npm run docs:coverage` 로 남는 이름 확인): 행 그룹핑(`groupRows`, `rowGroupingOptions`), 컬럼 그룹(`children`), 드래그앤드롭 콜백 예제, 서버 사이드(`dataSource`), 사용자 뷰(`getCustomViewsManager`)
+- [ ] DataGridView 기존 가이드(기본 그리드, 셀 타입, 툴바, 정렬과 필터)의 예제 코드도 샘플에서 불러오도록 변경. 새 가이드에서 불러오기가 제대로 보이는 것을 확인한 뒤에 진행
 - [ ] server-java 남은 분석: Slack 알림, 독립 실행 이관 프로그램 내부
 - [ ] server-java, deploy 샘플 폴더 (ServerJavaSample) 작성
 

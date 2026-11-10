@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>09. 편집, 저장, 화면 반영</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page h3 { margin: 16px 0 6px; font-size: 14px; border-left: 4px solid #368ec4; padding-left: 8px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .buttons { margin: 0 0 8px; }
+    .buttons button { margin-right: 4px; }
+    .gridBox { height: 210px; border: 1px solid #d1d4d4; }
+    #log { height: 130px; margin: 8px 0 0; padding: 8px; overflow: auto; font-size: 12px; background: #f4f5f6; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>09. 편집, 저장, 화면 반영</h2>
+    <p>
+      서버 대신 0.6초 뒤에 응답하는 가짜 저장 함수를 씁니다. 가짜 서버는 품명 앞뒤 공백을 지우고 수정 시각을 붙여서 돌려줍니다.
+      <label><input type="checkbox" id="chkFail" /> 저장 실패 재현</label>
+      <a href="index.html">목록으로</a>
+    </p>
+
+    <h3>A. 셀을 편집할 때마다 바로 저장 (컬럼 setCellValue)</h3>
+    <p>품명을 더블클릭해서 고치면 바로 저장합니다. 실패하면 원래 값으로 되돌아갑니다.</p>
+    <div id="gridA" class="gridBox"></div>
+
+    <h3>B. 편집을 모아 두었다가 한 번에 저장 (변경 트랜잭션 모드)</h3>
+    <p>품명, 수량을 고치거나 행을 추가, 삭제한 뒤 저장을 누릅니다. 바뀐 셀과 행이 표시되고, 되돌리기를 누르면 처음 상태로 돌아갑니다.</p>
+    <div class="buttons">
+      <button id="btnSave">저장</button>
+      <button id="btnCancel">되돌리기</button>
+      <button id="btnAdd">행 추가</button>
+      <button id="btnRemove">선택 행 삭제</button>
+    </div>
+    <div id="gridB" class="gridBox"></div>
+
+    <pre id="log"></pre>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      function writeLog(text) {
+        var log = document.getElementById('log');
+        log.textContent = new Date().toTimeString().slice(0, 8) + '  ' + text + '\n' + log.textContent;
+      }
+
+      /*
+       * [가짜 서버]
+       *   rows 를 받아 0.6초 뒤에 "서버가 확정한 값" 을 돌려준다. 실제 화면에서는 이 자리에 3DSpace 호출이 들어간다.
+       *   서버는 보낸 값을 그대로 돌려주지 않을 수 있다 (공백 정리, 수정 시각, 새로 만든 행의 id 등).
+       *   그래서 저장이 끝나면 보낸 값이 아니라 응답 값을 행에 다시 넣는다.
+       */
+      // #region server
+      var nextId = 100;
+
+      function saveToServer(rows) {
+        return new Promise(function (resolve, reject) {
+          setTimeout(function () {
+            if (document.getElementById('chkFail').checked) {
+              reject(new Error('서버 오류 (재현)'));
+              return;
+            }
+            resolve(rows.map(function (row) {
+              return {
+                id: row.id || 'ID-' + (nextId++),
+                title: String(row.title || '').trim(),
+                qty: row.qty,
+                modified: new Date().toTimeString().slice(0, 8)
+              };
+            }));
+          }, 600);
+        });
+      }
+      // #endregion server
+
+      function createTreeDocument() {
+        var treeDocument = new TreeDocument();
+        treeDocument.prepareUpdate();
+        [
+          { label: 'PRT-0001', grid: { id: 'ID-1', title: '브라켓', qty: 10, modified: '09:00:00' } },
+          { label: 'PRT-0002', grid: { id: 'ID-2', title: '샤프트', qty: 4,  modified: '09:00:00' } },
+          { label: 'PRT-0003', grid: { id: 'ID-3', title: '하우징', qty: 1,  modified: '09:00:00' } },
+          { label: 'PRT-0004', grid: { id: 'ID-4', title: '커버',   qty: 2,  modified: '09:00:00' } }
+        ].forEach(function (row) {
+          treeDocument.addRoot(new TreeNodeModel(row));
+        });
+        treeDocument.pushUpdate();
+        return treeDocument;
+      }
+
+      /*
+       * [A] 셀을 편집할 때마다 바로 저장
+       *   컬럼에 setCellValue(cellInfos, newValue) 를 넣으면 편집 값을 데이터에 넣는 일을 직접 한다.
+       *     cellInfos.nodeModel : 편집한 행
+       *     cellInfos.cellModel : 바뀌기 전 값
+       *
+       *   1) node.updateOptions 로 화면부터 바꾼다 (응답을 기다리지 않음)
+       *   2) 성공 : 응답 값을 다시 넣고 node.setValuesAsReference() 로 "변경됨" 표시를 지운다
+       *   3) 실패 : 원래 값을 넣고 node.setValuesAsReference()
+       *
+       *   setCellValue 를 쓰면 그리드가 원래 값을 보관하고 그 행을 "변경됨" 으로 표시한다.
+       *   (DataGridView.setNodeModelValue 가 setReferenceValue 를 먼저 부른다)
+       *   showModelChangesFlag: true 면 저장 중인 셀에 변경 표시가 보인다.
+       */
+      // #region immediate
+      var gridA = new DataGridView({
+        treeDocument: createTreeDocument(),
+        showModelChangesFlag: true,
+        columns: [
+          { text: '품번', dataIndex: 'tree', width: 130 },
+          {
+            text: '품명 (편집하면 바로 저장)',
+            dataIndex: 'title',
+            width: 240,
+            editableFlag: true,
+            setCellValue: function (cellInfos, newValue) {
+              var node = cellInfos.nodeModel;
+              var oldValue = cellInfos.cellModel;
+              node.updateOptions({ grid: { title: newValue } });
+              writeLog('[A] ' + node.getLabel() + ' 저장 요청: "' + newValue + '"');
+              saveToServer([{ id: node.options.grid.id, title: newValue, qty: node.options.grid.qty }])
+                .then(function (results) {
+                  node.updateOptions({ grid: { title: results[0].title, modified: results[0].modified } });
+                  node.setValuesAsReference();
+                  writeLog('[A] ' + node.getLabel() + ' 저장 완료: "' + results[0].title + '"');
+                })
+                .catch(function (error) {
+                  node.updateOptions({ grid: { title: oldValue } });
+                  node.setValuesAsReference();
+                  writeLog('[A] ' + node.getLabel() + ' 저장 실패, "' + oldValue + '" 로 되돌림: ' + error.message);
+                });
+            }
+          },
+          { text: '수량', dataIndex: 'qty', width: 80, typeRepresentation: 'integer' },
+          { text: '수정 시각', dataIndex: 'modified', width: 110 }
+        ]
+      });
+      gridA.inject(document.getElementById('gridA'));
+      // #endregion immediate
+
+      /*
+       * [B] 편집을 모아 두었다가 한 번에 저장
+       *   treeDocument.setUseChangeTransactionMode(true) 를 켜면 TreeDocument 가 바뀐 행과 원래 값을 기억한다.
+       *
+       *   행의 변경 상태 : node.getChangeStates()  (전역 WUXModelChangeStates 의 비트 값)
+       *     Unchanged         변경 없음
+       *     AttributesChanged 셀 값이 바뀜      원래 값은 node.getReferenceValues()
+       *     NodeAdded         새로 추가한 행
+       *     NodeToBeRemoved   삭제 표시된 행    이 모드에서 node.remove() 는 바로 지우지 않고 표시만 한다
+       */
+      // #region transaction
+      var treeDocumentB = createTreeDocument();
+      treeDocumentB.setUseChangeTransactionMode(true);
+
+      var gridB = new DataGridView({
+        treeDocument: treeDocumentB,
+        showModelChangesFlag: true,
+        rowSelection: 'single',
+        columns: [
+          { text: '품번', dataIndex: 'tree', width: 130 },
+          { text: '품명', dataIndex: 'title', width: 240, editableFlag: true },
+          { text: '수량', dataIndex: 'qty', width: 80, typeRepresentation: 'integer', editableFlag: true },
+          { text: '수정 시각', dataIndex: 'modified', width: 110 }
+        ]
+      });
+      gridB.inject(document.getElementById('gridB'));
+      // #endregion transaction
+
+      /*
+       * 저장
+       *   1) 바뀐 행만 모은다 (삭제 표시된 행은 따로)
+       *   2) 성공 : 응답 값을 행에 넣은 뒤 treeDocument.acceptChanges()
+       *            acceptChanges 는 지금 값을 확정하고, 변경 표시를 지우고, 삭제 표시된 행을 실제로 없앤다.
+       *            이 모드에서는 updateOptions 로 넣은 응답 값도 "변경됨" 으로 기록되므로 순서를 지킨다. (응답 반영 → acceptChanges)
+       *   3) 실패 : 편집 내용을 그대로 둔다. 다시 저장하거나 되돌리기를 누를 수 있다.
+       */
+      // #region saveAll
+      function hasState(node, state) {
+        return (node.getChangeStates() & state) !== 0;
+      }
+
+      document.getElementById('btnSave').addEventListener('click', function () {
+        if (!treeDocumentB.hasPendingChanges()) {
+          writeLog('[B] 저장할 변경이 없습니다.');
+          return;
+        }
+        var allNodes = treeDocumentB.getAllDescendants();
+        var removedNodes = allNodes.filter(function (node) {
+          return hasState(node, WUXModelChangeStates.NodeToBeRemoved);
+        });
+        var changedNodes = allNodes.filter(function (node) {
+          return node.getChangeStates() !== WUXModelChangeStates.Unchanged && removedNodes.indexOf(node) === -1;
+        });
+        writeLog('[B] 저장 요청: 추가/수정 ' + changedNodes.length + '행, 삭제 ' + removedNodes.length + '행');
+
+        saveToServer(changedNodes.map(function (node) { return node.options.grid; }))
+          .then(function (results) {
+            treeDocumentB.prepareUpdate();
+            results.forEach(function (result, index) {
+              changedNodes[index].updateOptions({ grid: result });
+            });
+            treeDocumentB.pushUpdate();
+            treeDocumentB.acceptChanges();
+            writeLog('[B] 저장 완료');
+          })
+          .catch(function (error) {
+            writeLog('[B] 저장 실패, 편집 내용은 그대로 둠: ' + error.message);
+          });
+      });
+      // #endregion saveAll
+
+      /*
+       * 되돌리기 : treeDocument.cancelChanges()
+       *   바뀐 값은 원래 값으로, 추가한 행은 제거, 삭제 표시는 해제된다.
+       */
+      // #region cancel
+      document.getElementById('btnCancel').addEventListener('click', function () {
+        treeDocumentB.cancelChanges();
+        writeLog('[B] 되돌림');
+      });
+      // #endregion cancel
+
+      var newRowCount = 0;
+
+      document.getElementById('btnAdd').addEventListener('click', function () {
+        newRowCount++;
+        treeDocumentB.addRoot(new TreeNodeModel({ label: 'NEW-' + newRowCount, grid: { title: '신규 부품 ' + newRowCount, qty: 1, modified: '' } }));
+      });
+      document.getElementById('btnRemove').addEventListener('click', function () {
+        var node = treeDocumentB.getSelectedNodes()[0];
+        if (node) {
+          node.remove();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

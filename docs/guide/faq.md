@@ -31,6 +31,7 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | --- | --- | --- |
 | 행 높이(`cellHeight`)가 안 바뀜 | 그리드 최상위가 아니라 `layoutOptions: { ... }` 안에 넣어야 함 | [행 높이](/datagridview/row-height#주의) |
 | 트리 컬럼 필터가 안 생김 | `setFilterModel` 의 키는 `tree` 가 아니라 `label` | [필터](/datagridview/api/filter) |
+| 그리드 컬럼의 `getCellTooltip` 이 안 불림 | 그리드 옵션 `getCellTooltip` 을 넣으면 컬럼 쪽은 무시됨 | [조건부 모양과 툴팁](/datagridview/cell-functions#조건부-모양과-툴팁) |
 | WebUX 컨트롤 옵션이 안 먹음 | `publishedProperties` 에 있는 키만 반영. 대소문자까지 맞아야 함 (`visibleflag` ✕). UIKIT 은 오타도 저장만 됨 | [두 계열의 차이](/controls/#두-계열의-차이) |
 | 속성에 대입해도 그대로 | `readOnly` 속성은 getter 만 있음. `'use strict'` 에서는 `TypeError`. 생성자 옵션으로 넣음 | [속성 읽기와 쓰기](/controls/webux-controls#속성-읽기와-쓰기) |
 | Dialog `className` 이 안 붙음 | Dialog / Window 에 `className` 이 없음. `dlg.getContent().addClassName(...)` | [다이얼로그](/controls/dialog#자주-쓰는-옵션) |
@@ -77,6 +78,8 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 새로고침할 때마다 이벤트, DOM 이 겹침 | `onRefresh` 가 없으면 `onLoad` 가 다시 불림 | [onRefresh](/widget/widget-api#onrefresh) |
 | 그리드 값 변경 알림이 끝없이 반복 | `onNodeModelUpdate` 안에서 저장 후 `updateOptions` 하면 다시 알림. `setCellValue` 방식 사용 | [이벤트 안에서 저장하지 않기](/datagridview/save-and-reflect#주의-이벤트-안에서-저장하지-않기) |
 | 그리드 리스너가 해제되지 않음 | `removeEventListener` 에는 `addEventListener` 의 **반환값**을 넘김 | [등록 / 해제](/datagridview/api/events#등록-해제) |
+| 트리 행이 "펼치는 중" 에서 멈춤 | `useAsyncPreExpand` 일 때 `onPreExpand` 콜백이 모든 경우에 `node.preExpandDone()` 을 불러야 함 | [펼칠 때 하위 행 불러오기](/datagridview/tree#펼칠-때-하위-행-불러오기) |
+| 그리드 `onPreExpand` 콜백이 하나만 동작 | 다시 등록하면 이전 콜백을 대체함 | [펼칠 때 하위 행 불러오기](/datagridview/tree#펼칠-때-하위-행-불러오기) |
 | WAFData 를 감싼 Promise 가 끝나지 않음 | 세션 만료, 라이선스 오류는 `onFailure` 가 안 불림. `onPassportError` 를 꼭 넣음 | [Promise 로 감싸기](/uwa/request#promise-로-감싸기) |
 | `getServiceUrl` 응답이 오지 않음 | 대시보드 밖에서는 `onComplete`, `onFailure` 둘 다 안 불림. 시간 제한과 대체값을 둠 | [서버 주소](/widget/space-url#서버-주소-3dspace) |
 | 콜백에서 `this._parent()` 가 엉뚱하게 동작 | 메서드 실행 중에만 유효. 먼저 변수에 담음 | [상속과 _parent](/uwa/class#상속과-parent) |
@@ -99,6 +102,9 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 3DSpace 주소에 포트가 빠짐 | `get3DSpaceUrl()` 대체값은 포트 없이 `/3DSpace`. Compass 응답이 없었다는 뜻 | [get3DSpaceUrlAsync](/widget/widget-services#get3dspaceurlasync) |
 | 한국어 JSON 이 있는데 영어가 나옴 | `폴더_en.js` 묶음이 있으면 JSON 으로 안 넘어감. 언어는 `widget.lang` 이 아니라 로더 설정 | [언어를 찾는 순서](/amd/plugins#언어를-찾는-순서) |
 | 그리드 행을 rowID 로 다시 찾으니 다른 행 | rowID 는 펼침, 정렬, 필터로 바뀜. `nodeModel` 을 보관 | [cellID 와 rowID](/datagridview/api/grid-methods#먼저-알아-둘-것-cellid-와-rowid) |
+| 그리드 컬럼 함수에서 `nodeModel` 이 undefined | 컬럼 헤더 셀(rowID -1)에도 호출됨. `cellInfos.nodeModel` 을 먼저 확인 | [nodeModel 이 있는지 확인하기](/datagridview/cell-functions#먼저-nodemodel-이-있는지-확인하기) |
+| 직접 그린 그리드 셀에 다른 행의 모양이 섞임 | 꺼낸 셀 내용에 이전 행 값이 남아 있음. 글자, 속성, 스타일을 매번 모두 다시 넣음 | [onCellRequest](/datagridview/custom-cell#oncellrequest) |
+| 그리드에서 `node.remove()` 해도 행이 남음 | 변경 트랜잭션 모드에서는 삭제 표시만 함. `acceptChanges()` 때 제거 | [행의 변경 상태](/datagridview/save-and-reflect#행의-변경-상태) |
 | select 결과가 String 이었다 StringList 였다 함 | 값이 하나면 String, 여럿이면 StringList | [여러 값 select](/jpo/domain-object#여러-값-select) |
 | attribute 값이 계속 비어 있음 | 이름 오타도 예외 없이 빈 값. MQL `print bus ... select ... dump` 로 확인 | [관계](/jpo/domain-object#관계) |
 | 폼 저장에서 이전 값이 `null` | 키는 `"Old value"` (`v` 소문자) | [저장](/jpo/args#저장-update-function) |

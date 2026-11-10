@@ -3,7 +3,7 @@
 행 높이 설정은 모두 `new DataGridView({ ... })` 에 넘기는 설정 객체 안에 넣습니다. 다만 넣는 자리가 세 군데로 나뉩니다. treeDocument(데이터)에는 넣지 않습니다.
 
 ::: info 근거
-DataGridView.js 의 DataGridViewLayout (getDefaultCellHeight / _applyCellHeight / getRowHeightFromCellHeight / getRowHeightFromCellContents)
+DataGridView.js 의 DataGridViewLayout (getDefaultCellHeight / _applyCellHeight / getRowHeightFromCellHeight / getRowHeightFromCellContents). 호출부: ENORouteMgmt, ENXMeetingMgmt (layoutOptions), CompareWidget2, CATFLCockpitWidget, FolderEditor (autoRowHeightFlag), WUXAutoComplete (getRowHeightFunction).
 :::
 
 ## 어디에 넣나

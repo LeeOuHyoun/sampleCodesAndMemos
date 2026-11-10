@@ -6,6 +6,8 @@
 UWA2/js/Widget.js, Environment.js (`onRefresh`, `onEdit`, `onViewRequest`, `registerMenus`), Environments/Frame.js (`sendRemote` 로 대시보드에 보내는 이벤트 목록). 2026 의 Widget.js 는 변수 이름만 다르고 동작은 같음. 사용 횟수는 enovia2025 webapps 의 `widget.xxx(` 문자열 기준 (다른 변수 이름으로 부른 것은 빠짐)
 :::
 
+샘플: [WidgetSample.js](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/WidgetSample/WidgetSample.js) (widget 이벤트, setBody, getValue / setValue)
+
 ## 속성
 
 | 속성 | 설명 | 사용 |

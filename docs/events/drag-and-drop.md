@@ -11,6 +11,8 @@
 DataDragAndDrop/DataDragAndDrop.js, 3DXContentChecker/3DXContentChecker.js (JSON 스키마 1~130행, `check` 1176행). 놓기 처리: ENOChangeActionUX `makeDroppable`, ENOChgServices `checkTenantInforamation` / `filterBasedOnServiceId`, CfgConfigurationRevisionUX `makeDroppable`. 끌기: CfgAuthoringContextUX `makeDraggable`, EditPropWidget (여러 개 끌기), ENORIPE_Relations (`text/searchitems`)
 :::
 
+샘플: [02_drag_drop.html](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/EventsSample/02_drag_drop.html) (3DXContent 끌기 / 놓기, 놓인 객체 정보 조회)
+
 ## DataDragAndDrop API
 
 ```js

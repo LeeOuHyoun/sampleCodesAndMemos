@@ -6,6 +6,8 @@
 jpo 폴더 호출 수: `EnoviaResourceBundle.getProperty(` 3,862, `i18nNow.getI18nString(` 188, `EnoviaResourceBundle.getFrameworkStringResourceProperty(` 121, `printStackTrace()` 1,940, `System.out.println` 1,409, `DebugUtil.debug` 413. 시그니처는 xerinfra.jar `EnoviaResourceBundle`, `i18nNow`, `FrameworkException`, `DebugUtil`, eMatrixServletRMI.jar `MatrixException` 기준
 :::
 
+샘플: [XX_MyPartAction_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/JPOSample/XX_MyPartAction_mxJPO.java) (FrameworkException 과 문자열 리소스 메시지), [MyPartTrigger_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/TriggerSample/MyPartTrigger_mxJPO.java) (트리거 차단 메시지)
+
 ## 다국어
 
 ### 문자열 리소스

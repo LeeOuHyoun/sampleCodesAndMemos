@@ -6,6 +6,8 @@
 `properties/emxSystem.properties` (키 3,431 개), `properties/emxFrameworkCustom.properties`, 앱 설정 파일(`emxComponents.properties` 등). 코드 쪽: `jpo/` 의 `EnoviaResourceBundle.getProperty(context, 키)` 2 인자 호출 643 건, `FrameworkProperties.getProperty`, `MessageUtil.getMessage`, `jpo/emxTriggerManagerBase_mxJPO.java`, `jpo/emxContextUtilBase_mxJPO.java`, `jpo/emxTriggerValidationBase_mxJPO.java`. page 객체: `mql/21.page/*.mql` (8 개), `print page` 를 쓰는 JPO 13 개 (`emxECPartBase`, `ENOConditionalQuestionnaireBase`, `WhereUsedBase` 등)
 :::
 
+샘플: [01_command_menu.mql](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/UIComponentSample/01_command_menu.mql) (Registered Suite 설정)
+
 ## 파일
 
 | 파일 | 내용 |

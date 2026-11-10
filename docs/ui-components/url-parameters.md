@@ -6,6 +6,8 @@ command 의 `href` 는 프레임워크 JSP 에 URL 파라미터로 화면을 지
 각 JSP 의 `emxGetParameter(request, "...")` / `requestMap.get("...")`: `3dspace/common/emxIndentedTable.jsp`, `emxTable.jsp`, `emxForm.jsp`, `emxCreate.jsp`, `emxCreateProcess.jsp`, `emxPortal.jsp`, `emxPortalDisplay.jsp`, `emxTree.jsp`, `emxNavigator.jsp`, `emxFullSearch.jsp`. `emxIndentedTable.jsp` 는 대부분을 `indentedTableBean.init(...)` 에 넘기므로 `framework.jar` 의 `UITableIndented.class` / `UITableCommon.class` 문자열 상수와 `emxToolbarJavaScript.jsp`, `scripts/emxUIFreezePane.js` 로 확인. 사용 횟수: `mql/06.command` ~ `11.portal` 의 `href` 를 node 스크립트로 집계
 :::
 
+샘플: [01_command_menu.mql](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/UIComponentSample/01_command_menu.mql) (command href 의 URL 파라미터)
+
 ## 공통
 
 | 파라미터 | 설명 |

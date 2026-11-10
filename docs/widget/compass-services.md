@@ -6,6 +6,8 @@
 i3DXCompassPlatformServices/i3DXCompassPlatformServices.js (위임 껍데기, `i3DXCompassRegistryClient`, `OpenWith`, `i3DXCompassPlatformAgreement`), i3DXCompass/i3DXCompass.js 의 실제 구현 `DS/i3DXCompass/i3DXCompassServices`, `ServiceApi/GrantedRolesApi`, `ServiceApi/UserServiceApi`. 호출부 집계(`i3DXCompassPlatformServices.xxx(` 형태): `getServiceUrl` 19, `getPlatformServices` 10, `getAppInfo` 7, `getGrantedRoles` 4. `serviceName:` 값은 `"3DSpace"` 123 건, `"3DSwym"` 39, `"3DSearch"` 32, `"3DDashboard"` 21, `"3DCompass"` 19, `"3DDrive"` 17
 :::
 
+샘플: [WidgetSample.js](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/WidgetSample/WidgetSample.js) (getServiceUrl 로 3DSpace 주소 얻기)
+
 ## 동작 방식
 
 이 모듈 자체에는 구현이 거의 없습니다. 호출하면 **최상위 창(top)** 의 `require` 로 Compass 모듈을 불러 그쪽 함수에 넘깁니다.

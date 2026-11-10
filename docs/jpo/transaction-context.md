@@ -6,6 +6,8 @@
 jpo 폴더 호출 수: `context.getLocale(` 1,617, `context.getSession(` 1,340, `context.getUser(` 742, `ContextUtil.pushContext(` 698, `ContextUtil.popContext(` 725, `ContextUtil.startTransaction(` 359, `ContextUtil.commitTransaction(` 369, `ContextUtil.abortTransaction(` 378. 동작은 xerinfra.jar `ContextUtil`, eMatrixServletRMI.jar `matrix.db.Context` class 파일의 바이트코드 기준
 :::
 
+샘플: [XX_MyPartAction_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/JPOSample/XX_MyPartAction_mxJPO.java) (startTransaction / commit / abort, pushContext / popContext)
+
 ## Context 에서 꺼내는 값
 
 | 메서드 | 값 |

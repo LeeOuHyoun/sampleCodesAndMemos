@@ -6,6 +6,8 @@ JPO 메서드는 모두 `(Context context, String[] args)` 를 받습니다. `ar
 JPO 쪽 키 사용 횟수 (jpo 폴더 전체): `programMap.get("objectList")` 1,032, `programMap.get("objectId")` 814, `paramMap.get("objectId")` 805, `programMap.get("requestMap")` 752, `programMap.get("paramMap")` 667, `programMap.get("paramList")` 603, `paramMap.get("New Value")` 276, `programMap.get("columnMap")` 101, `programMap.get("fieldMap")` 69. 프레임워크 쪽: framework.jar `UITableCommon`, `UIFormCommon`, `UITableIndented` 의 문자열 상수, common/emxFormRefresh.jsp, emxFreezePaneGetData.jsp, emxCreateProcess.jsp, emxFormEditProcess.jsp, emxAEFSubmitJPO.jsp
 :::
 
+샘플: [XX_MyPartUI_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/JPOSample/XX_MyPartUI_mxJPO.java) (table 열, 구조 펼치기, range, update 메서드의 인자), [XX_MyPartAction_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/JPOSample/XX_MyPartAction_mxJPO.java) (unpackArgs 로 objectId 등 꺼내기)
+
 ## 공통
 
 ```java

@@ -6,6 +6,8 @@
 `properties/` 폴더 4,677 개 파일 (언어 접미사와 `Native` 를 뗀 기본 이름 431 개, 그중 `StringResource` 165 개), `emxSystem.properties`, `emxFrameworkCustom.properties`, `emxFrameworkStringResource*.properties`, `3dspace/WEB-INF/web.xml`, `3dspace/common/emxReloadCache.jsp`. 코드 쪽: `jpo/` 의 `EnoviaResourceBundle.getProperty` 3,942 건, `i18nNow.getI18nString` 209 건, `FrameworkProperties.getProperty` 148 건, `MessageUtil.getMessage` 155 건
 :::
 
+샘플: [MyPartTrigger_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/TriggerSample/MyPartTrigger_mxJPO.java) (문자열 리소스 키 읽기)
+
 ## 두 종류
 
 | 종류 | 파일 예 | 내용 | 언어별 |

@@ -6,6 +6,8 @@ MQL (Matrix Query Language) 은 3DSpace 의 명령 언어입니다. 스키마 �
 `mql/` 아래 전체 `.mql` 파일의 명령 빈도(`connect bus` 약 3,600, `mod bus` 약 3,500, `add bus` 약 1,300, `add property` 약 1,200, `add attribute` 약 400 ...), `mql/98.migration/*/*.mql`, `mql/97.prod-mql/*/*.mql`, `mql/03.policy/` 설계 메모의 `list` / `print` 문법. JPO 의 `MqlUtil.mqlCommand` 호출 빈도(`print bus` 약 440, `temp query bus` 약 140, `print connection` 약 110, `expand bus` 약 40). 예: `jpo/emxClassificationBase_mxJPO.java`, `jpo/emxCommonInitiateRouteBase_mxJPO.java`, `jpo/com/dassault_systemes/enovia/geographyconfiguration/ui/DocumentBase_mxJPO.java`
 :::
 
+샘플: [01_attribute_type.mql](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/SchemaSample/01_attribute_type.mql) (attribute, type 정의), [02_policy.mql](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/SchemaSample/02_policy.mql) (policy 정의)
+
 ## 기본 규칙
 
 | 규칙 | 설명 |

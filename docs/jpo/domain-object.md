@@ -6,6 +6,8 @@ JPO 에서 객체를 읽고 쓰는 일은 거의 `DomainObject` 와 `DomainRelat
 jpo 폴더 호출 수: `DomainObject.newInstance(` 3,957, `.getInfo(` 3,707, `.getRelatedObjects(` 1,756, `.setAttributeValue(` 1,020, `DomainRelationship.connect(` 562, `DomainObject.findObjects(` 418, `DomainObject.getInfo(` (여러 id) 383, `.getInfoList(` 312. 시그니처는 xerinfra.jar 의 `DomainObject`, `DomainRelationship`, `MapList`, eMatrixServletRMI.jar 의 `StringList` class 파일 기준
 :::
 
+샘플: [XX_MyPartUI_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/JPOSample/XX_MyPartUI_mxJPO.java) (getRelatedObjects, getInfo, setAttributeValue)
+
 ## 클래스 관계
 
 | 클래스 | 패키지 | 상속 | 쓰임 |

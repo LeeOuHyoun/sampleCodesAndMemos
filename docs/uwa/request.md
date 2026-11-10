@@ -12,6 +12,8 @@
 WAFData/WAFData.js, UWA2/js/Data.js. 호출부: ENOCharacteristicsApp RequestUtil, XSRCommonComponents RequestUtil, DELPXPFoundations PXPWAFData, 3DPlayApp
 :::
 
+샘플: [WidgetSample.js](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/WidgetSample/WidgetSample.js) (WAFData.authenticatedRequest 를 Promise 로 감싸기)
+
 ## 기본 호출
 
 ```js

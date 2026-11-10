@@ -6,6 +6,8 @@
 `properties/emxFrameworkStringResource.properties` (55,105 줄), `_en` (53,462 줄), `_ko` (54,492 줄), `_koNative` (52,850 줄), `_kernel`, 프로젝트 앱의 `...StringResource.properties` / `_ko`, `emxSystem.properties` 의 `eServiceSuite*.StringResourceFileId` (189 개), `emxFrameworkCustom.properties`. 코드 쪽: `jpo/` 의 `EnoviaResourceBundle.getProperty` 호출(번들 이름별 건수), `i18nNow.get*I18NString` 호출, `jpo/emxRouteBase_mxJPO.java`, `jpo/emxTriggerValidationBase_mxJPO.java`, `3dspace/common/*.jsp` 의 `emxUtil:localize` / `emxUtil:i18n` 태그, `mql/06.command` ~ `09.webform` 의 `Registered Suite` 설정
 :::
 
+샘플: [MyPartTrigger_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/TriggerSample/MyPartTrigger_mxJPO.java) (emxFrameworkStringResource 키를 로케일로 읽기), [XX_MyPartAction_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/JPOSample/XX_MyPartAction_mxJPO.java) (앱 문자열 리소스 읽기)
+
 ## 파일 규칙
 
 | 파일 | 형식 | 쓰임 |

@@ -11,6 +11,8 @@ enovia2025 webapps 의 `.js` 에서 찾은 3DSpace REST 경로입니다. 공통 
 `grep -o "resources/v1/modeler/[^\"' ]*"` 결과 299 건 (서비스 43 종), 그 밖의 `resources/...` 문자열 집계. 메서드는 경로 앞뒤 10~25 행의 `method:`, `type:`, `.GET(` 등을 집계. 2026 은 enovia2026_webapps 같은 방식
 :::
 
+샘플: [WidgetSample.js](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/WidgetSample/WidgetSample.js) (modeler/pno/person), [02_drag_drop.html](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/EventsSample/02_drag_drop.html) (v2/e6w/service/ObjectInfo)
+
 ## 공통 / 사용자
 
 | 경로 | 횟수 | 메서드 | 설명 | 쓰는 모듈 (예) |

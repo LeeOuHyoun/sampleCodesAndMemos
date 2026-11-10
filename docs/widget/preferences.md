@@ -100,7 +100,7 @@ widget.deleteValue('lastPartId');
 | 3 | 정의의 `defaultValue` |
 | 4 | `undefined` |
 
-- `setValue` 는 정의가 없는 이름도 저장합니다. ENOVIA 코드는 `propWidgetOpen`, `currentView`, `isOpened` 처럼 화면 상태를 정의 없이 저장해 씁니다. 대시보드에서는 프레임이 값을 대시보드로 보내 위젯마다 저장하는 것으로 보입니다.
+- `setValue` 는 정의가 없는 이름도 저장합니다. ENOVIA 코드는 `propWidgetOpen`, `currentView`, `isOpened` 처럼 화면 상태를 정의 없이 저장해 씁니다. 대시보드에서는 프레임이 값을 대시보드로 보내 위젯마다 저장하는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 - 값이 같으면 `setValue` 는 아무것도 하지 않습니다 (`onUpdateValue` 도 안 나감).
 - `setValue(name, null)`, `setValue(name, undefined)`, `deleteValue(name)` 는 저장값을 지웁니다. 그 뒤 `getValue` 는 `defaultValue` 를 돌려줍니다.
 
@@ -178,7 +178,7 @@ var content = JSON.parse(widget.getValue('X3DContentId'));
 | 순서 | 단독 실행 | 3DDashboard |
 | --- | --- | --- |
 | 1 | 머리글 메뉴 → 설정 → `onEdit` | 대시보드 위젯 메뉴의 설정 |
-| 2 | UWA 폼이 `getPreferences()` 로 그려짐 | 대시보드가 `getPreferences()` 결과로 그리는 것으로 보임 |
+| 2 | UWA 폼이 `getPreferences()` 로 그려짐 | 대시보드가 `getPreferences()` 결과로 그리는 것으로 보임 <Badge type="danger" text="검증 필요" /> |
 | 3 | 값이 바뀌면 `onchange` 이벤트 | `onchange` 이벤트 |
 | 4 | 완료 → 값 저장 → `endEdit` → 바뀐 값이 있으면 `onRefresh` | 값이 `onUpdateValue` 로 들어오고 `endEdit` |
 

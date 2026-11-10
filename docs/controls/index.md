@@ -31,7 +31,7 @@ Controls.js (Abstract, Button ...), Windows.js (Window, Dialog), UIKIT.js (Input
 정리하면 아래와 같습니다.
 
 - **새로 만드는 화면은 WebUX 를 씁니다.** DataGridView, Tweakers, Dialog 가 모두 WebUX 컨트롤로 만들어져 있어 모양과 동작(포커스, 터치 모드, 툴팁)이 맞습니다.
-- UIKIT 은 UWA 컨트롤(`UWA/Controls/Abstract`) 위에 만든 예전 계열로 보입니다. 2026 에서도 남아 있지만 바뀐 것은 `rounded` 옵션, `Input/IconButton` 추가 정도입니다. WebUX 쪽은 2026 에서 코드가 ES 클래스로 다시 빌드되었고 속성도 늘었습니다.
+- UIKIT 은 UWA 컨트롤(`UWA/Controls/Abstract`) 위에 만든 예전 계열로 보입니다. <Badge type="danger" text="검증 필요" /> 2026 에서도 남아 있지만 바뀐 것은 `rounded` 옵션, `Input/IconButton` 추가 정도입니다. WebUX 쪽은 2026 에서 코드가 ES 클래스로 다시 빌드되었고 속성도 늘었습니다.
 - UIKIT 의 `Mask` 와 `Alert` 는 한 줄로 끝나서 지금도 많이 쓰입니다 (`Mask` 참조 668). 기존 코드를 고칠 때는 그 화면이 쓰는 계열을 따릅니다.
 
 ::: tip Tweakers 와의 관계

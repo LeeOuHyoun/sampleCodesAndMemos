@@ -17,7 +17,7 @@ command 의 `href` 는 프레임워크 JSP 에 URL 파라미터로 화면을 지
 | `parentOID` | 부모 객체 id |
 | `suiteKey` | suite 이름 (`ProductLine`, `ProgramCentral` ...). label 키를 찾을 문자열 파일을 정함 |
 | `StringResourceFileId`, `SuiteDirectory` / `emxSuiteDirectory` | suite 대신 문자열 파일 / 폴더를 직접 지정 |
-| `header`, `subHeader` | 제목 / 부제목 문자열 리소스 키. `UINavigatorUtil.parseHeader` 가 `objectId` 와 함께 풀어서, 키 값 안의 `$<select식>` 도 바뀌는 것으로 보입니다 |
+| `header`, `subHeader` | 제목 / 부제목 문자열 리소스 키. `UINavigatorUtil.parseHeader` 가 `objectId` 와 함께 풀어서, 키 값 안의 `$<select식>` 도 바뀌는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `toolbar` | 툴바 menu 이름. 쉼표로 여러 개 (`ENCBOMToolBar,ENCBOMCustomToolBar`) |
 | `HelpMarker` | 도움말 페이지 키 |
 | `Export`, `PrinterFriendly` | `false` 면 내보내기 / 인쇄 버튼 숨김 |
@@ -41,9 +41,9 @@ command 의 `href` 는 프레임워크 JSP 에 URL 파라미터로 화면을 지
 | `relationship`, `direction` | 심볼릭 관계, `from` / `to` | JPO 없이 관계로 펼침 | 1 |
 | `expandLevel`, `expandByDefault` | `1`, `All` / `true` | 처음 펼칠 단계 | 1 |
 | `expandLevelFilter`, `expandLevelFilterMenu` | `true` / menu 이름 | 펼침 단계 고르기 칸 | 4 / 2 |
-| `type` | 심볼릭 타입 | 행 추가 / 필터에서 쓰는 타입으로 보입니다 | 18 |
-| `objectBased` | `false` | 행이 객체가 아닌 데이터일 때 쓰는 것으로 보입니다 | 1 |
-| `connectionProgram` | <code>JPO:method</code> | 행을 끼워 넣을 때 연결을 처리하는 것으로 보입니다 | - |
+| `type` | 심볼릭 타입 | 행 추가 / 필터에서 쓰는 타입으로 보입니다 <Badge type="danger" text="검증 필요" /> | 18 |
+| `objectBased` | `false` | 행이 객체가 아닌 데이터일 때 쓰는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> | 1 |
+| `connectionProgram` | <code>JPO:method</code> | 행을 끼워 넣을 때 연결을 처리하는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> | - |
 
 ### 모양
 
@@ -52,7 +52,7 @@ command 의 `href` 는 프레임워크 JSP 에 URL 파라미터로 화면을 지
 | `selection` | `multiple`, `single`, `none` | 행 체크박스 | 45 |
 | `sortColumnName`, `sortDirection` | 열 `name`, `ascending` / `descending` | 처음 정렬 | 20 / 16 |
 | `freezePane` | 열 이름 (쉼표로 여러 개) | 왼쪽 고정 열 | 19 |
-| `pageSize` | 숫자 | 한 번에 그릴 행 수로 보입니다 | 5 |
+| `pageSize` | 숫자 | 한 번에 그릴 행 수로 보입니다 <Badge type="danger" text="검증 필요" /> | 5 |
 | `hideHeader`, `hideToolbar` | `true` | 제목줄 / 툴바 숨김 | 5 / 1 |
 | `showPageHeader` | `true` / `false` | 페이지 머리글 | 3 |
 | `cellwrap` | `true` | 칸 글자 줄바꿈 | 7 |
@@ -70,13 +70,13 @@ command 의 `href` 는 프레임워크 JSP 에 URL 파라미터로 화면을 지
 | `editLink` | `true` / `false` | 툴바의 편집 버튼 | 12 |
 | `mode` | `edit` / `view` | 처음부터 편집 모드 | - |
 | `massUpdate` | `false` | 여러 행 한꺼번에 고치기 끄기 | 4 |
-| `insertNewRow` | `false` | 새 행 추가 끄기로 보입니다 | 4 |
+| `insertNewRow` | `false` | 새 행 추가 끄기로 보입니다 <Badge type="danger" text="검증 필요" /> | 4 |
 | `editRootNode` | `false` | 구조의 맨 위 행 편집 금지 | 1 |
 | `applyURL` | URL / `javascript:함수()` | 편집 적용 버튼이 부를 곳 | 4 |
 | `preProcessJPO`, `preProcessURL` | <code>JPO:method</code>, URL | 편집 모드 들어가기 전 | - |
 | `postProcessJPO`, `postProcessURL` | <code>JPO:method</code>, URL | 편집 저장 뒤 | - |
 | `cancelProcessJPO`, `cancelProcessURL` | <code>JPO:method</code>, URL | 편집 취소 시 | - |
-| `editRelationship`, `resequenceRelationship` | 심볼릭 관계 | 행 추가 / 순서 바꾸기에 쓸 관계로 보입니다 | - |
+| `editRelationship`, `resequenceRelationship` | 심볼릭 관계 | 행 추가 / 순서 바꾸기에 쓸 관계로 보입니다 <Badge type="danger" text="검증 필요" /> | - |
 
 ## emxTable.jsp
 

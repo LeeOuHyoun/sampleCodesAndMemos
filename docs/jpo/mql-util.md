@@ -17,7 +17,7 @@ MqlUtil.mqlCommand(context, "modify bus $1 owner $2", objectId, newOwner);
 ```
 
 - 명령 안의 `$1`, `$2` ... 를 뒤의 인자로 채웁니다. 값에 공백이나 따옴표가 있어도 안전합니다.
-- 결과는 `String` 입니다. 끝의 줄바꿈은 잘라서 돌려주는 것으로 보입니다.
+- 결과는 `String` 입니다. 끝의 줄바꿈은 잘라서 돌려주는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 - 명령이 실패하면 MQL 오류 문구를 담은 `FrameworkException` 을 던집니다.
 
 ::: warning 문자열을 이어 붙이지 않습니다
@@ -121,7 +121,7 @@ try {
 ```
 
 ::: warning 꼭 finally 에서 다시 켭니다
-`trigger off` 는 같은 context (세션) 의 이후 명령 전체에 적용되는 것으로 보입니다. 다시 켜지 않으면 같은 요청 안에서 다른 객체의 트리거 (검사, 알림) 도 건너뜁니다. OOTB 도 `try { trigger off } finally { trigger on }` 형태로 씁니다.
+`trigger off` 는 같은 context (세션) 의 이후 명령 전체에 적용되는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 다시 켜지 않으면 같은 요청 안에서 다른 객체의 트리거 (검사, 알림) 도 건너뜁니다. OOTB 도 `try { trigger off } finally { trigger on }` 형태로 씁니다.
 :::
 
 ## 환경 변수 (RPE)

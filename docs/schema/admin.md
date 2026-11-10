@@ -37,7 +37,7 @@ add property attribute_MyColor on program eServiceSchemaVariableMapping.tcl to a
 | `integer` | 정수 | `0` | |
 | `date` | 날짜 | `''` | 값 형식은 서버 설정을 따름. 예: `'12/31/9999'` |
 
-`type String` 처럼 대문자로 쓴 파일도 있습니다. 키워드는 대소문자를 가리지 않는 것으로 보입니다.
+`type String` 처럼 대문자로 쓴 파일도 있습니다. 키워드는 대소문자를 가리지 않는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ### 절
 
@@ -106,7 +106,7 @@ mod type 'MyPart' add trigger Delete Check emxTriggerManager input 'MyTypeDelete
 :::
 
 ::: warning remove attribute
-`mod type ... remove attribute` 를 하면 그 type 의 기존 객체에 있던 값도 사라지는 것으로 보입니다. 운영 데이터가 있는 type 에서는 값을 먼저 옮겨 두고 실행합니다.
+`mod type ... remove attribute` 를 하면 그 type 의 기존 객체에 있던 값도 사라지는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 운영 데이터가 있는 type 에서는 값을 먼저 옮겨 두고 실행합니다.
 :::
 
 ### 상속 확인

@@ -33,7 +33,7 @@ promote bus 'eService Trigger Program Parameters' 'TypeMyPartDeleteCheck' 'check
 | `eService Method Name` | JPO 메서드. 비우면 `mxMain` |
 | `eService Program Argument 1` ~ `15` | 메서드의 `args[0]` ~ `args[14]`. `${OBJECTID}` 같은 macro 나 고정 문자열. [치환 규칙](/trigger/jpo-args#macro-치환) |
 | `eService Constructor Arguments` | JPO 생성자에 넘길 값. 공백으로 나누고 macro 도 치환함 |
-| `eService Sequence Number` | 실행 순서로 쓰이는 것으로 보입니다. 프로젝트는 `0`, `1`, `3`, `100` 등 |
+| `eService Sequence Number` | 실행 순서로 쓰이는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 프로젝트는 `0`, `1`, `3`, `100` 등 |
 | `eService Target States` | Promote / Demote 때 **다음 state** 가 이 목록에 있을 때만 실행. state 심볼릭 이름, 쉼표 구분 |
 | `eService Error Type` | `Error` / `Warning`. 아래 경고 참고 |
 | `eService Run In Background` | `true` 면 Job 으로 따로 실행하고 결과를 보지 않음 |
@@ -96,7 +96,7 @@ mod policy 'MyPartPolicy' state 'In Work'
 - policy 트리거는 떠나는 state 에 붙입니다. [라이프사이클](/trigger/lifecycle)
 
 ::: warning 이미 트리거가 있는 이벤트
-같은 이벤트, 같은 종류(예: `In Work` 의 Promote Check)에는 `emxTriggerManager(...)` 가 하나만 붙고, 그 안에 이름 목록이 들어갑니다. OOTB policy 에 내 트리거를 더할 때는 먼저 `print` 로 기존 목록을 보고 **기존 이름까지 함께** `input` 에 적습니다. 내 이름만 적으면 OOTB 트리거가 빠지는 것으로 보입니다.
+같은 이벤트, 같은 종류(예: `In Work` 의 Promote Check)에는 `emxTriggerManager(...)` 가 하나만 붙고, 그 안에 이름 목록이 들어갑니다. OOTB policy 에 내 트리거를 더할 때는 먼저 `print` 로 기존 목록을 보고 **기존 이름까지 함께** `input` 에 적습니다. 내 이름만 적으면 OOTB 트리거가 빠지는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ```text
 print policy 'Product' select state[Review].trigger dump;

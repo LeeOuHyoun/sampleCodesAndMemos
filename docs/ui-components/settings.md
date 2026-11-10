@@ -20,7 +20,7 @@
 | `PopUp Size` | 1 | `Popup Size` |
 | `Range program` | 1 | `Range Program` |
 | `selection`, `Selection` (command) | 14 | command 는 `Row Select`. `selection` 은 URL 파라미터 |
-| `Input Type1`, `On Change Handler1`, `OnFocus Handler1` | 각 1 | 이름을 바꿔 임시로 끈 것으로 보입니다 |
+| `Input Type1`, `On Change Handler1`, `OnFocus Handler1` | 각 1 | 이름을 바꿔 임시로 끈 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `Single Click`, `Type Ahead Validation`, `Align` | 2, 17, 2 | OOTB 코드에서 읽는 곳을 찾지 못함 |
 
 값은 키마다 다릅니다. `Field Type` 처럼 소문자로 바꿔 비교하는 곳도 있지만(`emxCreateBody.xsl`), `Row Select` 의 `single` 처럼 정확히 비교하는 곳도 있습니다. 값도 이 페이지의 표기대로 씁니다.
@@ -87,14 +87,14 @@ suite 이름 `X` 는 `emxSystem.properties` 의 `eServiceSuiteX.*` 묶음을 가
 | `Row Select` | `single`, `multiple`, `none` | 보내기 전 선택 개수 검사 | 68 | `UIToolbar`, `emxUICore.js` |
 | `Confirm Message` | 문자열 키 | 확인 창. `${TABLE_SELECTED_COUNT}` 치환 | 54 | `UIToolbar`, `emxUICore.js` |
 | `Help Marker` | 도움말 키 | 도움말 | 1 | `UIToolbar` |
-| `Mode` | `view`, `edit` | 구조 브라우저의 보기 / 편집 중 어느 쪽 툴바에 보일지로 보입니다 | 8 | `UIToolbar` |
+| `Mode` | `view`, `edit` | 구조 브라우저의 보기 / 편집 중 어느 쪽 툴바에 보일지로 보입니다 <Badge type="danger" text="검증 필요" /> | 8 | `UIToolbar` |
 | `Input Type` | `textbox`, `combobox`, `checkbox`, `submit` | 툴바 안에 입력 칸을 둠 (버튼 대신) | 5 | `UIToolbar` |
 | `Range Program` / `Range Function` | JPO | 툴바 combobox 선택지 | 5 / 5 | `UIToolbar` |
-| `Range Values`, `Range Display Values` | 목록 | 툴바 combobox 선택지를 직접 적는 것으로 보입니다 | - | `UIToolbar` |
+| `Range Values`, `Range Display Values` | 목록 | 툴바 combobox 선택지를 직접 적는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> | - | `UIToolbar` |
 | `Show Clear Button`, `Allow Manual Edit`, `Maximum Length` | `true` / 숫자 | 툴바 입력 칸 옵션 | - | `UIToolbar` |
 | `Submit Program` / `Submit Function` | JPO | 툴바 입력 값을 JPO 로 보냄 (`emxAEFSubmitJPO.jsp`) | - | `UIToolbar`, `emxUIToolbar.js` |
 | `Dynamic Label Program` / `Function` | JPO | label 을 JPO 로 | 1 / 1 | `UIToolbar` |
-| `Pull Right` | `true` | 하위 메뉴를 오른쪽으로 펼치는 것으로 보입니다 | - | `UIToolbar` |
+| `Pull Right` | `true` | 하위 메뉴를 오른쪽으로 펼치는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> | - | `UIToolbar` |
 | `table` | table 이름 | `tableMenu` 안 command 일 때 그 보기의 table | 1 | `UIToolbar`, `UITable*` |
 | `Label Program` / `Function`, `Structure Program` / `Function` | JPO | 트리 노드 글자 / 구조 트리 자식 | 1 / 1 | `UITreeUtil` |
 
@@ -107,10 +107,10 @@ suite 이름 `X` 는 `emxSystem.properties` 의 `eServiceSuiteX.*` 묶음을 가
 | `Image` | 이미지 경로 | 드롭다운 버튼 아이콘 (`iconActionActions.png` 가 흔함) | 20 | `UIToolbar`, `UIMenu` |
 | `Show Type Icon` | `true` | 트리 위 타입 아이콘 | 4 | `UIComponent` |
 | `Default Category Program` / `Function` | JPO | 처음 열 카테고리 | 1 / 1 | `UITreeUtil` |
-| `Tree Scope ID` | 파라미터 이름 | 트리 노드에 붙일 범위 id 로 보입니다 | 1 | `UITreeUtil` |
+| `Tree Scope ID` | 파라미터 이름 | 트리 노드에 붙일 범위 id 로 보입니다 <Badge type="danger" text="검증 필요" /> | 1 | `UITreeUtil` |
 | `Structure Menu` | menu 이름 | 왼쪽 구조 트리 | - | `UITreeUtil` |
 | `Dynamic Command Program` / `Function` | JPO | command 목록을 실행 시점에 만듦 | - | `UIToolbar`, `UIPortal` |
-| `ImageDrop Relationship` | 관계 이름 | 트리에 이미지를 끌어 놓을 때 쓸 관계로 보입니다 | 1 | `emxTree.jsp` |
+| `ImageDrop Relationship` | 관계 이름 | 트리에 이미지를 끌어 놓을 때 쓸 관계로 보입니다 <Badge type="danger" text="검증 필요" /> | 1 | `emxTree.jsp` |
 
 ## table column
 
@@ -154,7 +154,7 @@ suite 이름 `X` 는 `emxSystem.properties` 의 `eServiceSuiteX.*` 묶음을 가
 | `Draggable` | `true` / `false` | 끌어 놓기 | 5 |
 | `Image Size` | 이미지 format 이름 | `Image` 열 크기 | 2 |
 | `Calculate Sum` | `true` | 합계 줄 (`calculations=true` 와 함께) | 1 |
-| `Group By` | `true` | 행 묶기 기준 열로 보입니다 | 1 |
+| `Group By` | `true` | 행 묶기 기준 열로 보입니다 <Badge type="danger" text="검증 필요" /> | 1 |
 
 ### 편집
 
@@ -207,15 +207,15 @@ suite 이름 `X` 는 `emxSystem.properties` 의 `eServiceSuiteX.*` 묶음을 가
 | `Reload Program` / `Reload Function` | JPO | 다른 필드가 바뀌면 다시 받기 | 29 / 29 |
 | `OnChange Handler` | JS 함수 (`;` 구분) | 값이 바뀐 뒤. 있으면 `On Change Handler` 보다 먼저 | 23 |
 | `On Change Handler` | JS 함수 (`:` 구분) | 위의 예전 이름 | 15 |
-| `Type Ahead Mapping` | `NAME`, `LABEL` | 자동 완성 결과에서 칸에 넣을 값으로 보입니다 | 20 |
+| `Type Ahead Mapping` | `NAME`, `LABEL` | 자동 완성 결과에서 칸에 넣을 값으로 보입니다 <Badge type="danger" text="검증 필요" /> | 20 |
 | `Lookup Input Type` | `textbox` | 검색 선택 칸 | 17 |
 | `Validate` | JS 함수 | 값 확인 | 12 |
 | `Calendar Program` / `Calendar Function` | JPO | 달력 휴일 | 11 / 11 |
-| `Validate Type` | `Basic` | 기본 금지 문자 검사로 보입니다 | 9 |
+| `Validate Type` | `Basic` | 기본 금지 문자 검사로 보입니다 <Badge type="danger" text="검증 필요" /> | 9 |
 | `Allow Manual Edit` | `false` | 직접 입력 금지 | 6 |
 | `Field Size` | 숫자 | 칸 너비 | 4 |
 | `readonly` | `true` | 읽기 전용 | 4 |
-| `Type Ahead Validate` | `true` | 자동 완성 결과 값만 허용하는 것으로 보입니다 | 3 |
+| `Type Ahead Validate` | `true` | 자동 완성 결과 값만 허용하는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> | 3 |
 | `Edit Access Program` / `Edit Access Function` | JPO | 편집 가능 여부 | 1 / 1 |
 | `Remove Range Blank` | `true` | 빈 선택지 제거 | 1 |
 

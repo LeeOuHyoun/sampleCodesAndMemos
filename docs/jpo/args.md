@@ -120,8 +120,8 @@ return children;
 ```
 
 - `getRelatedObjects` 의 단계 `0` 이 "끝까지" 입니다.
-- 여러 단계를 한 번에 돌려줄 때 OOTB 는 마지막에 `expandMultiLevelsJPO = "true"` 만 든 Map 을 붙입니다. JPO 가 단계를 직접 처리했다는 표시로 보입니다. 목록 개수를 셀 때는 이 Map 을 빼야 합니다 (ENOQuestionUIBase 가 그렇게 함).
-- href 에 `expandProgram=` 을 따로 주면 루트 목록은 `program`, 펼치기는 `expandProgram` 이 맡는 것으로 보입니다.
+- 여러 단계를 한 번에 돌려줄 때 OOTB 는 마지막에 `expandMultiLevelsJPO = "true"` 만 든 Map 을 붙입니다. JPO 가 단계를 직접 처리했다는 표시로 보입니다. <Badge type="danger" text="검증 필요" /> 목록 개수를 셀 때는 이 Map 을 빼야 합니다 (ENOQuestionUIBase 가 그렇게 함).
+- href 에 `expandProgram=` 을 따로 주면 루트 목록은 `program`, 펼치기는 `expandProgram` 이 맡는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ::: info 근거
 emxCommonPartBase_mxJPO.java:700-790 (`expandLevel`, `expandMultiLevelsJPO`), 1021-1038 (`getExpandLevel`: `"All"` → 0), ENOQuestionUIBase_mxJPO.java:216, 248-258
@@ -193,7 +193,7 @@ emxDomainAccessBase_mxJPO.java:1933-1985 (getCellLevelEditAccess). 표 설정: `
 
 ### 셀 스타일 (Style Function)
 
-`StringList` 로 행마다 CSS 클래스 이름을 돌려줍니다. 클래스는 OOTB 스타일 시트에 있는 이름 (예: `ResourcePlanningRedBackGroundColor`) 을 씁니다. 열 설정에 붙으므로 그 열의 셀에 적용되는 것으로 보입니다. 행 전체 스타일은 표 program 에서 행 Map 에 `styleRows` 를 넣는 방법이 있습니다 (emxProjectSpaceBase_mxJPO.java:5500).
+`StringList` 로 행마다 CSS 클래스 이름을 돌려줍니다. 클래스는 OOTB 스타일 시트에 있는 이름 (예: `ResourcePlanningRedBackGroundColor`) 을 씁니다. 열 설정에 붙으므로 그 열의 셀에 적용되는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 행 전체 스타일은 표 program 에서 행 Map 에 `styleRows` 를 넣는 방법이 있습니다 (emxProjectSpaceBase_mxJPO.java:5500).
 
 ## 폼 필드 function
 
@@ -232,7 +232,7 @@ emxECPartBase_mxJPO.java:10430-10436 (getCompareType: `fieldMap.name`), 10497-10
 | --- | --- |
 | `paramMap` | `languageStr` 등 |
 | `requestMap` | 요청 파라미터 |
-| `fieldMap` (폼) / `columnMap` (표) | 정의. 표에서는 `columnMap` 이 오는 것으로 보입니다 |
+| `fieldMap` (폼) / `columnMap` (표) | 정의. 표에서는 `columnMap` 이 오는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 
 | 돌려줄 키 | 형 | 내용 |
 | --- | --- | --- |
@@ -370,7 +370,7 @@ public Boolean canEditMyPart(Context context, String[] args) throws Exception {
 | 4 | `Access Program` + `Access Function` (JPO) |
 
 - JPO 는 `JPO.invoke(..., Boolean.class)` 로 불립니다. `public boolean` 으로 선언해도 됩니다 (`boolean` 989 건, `Boolean` 313 건).
-- `setting "Access Behavior" "disable"` 이면 숨기지 않고 회색으로 비활성 처리하는 것으로 보입니다 (`GrayOut` 값을 넣음).
+- `setting "Access Behavior" "disable"` 이면 숨기지 않고 회색으로 비활성 처리하는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (`GrayOut` 값을 넣음).
 
 ::: warning null 을 돌려주지 않습니다
 `null` 을 돌려주면 "JPO Access Program Returns NULL" 메시지로 `FrameworkException` 이 납니다. 판단할 수 없을 때는 `false` 를 돌려줍니다.

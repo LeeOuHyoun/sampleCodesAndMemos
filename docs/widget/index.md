@@ -14,10 +14,10 @@ UWA2/js/Widget.js, Environment.js, Environments/Frame.js, Environments/Standalon
 
 | 환경 | 여는 방법 | `widget` 을 만드는 것 | `widget.environment.name` |
 | --- | --- | --- | --- |
-| 3DDashboard | 대시보드에 위젯 주소를 등록 | 대시보드의 위젯 프레임 (iframe, 주소에 `/api/widget/frame` 이 들어간 것으로 보임) | `'frame'` |
+| 3DDashboard | 대시보드에 위젯 주소를 등록 | 대시보드의 위젯 프레임 (iframe, 주소에 `/api/widget/frame` 이 들어간 것으로 보임 <Badge type="danger" text="검증 필요" />) | `'frame'` |
 | 단독 실행 | 브라우저로 `<3DSpace>/webapps/내폴더/위젯.html` 직접 열기 | `c/UWA/js/UWA_Standalone_Alone.js` | `'uwa'` |
 
-- 3DDashboard 는 위젯 HTML 을 읽어 제목, 메타, 설정 항목, 본문, 스크립트를 뽑아 프레임 안에서 다시 실행하는 것으로 보입니다 (UWA `Environment.convertSourceToJson` 기준). 이때 주소에 `Standalone` 이 들어간 스크립트와 `standalone.css`, `UWA/assets` CSS 는 **건너뜁니다**. 그래서 단독 실행용 파일을 넣어 두어도 대시보드에서 충돌하지 않습니다. ENOVIA 위젯 HTML 226 개 중 133 개가 `UWA_Standalone_Alone.js` 를, 165 개가 `AmdLoader.js` 를 넣어 둡니다.
+- 3DDashboard 는 위젯 HTML 을 읽어 제목, 메타, 설정 항목, 본문, 스크립트를 뽑아 프레임 안에서 다시 실행하는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (UWA `Environment.convertSourceToJson` 기준). 이때 주소에 `Standalone` 이 들어간 스크립트와 `standalone.css`, `UWA/assets` CSS 는 **건너뜁니다**. 그래서 단독 실행용 파일을 넣어 두어도 대시보드에서 충돌하지 않습니다. ENOVIA 위젯 HTML 226 개 중 133 개가 `UWA_Standalone_Alone.js` 를, 165 개가 `AmdLoader.js` 를 넣어 둡니다.
 - 대시보드 안 프레임과 대시보드 본체는 메시지로 통신합니다. 제목 변경, 설정 값 저장, 새로고침 같은 요청이 이 통로로 오갑니다 ([InterCom](/uwa/intercom) 의 `uwa.embedded` 서버).
 - 사용자, 테넌트, 서비스 주소 같은 플랫폼 정보는 **대시보드 최상위 창** 의 모듈에서 가져옵니다. 단독 실행에서는 대부분 비어 있거나 응답이 오지 않습니다.
 

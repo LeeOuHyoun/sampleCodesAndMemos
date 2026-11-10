@@ -35,7 +35,7 @@ mod menu 'XX_MyPartActions' add command 'XX_MyPartCreate';
 | `user` | 보이는 사람. `'all'` 이 대부분. role 이름을 적으면 그 role 만 보임 |
 | `code` | 프로젝트에서는 항상 빈 값 |
 | `setting` | 동작 설정. [settings 레퍼런스](/ui-components/settings#command) |
-| `nothidden` / `hidden` | 관리 도구에서 숨길지. 화면 동작과는 무관한 것으로 보입니다 |
+| `nothidden` / `hidden` | 관리 도구에서 숨길지. 화면 동작과는 무관한 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 
 ### href 매크로
 
@@ -71,7 +71,7 @@ mod menu 'XX_MyPartActions' add command 'XX_MyPartCreate';
 `popup` / `slidein` 이 아닌 값은 **프레임 이름** 입니다. `emxUICore.findFrame` 이 이름으로 프레임을 찾고, `_top`, `_self`, `_parent` 만 따로 처리합니다.
 
 ::: warning 값은 소문자로
-프레임 이름 비교는 대소문자를 가리는 것으로 보입니다. 프로젝트에 `Content` 로 적은 command 가 8 건 있습니다. 찾지 못하면 `content` 로 되돌아가서 우연히 동작하지만, 표준 값인 `content` 로 적습니다.
+프레임 이름 비교는 대소문자를 가리는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 프로젝트에 `Content` 로 적은 command 가 8 건 있습니다. 찾지 못하면 `content` 로 되돌아가서 우연히 동작하지만, 표준 값인 `content` 로 적습니다.
 :::
 
 ### 창 크기
@@ -83,7 +83,7 @@ mod menu 'XX_MyPartActions' add command 'XX_MyPartCreate';
 | `Popup Size` | `Small`, `Medium`, `Large`, `SmallTall`, `MediumTall`, 또는 `가로x세로` | 이름은 `emxFramework.PopupSize.이름` 값으로 바뀜. 기본 `Medium` = 812x500, `Large` = 965x700 |
 | `Slidein Width` | 숫자 (px) | 슬라이드인 너비 |
 
-`가로x세로` 형식(`1500x1000`)은 `emxFramework.PopupSize` 목록에 등록된 것만 쓰는 것으로 보입니다. 프로젝트는 `emxFrameworkCustom.properties` 에 크기를 추가해 둡니다.
+`가로x세로` 형식(`1500x1000`)은 `emxFramework.PopupSize` 목록에 등록된 것만 쓰는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 프로젝트는 `emxFrameworkCustom.properties` 에 크기를 추가해 둡니다.
 
 ## 툴바 command: 선택 행 넘기기
 
@@ -125,7 +125,7 @@ command setting 에 `selection` 을 적은 사례(12 건)가 있습니다. `sele
 
 | setting | 값 | 설명 |
 | --- | --- | --- |
-| `Access Expression` | select 식 / `true` / `false` | 현재 객체 기준으로 평가하는 것으로 보입니다. 예: `current == 'In Work'`, `context.user == 'admin_platform'` |
+| `Access Expression` | select 식 / `true` / `false` | 현재 객체 기준으로 평가하는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 예: `current == 'In Work'`, `context.user == 'admin_platform'` |
 | `Access Function` + `Access Program` | JPO 메서드 이름 + JPO 이름 | `boolean` 을 돌려주는 JPO 메서드. 둘 다 적어야 함 |
 | `Access Mask` | 권한 이름 (`modify`, `read` ...) | 현재 객체에 그 권한이 있어야 보임 |
 | `user` (절) | `'all'` 또는 role 이름 | role 기준 노출 |

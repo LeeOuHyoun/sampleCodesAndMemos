@@ -39,7 +39,7 @@ admin (type / relationship / attribute / policy 의 state)
 | attribute | `Modify` | `AttributeAllModifyAction` |
 | policy 의 state | `Promote`, `Demote` (문법상 `Approve`, `Reject`, `Ignore`, `Override`, `Schedule`, `Enable`, `Disable`, `Unsign` 도 있음) | 프로젝트 / OOTB policy |
 
-- type 의 Connect / Disconnect 는 그 type 객체에 관계가 연결 / 해제될 때 실행되는 것으로 보입니다. 관계 쪽 규칙은 relationship 의 Create / Delete 에 거는 편이 분명합니다.
+- type 의 Connect / Disconnect 는 그 type 객체에 관계가 연결 / 해제될 때 실행되는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 관계 쪽 규칙은 relationship 의 Create / Delete 에 거는 편이 분명합니다.
 - policy 트리거는 **떠나는 state** 에 붙입니다. `In Work` 의 Promote Action 은 `In Work` 에서 다음 state 로 올라간 직후에 실행됩니다. [라이프사이클](/trigger/lifecycle)
 
 ## Check, Action, Override
@@ -48,7 +48,7 @@ admin (type / relationship / attribute / policy 의 state)
 | --- | --- | --- |
 | `Check` | 이벤트 직전 | 이벤트가 취소됨. 남은 트리거도 실행 안 됨 |
 | `Action` | 이벤트 직후 (같은 트랜잭션) | `emxTriggerManager` 가 예외 "Trigger program failed" 를 던짐. 이벤트도 실패로 끝남 |
-| `Override` | 이벤트의 기본 동작 대신 실행되는 것으로 보입니다 | Check 와 같이 1 을 그대로 돌려줌 |
+| `Override` | 이벤트의 기본 동작 대신 실행되는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> | Check 와 같이 1 을 그대로 돌려줌 |
 
 검사는 Check, 후처리(다른 객체 갱신, 알림, 인터페이스 호출)는 Action 에 둡니다. Override 는 OOTB 의 `TypeMessageDeleteOverride`, `RelationshipEBOMDeleteOverride` 같은 삭제 처리에서 보이고 프로젝트에서는 쓰지 않습니다.
 

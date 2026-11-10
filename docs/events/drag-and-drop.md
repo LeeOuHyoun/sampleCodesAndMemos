@@ -115,7 +115,7 @@ require(['DS/DataDragAndDrop/DataDragAndDrop'], function (DnD) {
 | `objectState` | 없음 | - | 상태. 2.1 에서 추가 |
 | `i3dx` | 없음 | O | 2.1 에서 추가. `'i3dx:<서비스>!<id>'` 형태 또는 빈 문자열 |
 
-스키마 파일은 정의되지 않은 키를 허용하지 않지만(`additionalProperties: false`), 실제 코드는 `image`, `objectData`, `filterSpec`, `displayType` 같은 키를 더 붙여 보냅니다. 검사 함수 `DS/3DXContentChecker/3DXContentChecker_v2.1` 의 `check()` 를 부르는 곳은 없어서, 실제로는 **필수 키만 지키면 통하는 것으로 보입니다.**
+스키마 파일은 정의되지 않은 키를 허용하지 않지만(`additionalProperties: false`), 실제 코드는 `image`, `objectData`, `filterSpec`, `displayType` 같은 키를 더 붙여 보냅니다. 검사 함수 `DS/3DXContentChecker/3DXContentChecker_v2.1` 의 `check()` 를 부르는 곳은 없어서, 실제로는 **필수 키만 지키면 통하는 것으로 보입니다. <Badge type="danger" text="검증 필요" />**
 
 ### 버전별 사용 횟수
 

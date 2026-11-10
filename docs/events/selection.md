@@ -5,8 +5,8 @@
 | 모듈 | 전역 이름 | 채널 | 뜻 |
 | --- | --- | --- | --- |
 | `DS/Selection/CSOManager` | `WUX.Selection.CSOManager` | `CSO/` | Current Selected Objects. 현재 선택 |
-| `DS/Selection/HSOManager` | `WUX.Selection.HSOManager` | `HSO/` | 강조(highlight) 목록으로 보입니다 |
-| `DS/Selection/PSOManager` | `WUX.Selection.PSOManager` | `PSO/` | 미리 선택(마우스 올림) 목록으로 보입니다 |
+| `DS/Selection/HSOManager` | `WUX.Selection.HSOManager` | `HSO/` | 강조(highlight) 목록으로 보입니다 <Badge type="danger" text="검증 필요" /> |
+| `DS/Selection/PSOManager` | `WUX.Selection.PSOManager` | `PSO/` | 미리 선택(마우스 올림) 목록으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 
 ::: info 근거
 Selection/Selection.js (XSO 1~470행, 각 매니저 473행~). 호출부: SPYUI (`CSOManager.onAdd`, `unique`), CSIViewModelWebInterfaces (`CSOManager.add({ pathElement })`), 3DPlayExperienceModule, VCXWebKernel, VCXWebComposer (`PSOManager.empty`)

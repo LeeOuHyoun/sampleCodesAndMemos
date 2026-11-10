@@ -28,7 +28,7 @@ CoreEvents/CoreEvents.js, Selection/Selection.js, DataDragAndDrop/DataDragAndDro
 | 다른 위젯에 코드로 신호 보내기 | [PlatformAPI](/widget/platform-api) 또는 [InterCom](/uwa/intercom) |
 
 ::: warning 위젯끼리는 Events 로 통하지 않습니다
-`Events`, `CSOManager` 는 그 **창(window) 안에서만** 하나입니다. 대시보드의 위젯은 보통 각자 iframe 에서 돌기 때문에, 위젯 A 에서 `Events.publish` 해도 위젯 B 의 `Events.subscribe` 는 받지 못하는 것으로 보입니다. 위젯 사이는 PlatformAPI, InterCom, 끌어 놓기를 씁니다.
+`Events`, `CSOManager` 는 그 **창(window) 안에서만** 하나입니다. 대시보드의 위젯은 보통 각자 iframe 에서 돌기 때문에, 위젯 A 에서 `Events.publish` 해도 위젯 B 의 `Events.subscribe` 는 받지 못하는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 위젯 사이는 PlatformAPI, InterCom, 끌어 놓기를 씁니다.
 :::
 
 ## 원본 위치

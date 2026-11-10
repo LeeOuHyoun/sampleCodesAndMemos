@@ -109,7 +109,7 @@ String stateActive = PropertyUtil.getSchemaProperty(context, "policy", policyNam
 - 프로젝트 코드는 상수 클래스 한 곳에 `getSchemaProperty` 결과를 모아 두고 씁니다.
 
 ::: warning 등록을 빠뜨리면
-`getSchemaProperty` 는 `eServiceSchemaVariableMapping.tcl` 에 붙은 property 를 보고 실제 이름을 찾는 것으로 보입니다 (템플릿의 심볼릭 이름과 코드의 인자가 같은 형식). 등록이 없으면 코드가 실제 이름을 얻지 못하므로, 새 스키마를 만들면 `add property ... on program eServiceSchemaVariableMapping.tcl` 를 꼭 함께 실행합니다. 프로젝트의 모든 템플릿(`*_Sample.mql`)이 이 줄로 끝납니다.
+`getSchemaProperty` 는 `eServiceSchemaVariableMapping.tcl` 에 붙은 property 를 보고 실제 이름을 찾는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (템플릿의 심볼릭 이름과 코드의 인자가 같은 형식). 등록이 없으면 코드가 실제 이름을 얻지 못하므로, 새 스키마를 만들면 `add property ... on program eServiceSchemaVariableMapping.tcl` 를 꼭 함께 실행합니다. 프로젝트의 모든 템플릿(`*_Sample.mql`)이 이 줄로 끝납니다.
 :::
 
 ## 화면에 보이는 이름

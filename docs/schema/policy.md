@@ -157,8 +157,8 @@ mod policy 'MyPartPolicy' state 'In Work'
 
 | 조건 | 적용되는 경우 |
 | --- | --- |
-| `single organization` | 객체의 조직과 사용자 로그인 컨텍스트의 조직이 같을 때로 보입니다 |
-| `single project` | 객체의 협업공간(project)과 로그인 컨텍스트의 협업공간이 같을 때로 보입니다 |
+| `single organization` | 객체의 조직과 사용자 로그인 컨텍스트의 조직이 같을 때로 보입니다 <Badge type="danger" text="검증 필요" /> |
+| `single project` | 객체의 협업공간(project)과 로그인 컨텍스트의 협업공간이 같을 때로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `ancestor` / `descendant organization` | 상위 / 하위 조직까지 포함 |
 | `context owner` | 로그인한 사용자가 객체의 owner 일 때 |
 | `filter "식"` | 식이 참일 때. 객체의 select 값을 쓸 수 있음 |
@@ -283,7 +283,7 @@ mod policy 'MyPartPolicy' state 'In Work'
 | --- | --- |
 | `Check` | 이벤트 전. 실패하면 이벤트를 막음 |
 | `Action` | 이벤트 후 |
-| `Override` | 이벤트의 기본 동작 대신 실행되는 것으로 보입니다 (예: type 의 `Delete override`) |
+| `Override` | 이벤트의 기본 동작 대신 실행되는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (예: type 의 `Delete override`) |
 
 이벤트는 `promote`, `demote`, `approve`, `reject` 등이 있습니다. type 에도 같은 방식으로 `Create`, `Delete`, `ModifyAttribute` 등의 trigger 를 붙입니다 (`mod type ... add trigger ...`).
 
@@ -306,7 +306,7 @@ add bus 'eService Trigger Program Parameters' 'MyPolicyInWorkPromoteCheck' 'chec
 | name | `접두어 + 대상 이름 + 적용 시점`. 예: `MyPolicyInWorkPromoteCheck` |
 | revision | 실행할 메서드 이름 |
 | `eService Program Name` / `eService Method Name` | JPO 클래스와 메서드 |
-| state | `Active` 여야 실행되는 것으로 보입니다. 템플릿은 만든 뒤 `promote bus` 로 활성화하고, 끌 때 `demote bus` 를 씀 |
+| state | `Active` 여야 실행되는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 템플릿은 만든 뒤 `promote bus` 로 활성화하고, 끌 때 `demote bus` 를 씀 |
 
 ## 확인하기
 
@@ -330,4 +330,4 @@ print bus 'MyPart' 'MP-0000001' '1' select current current.access dump |;
 | `action`, `check` (state 절) | 예전 방식. trigger 로 대체 |
 | `minorsequence`, `majorsequence` | 리비전을 두 단계로 나눌 때 |
 
-프로젝트의 결재는 이 기능 대신 Route(`Object Route` 관계)와 trigger 로 처리하는 것으로 보입니다. 결재 대상 type 마다 `Object Route` 의 from 쪽에 type 을 추가해 둔 것이 그 흔적입니다.
+프로젝트의 결재는 이 기능 대신 Route(`Object Route` 관계)와 trigger 로 처리하는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 결재 대상 type 마다 `Object Route` 의 from 쪽에 type 을 추가해 둔 것이 그 흔적입니다.

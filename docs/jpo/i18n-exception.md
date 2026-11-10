@@ -22,12 +22,12 @@ String icon = EnoviaResourceBundle.getProperty(context, "emxFramework.smallIcon.
 | 형태 | 읽는 곳 | 예 |
 | --- | --- | --- |
 | `getProperty(context, 리소스파일, Locale, 키)` | 지정한 문자열 리소스 | `"emxEngineeringCentralStringResource"`, `context.getLocale()` |
-| `getProperty(context, suite, 키, 언어)` | suite 이름으로 그 suite 의 문자열 리소스를 찾는 것으로 보입니다 | `"Framework"`, `"ProgramCentral"`, `"EngineeringCentral"` |
+| `getProperty(context, suite, 키, 언어)` | suite 이름으로 그 suite 의 문자열 리소스를 찾는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> | `"Framework"`, `"ProgramCentral"`, `"EngineeringCentral"` |
 | `getProperty(context, 키)` | 시스템 설정 (`emxSystem.properties` 등). 언어 없음 | `"emxFramework.securityMode"` |
 | `getFrameworkStringResourceProperty(context, 키, Locale)` | `emxFrameworkStringResource` 단축 | |
 
 - 리소스 파일은 `properties/` 폴더에 언어별로 있습니다. 한국어는 `_ko.properties` (128 개) 이고 값은 `회` 같은 유니코드 이스케이프입니다.
-- 키가 없으면 빈 값이나 키 그대로가 오는 것으로 보입니다. 생성 후처리는 `Message` 를 번역해 보고, 결과가 비면 원문을 그대로 씁니다.
+- 키가 없으면 빈 값이나 키 그대로가 오는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 생성 후처리는 `Message` 를 번역해 보고, 결과가 비면 원문을 그대로 씁니다.
 
 ### 스키마 이름 번역
 
@@ -79,7 +79,7 @@ if (!canRelease) {
 }
 ```
 
-- `JPO.invoke` 를 거친 예외 문구에는 `System Error: #5000001: java.lang.Exception:` 같은 앞부분이 붙는 것으로 보입니다. 생성 / 편집 처리 JSP 는 이 앞부분을 잘라서 보여 줍니다.
+- `JPO.invoke` 를 거친 예외 문구에는 `System Error: #5000001: java.lang.Exception:` 같은 앞부분이 붙는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 생성 / 편집 처리 JSP 는 이 앞부분을 잘라서 보여 줍니다.
 - 이름 중복 같은 커널 오류는 코드 (`1500789`) 로 구분해 다른 문구로 바꿔 보여 줍니다.
 - 트리거에서는 예외 대신 `notice` 와 반환값 `1` 로 막는 방식이 일반적입니다 ([트리거](/trigger/)).
 
@@ -124,7 +124,7 @@ public class XX_MyPartUI_mxJPO {
 }
 ```
 
-- OOTB 일부 (`ENOGLSFormulationTypeUIBase` 등) 와 사용자 정의 JPO 는 slf4j 를 씁니다. 서버에 slf4j 가 들어 있어 따로 jar 를 넣지 않아도 되는 것으로 보입니다.
+- OOTB 일부 (`ENOGLSFormulationTypeUIBase` 등) 와 사용자 정의 JPO 는 slf4j 를 씁니다. 서버에 slf4j 가 들어 있어 따로 jar 를 넣지 않아도 되는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 - `System.out.println` 은 레벨 구분 없이 항상 찍혀서 운영 로그가 커집니다. 새 코드는 slf4j 를 씁니다.
 - 열 function 처럼 행 수만큼 도는 곳에서 행마다 로그를 찍지 않습니다.
 

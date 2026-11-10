@@ -37,7 +37,7 @@ add table 'XX_MyPartSummary' system
 add property table_XX_MyPartSummary on program eServiceSchemaVariableMapping.tcl to table XX_MyPartSummary system;
 ```
 
-- table 은 `system` 을 붙여 만듭니다 (`add table 이름 system`). 붙이지 않으면 사용자 개인 table 로 보입니다. 다른 명령(`del`, `print`, `add property ... to table`)에도 `system` 을 붙입니다.
+- table 은 `system` 을 붙여 만듭니다 (`add table 이름 system`). 붙이지 않으면 사용자 개인 table 로 보입니다. <Badge type="danger" text="검증 필요" /> 다른 명령(`del`, `print`, `add property ... to table`)에도 `system` 을 붙입니다.
 - `column` 다음에 오는 절이 그 열의 정의입니다. 다음 `column` 이 나오면 새 열입니다. 적은 순서가 화면 순서입니다.
 
 ### column 절
@@ -74,7 +74,7 @@ add property table_XX_MyPartSummary on program eServiceSchemaVariableMapping.tcl
 | `Admin Type` | `attribute_X`, `State`, `Type`, `owner` ... | 값을 번역할 때 쓰는 스키마 이름. `State` 면 상태 이름을 화면 글자로 바꿈 | 419 |
 
 ::: warning Column Type 에 attribute 를 적은 경우
-프로젝트에 `Column Type` `attribute` 18 건, `basic` 2 건이 있습니다. 이 둘은 `Field Type` 쪽 값으로 보입니다. attribute 열은 `Field Type` `attribute` + `Admin Type` `attribute_X` 로 적습니다.
+프로젝트에 `Column Type` `attribute` 18 건, `basic` 2 건이 있습니다. 이 둘은 `Field Type` 쪽 값으로 보입니다. <Badge type="danger" text="검증 필요" /> attribute 열은 `Field Type` `attribute` + `Admin Type` `attribute_X` 로 적습니다.
 :::
 
 ### JPO 열 (program, programHTMLOutput)
@@ -154,7 +154,7 @@ column
 | `Lookup Input Type` | `textbox` | 검색으로 고르는 칸 |
 | `Data Type` | `numeric` | 숫자 확인 |
 
-`Field Type` `attribute` 열은 `Update ...` 가 없어도 attribute 에 바로 저장되는 것으로 보입니다. JPO 열이나 연결 / 다른 객체 값은 `Update ...` 가 있어야 저장됩니다.
+`Field Type` `attribute` 열은 `Update ...` 가 없어도 attribute 에 바로 저장되는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> JPO 열이나 연결 / 다른 객체 값은 `Update ...` 가 있어야 저장됩니다.
 
 ::: tip Validate 함수는 어디에 두나
 `Validate` 에 적은 함수는 `eServiceSuite이름.UIFreezePane.ValidationFile` 에 등록한 JS 파일에서 찾습니다 (`GetValidations.jsp` 가 읽음). `Registered Suite` 에 맞는 suite 의 파일에 함수를 넣고, properties 에 파일 이름을 추가합니다.

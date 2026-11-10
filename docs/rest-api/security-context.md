@@ -124,7 +124,7 @@ DELPPWServices 는 다음 순서로 고릅니다. 직접 만들 때도 같은 �
 | `SecurityContext: 'ctx::...'` 그대로 | IssueServices, ENOCharacteristicsApp, DELPPWServices 등 대부분 |
 | `SecurityContext: encodeURIComponent('ctx::...')` | Foundation, DocumentManagement, VCXWebPlatform |
 
-이름에 공백이나 `+` 같은 문자가 있을 수 있어 Foundation 쪽은 인코딩해서 보냅니다. 두 방식이 모두 동작하는 것으로 보입니다.
+이름에 공백이나 `+` 같은 문자가 있을 수 있어 Foundation 쪽은 인코딩해서 보냅니다. 두 방식이 모두 동작하는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ::: tip ctx:: 를 빼먹지 않습니다
 일부 코드는 내부에 `역할.조직.협업공간` 만 보관하고 헤더를 만들 때 `'ctx::' +` 를 붙입니다. DocumentManagement 는 넘겨받은 값이 `ctx::` 로 시작하지 않으면 붙여 줍니다. 헤더에는 항상 `ctx::` 로 시작하는 값을 넣습니다.

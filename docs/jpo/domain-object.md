@@ -29,7 +29,7 @@ DomainObject plain = new DomainObject(objectId);
 
 | 방법 | 설명 |
 | --- | --- |
-| `DomainObject.newInstance(context, id)` | id 로 타입을 조회해 알맞은 하위 클래스 (`Part`, `Document` ...) 로 만들어 주는 것으로 보입니다. 가장 많이 씀 |
+| `DomainObject.newInstance(context, id)` | id 로 타입을 조회해 알맞은 하위 클래스 (`Part`, `Document` ...) 로 만들어 주는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 가장 많이 씀 |
 | `DomainObject.newInstance(context, type, app)` | 타입을 알 때. `newInstance(context, TYPE_TASK, PROGRAM)` 뒤에 `setId(id)` |
 | `DomainObject.newInstance(context)` | 빈 객체. `createObject` 전에 씀 |
 | `new DomainObject(id)` | 타입 조회 없이 바로 |
@@ -66,7 +66,7 @@ String status = (String) info.get("attribute[" + attrStatus + "]");
 | --- | --- |
 | 0 | `null` 또는 키 없음 |
 | 1 | `String` |
-| 2 이상 | `StringList`. 구분자로 이어 붙인 `String` 으로 오는 경우도 있는 것으로 보입니다 (OOTB 에 `"\\a"` 로 자르는 코드가 있음) |
+| 2 이상 | `StringList`. 구분자로 이어 붙인 `String` 으로 오는 경우도 있는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (OOTB 에 `"\\a"` 로 자르는 코드가 있음) |
 
 ```java
 Object value = map.get(select);
@@ -182,7 +182,7 @@ xerinfra.jar `DomainObject.createObject(Context, String, String, String, String,
 | 메서드 | 설명 |
 | --- | --- |
 | `DomainRelationship.connect(context, fromObj, relName, toObj)` | `DomainRelationship` 을 돌려줌 |
-| `DomainRelationship.connect(context, fromId, relName, toId, preserve)` | id 로 연결. `preserve=true` 면 MQL `connect ... preserve` 로 실행 (수정 일자를 바꾸지 않는 옵션으로 보입니다) |
+| `DomainRelationship.connect(context, fromId, relName, toId, preserve)` | id 로 연결. `preserve=true` 면 MQL `connect ... preserve` 로 실행 (수정 일자를 바꾸지 않는 옵션으로 보입니다 <Badge type="danger" text="검증 필요" />) |
 | `obj.connectTo(context, relName, toObj)` / `connectFrom(...)` | 이 객체 기준 |
 | `obj.addToObject(context, new RelationshipType(rel), id)` / `addFromObject(...)` | 생성 화면 프레임워크가 쓰는 형태 |
 | `DomainRelationship.disconnect(context, relId)` | 관계 id 로 끊기. 여러 개는 `String[]` |
@@ -265,7 +265,7 @@ select 는 MQL `print bus ... select` 와 같은 문법입니다.
 | `attribute[Quantity]` | 관계 속성 | |
 
 ::: warning 속성 이름 오타는 잘 드러나지 않습니다
-`attribute[없는이름]` 처럼 이름을 틀리면 예외 없이 `null` / 빈 값이 오는 것으로 보입니다. 값이 계속 비어 있으면 MQL 로 `print bus 타입 이름 리비전 select 그select dump;` 를 먼저 확인합니다.
+`attribute[없는이름]` 처럼 이름을 틀리면 예외 없이 `null` / 빈 값이 오는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 값이 계속 비어 있으면 MQL 로 `print bus 타입 이름 리비전 select 그select dump;` 를 먼저 확인합니다.
 :::
 
 ### `$<...>` 는 JPO 가 아니라 UI 정의에서

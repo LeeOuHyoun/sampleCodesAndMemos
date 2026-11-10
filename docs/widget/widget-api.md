@@ -108,7 +108,7 @@ widget.addEvent('onExport', function () { ... });
 | `onUpdatePreferences` | 설정 정의가 바뀜 | `(preferences)` | |
 | `onKeyboardAction` | 위젯 안 keydown | `(keyCode, event)` | |
 | `beforeLoad` / `afterLoad` | `onLoad` 직전 / 직후 | - | |
-| `onDestroy` | UWA 에는 없는 이벤트. 앱 코드나 대시보드가 보내는 것으로 보입니다 (`dispatchEvent("onDestroy"` 28 건) | - | 12 |
+| `onDestroy` | UWA 에는 없는 이벤트. 앱 코드나 대시보드가 보내는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (`dispatchEvent("onDestroy"` 28 건) | - | 12 |
 
 등록 수는 `widget.addEvent("이름"` 형태만 센 것입니다. `widget.addEvents({ ... })` 안의 것은 빠졌습니다.
 
@@ -139,7 +139,7 @@ widget.addEvent('endEdit', function () {
 ```
 
 - 단독 실행의 설정 창은 "완료" 를 누르면 값을 모두 `setValue` 한 뒤 `endEdit` 를 보내고, **값이 하나라도 바뀌었으면 이어서 `onRefresh`** 를 보냅니다. 두 이벤트에 같은 처리를 달면 두 번 실행됩니다.
-- 3DDashboard 의 설정 창은 대시보드가 그리는 것으로 보입니다. 프레임은 대시보드에서 온 `onUpdateValue` 를 받아 `widget.setValue` 하고, `endEdit` 도 같은 통로로 받습니다.
+- 3DDashboard 의 설정 창은 대시보드가 그리는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 프레임은 대시보드에서 온 `onUpdateValue` 를 받아 `widget.setValue` 하고, `endEdit` 도 같은 통로로 받습니다.
 
 ### onViewChange
 

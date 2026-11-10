@@ -54,7 +54,7 @@
 emxFramework.CustomProperties.Filename=emxFrameworkCustom.properties
 ```
 
-OOTB 키와 **같은 키** 를 Custom 파일에 적으면 Custom 값이 쓰이는 것으로 보입니다. 프로젝트는 `emxFramework.PopupSize`, `eServiceSuites.DisplayedSuites`, `emxFramework.ApplicationList` 같은 OOTB 목록을 Custom 에서 통째로 다시 적어 씁니다.
+OOTB 키와 **같은 키** 를 Custom 파일에 적으면 Custom 값이 쓰이는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 프로젝트는 `emxFramework.PopupSize`, `eServiceSuites.DisplayedSuites`, `emxFramework.ApplicationList` 같은 OOTB 목록을 Custom 에서 통째로 다시 적어 씁니다.
 
 ```text
 emxFramework.PopupSize = Small,Medium,Large,SmallTall,MediumTall,1250x720
@@ -67,13 +67,13 @@ myApp.Interface.Url.Dev  = https://interface-dev.example.com
 | 규칙 | 이유 |
 | --- | --- |
 | 새 키는 내 앱 접두어로 (`myApp.`) | OOTB 키와 겹치지 않게 |
-| OOTB 목록을 바꿀 때는 **전체** 를 적음 | 값 하나만 더하는 문법은 없는 것으로 보입니다. 원래 값을 복사해서 더함 |
+| OOTB 목록을 바꿀 때는 **전체** 를 적음 | 값 하나만 더하는 문법은 없는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 원래 값을 복사해서 더함 |
 | 업그레이드 후 OOTB 목록과 비교 | OOTB 쪽에 새 값이 생겨도 Custom 의 옛 목록이 이김 |
 | 운영 / 개발 값은 키 이름으로 나눔 | 같은 파일을 두 서버에 배포 |
 | 블록 표시 (`# 기능 [B]` ... `# 기능 [E]`) | 누가 왜 넣었는지 추적 |
 
 ::: warning emxSystem.properties 를 직접 고치지 않습니다
-프로젝트 type 아이콘 키를 `emxSystem.properties` 끝에 직접 넣은 예가 있습니다. 동작은 하지만 제품 파일이라 업그레이드 때 사라집니다. 같은 키를 Custom 파일에 두는 편이 안전한 것으로 보입니다.
+프로젝트 type 아이콘 키를 `emxSystem.properties` 끝에 직접 넣은 예가 있습니다. 동작은 하지만 제품 파일이라 업그레이드 때 사라집니다. 같은 키를 Custom 파일에 두는 편이 안전한 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 :::
 
 ## 앱 등록 키
@@ -100,7 +100,7 @@ eServiceSuiteMyApp.UIFreezePane.ValidationFile = myAppTableValidation.jsp
 | --- | --- |
 | `eServiceSuites.DisplayedSuites` | 시작할 때 읽을 앱 목록. 앱의 설정 파일과 **문자열 파일을 찾는 데도 씀** |
 | `emxFramework.ApplicationList` | 앱 목록. 앱별 mapping 파일 이름을 만드는 데 씀 |
-| `.Directory` | 3dspace 아래 앱 폴더. command href 의 `${SUITE_DIR}` 가 이 폴더로 바뀌는 것으로 보입니다 |
+| `.Directory` | 3dspace 아래 앱 폴더. command href 의 `${SUITE_DIR}` 가 이 폴더로 바뀌는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `.ApplicationPropertyFile` | 앱 설정 파일 |
 | `.StringResourceFileId` | 앱 문자열 파일. `Registered Suite` 와 별칭 조회가 이 값을 씀 |
 | `.PropertyFileAlias` | 앱 설정 파일 별칭 |
@@ -125,7 +125,7 @@ String rels = EnoviaResourceBundle.getProperty(context, "emxSystem", context.get
 | --- | --- |
 | `getProperty(context, 키)` | 가장 흔함. 등록된 설정 파일 전체에서 찾음 |
 | `getProperty(context, "emxSystem", Locale, 키)` | 파일을 정해서 찾음 |
-| `FrameworkProperties.getProperty(context, 키)` | 예전 방식. 같은 결과로 보입니다 |
+| `FrameworkProperties.getProperty(context, 키)` | 예전 방식. 같은 결과로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `MessageUtil.getMessage(context, 키, null, null, null, "emxSystem")` | OOTB 트리거, 컨텍스트 JPO 에서 사용 |
 
 - 2 인자 `getProperty` 로 많이 읽는 접두어: `emxFramework` 168, `emxComponents` 103, `emxEngineeringCentral` 82, `emxProgramCentral` 73 건 (`jpo/` 의 OOTB 파일).

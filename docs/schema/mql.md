@@ -16,7 +16,7 @@ MQL (Matrix Query Language) 은 3DSpace 의 명령 언어입니다. 스키마 �
 | 따옴표 | 이름은 `'...'` 또는 `"..."`. 공백이 있는 이름(`'EC Part'`)은 반드시 감쌈 |
 | 주석 | 줄 맨 앞 `#` |
 | 줄임말 | `mod` = `modify`, `del` = `delete`, `rel` / `relation` = `relationship`, `bus` = `businessobject` |
-| 대소문자 | 키워드는 섞어 써도 동작하는 것으로 보입니다 (`add Trigger Delete Check`, `type String`). 이름은 구별함 |
+| 대소문자 | 키워드는 섞어 써도 동작하는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (`add Trigger Delete Check`, `type String`). 이름은 구별함 |
 | 한글 | 명령 안에는 쓰지 않음 (인코딩 문제). 주석에는 씀 |
 
 ## 명령 형태
@@ -102,7 +102,7 @@ connect bus 'MyPart' 'MP-0000001' '1'
 | `promote bus id` / `demote bus id` | state 이동 |
 
 ::: tip preserve
-JPO 에는 `connect bus $1 preserve relationship ...` 처럼 `preserve` 를 붙인 호출이 있습니다. 대상 객체의 수정 일시를 바꾸지 않는 옵션으로 보입니다.
+JPO 에는 `connect bus $1 preserve relationship ...` 처럼 `preserve` 를 붙인 호출이 있습니다. 대상 객체의 수정 일시를 바꾸지 않는 옵션으로 보입니다. <Badge type="danger" text="검증 필요" />
 :::
 
 ## 조회
@@ -131,7 +131,7 @@ temp query bus 'MyPart' '*' '*'
 
 | 절 | 뜻 |
 | --- | --- |
-| `T N R` | type, name, revision 패턴. type 의 자식 type 도 함께 찾는 것으로 보입니다 |
+| `T N R` | type, name, revision 패턴. type 의 자식 type 도 함께 찾는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `vault V` | vault 로 좁히기 |
 | `where "식"` | 조건 |
 | `limit n` | 최대 건수 |
@@ -159,10 +159,10 @@ expand bus 'MyPart' 'MP-0000001' '1'
 | `recurse to n` / `recurse to all` | 몇 단계까지 |
 | `select bus ...` / `select rel ...` | 반대편 객체 값 / 연결 값 |
 | `where "식"` | 반대편 객체 조건 |
-| `terse` | type / name / revision 대신 id 위주로 짧게 출력하는 것으로 보입니다 |
+| `terse` | type / name / revision 대신 id 위주로 짧게 출력하는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `limit n` | 최대 건수 |
 
-출력은 한 줄에 연결 하나이고, 단계, 관계, 방향, 반대편 type / name / revision, select 값이 차례로 나오는 것으로 보입니다. 코드에서는 `dump` 구분자로 잘라 씁니다. JPO 에서는 MQL `expand` (약 40 곳) 보다 같은 일을 하는 `getRelatedObjects` (약 1,800 곳) 를 훨씬 많이 씁니다. `temp query` 도 `findObjects` (약 450 곳) 로 대신하는 경우가 많습니다.
+출력은 한 줄에 연결 하나이고, 단계, 관계, 방향, 반대편 type / name / revision, select 값이 차례로 나오는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 코드에서는 `dump` 구분자로 잘라 씁니다. JPO 에서는 MQL `expand` (약 40 곳) 보다 같은 일을 하는 `getRelatedObjects` (약 1,800 곳) 를 훨씬 많이 씁니다. `temp query` 도 `findObjects` (약 450 곳) 로 대신하는 경우가 많습니다.
 
 ### select 표현식
 
@@ -195,7 +195,7 @@ trace off;
 | 명령 | 설명 |
 | --- | --- |
 | `verb on` | 실행하는 명령을 화면에 함께 출력 |
-| `set context user ... role 'ctx::역할.조직.협업공간'` | 실행 사용자와 보안 컨텍스트. 권한 검사와 객체의 조직 / 협업공간에 영향을 주는 것으로 보입니다 |
+| `set context user ... role 'ctx::역할.조직.협업공간'` | 실행 사용자와 보안 컨텍스트. 권한 검사와 객체의 조직 / 협업공간에 영향을 주는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `trace type mql filename ...` / `trace off` | 실행 기록을 파일로 |
 | `run 파일` | 다른 `.mql` 파일을 이어서 실행 |
 
@@ -214,6 +214,6 @@ String states = MqlUtil.mqlCommand(context,
         "print policy $1 select $2 dump $3", policyName, "state", "|");
 ```
 
-- `$1`, `$2` ... 자리에 인자가 차례로 들어갑니다. 공백이 있는 이름도 따옴표 없이 그대로 넘기는 것으로 보아 따옴표 처리를 대신해 주는 것으로 보입니다.
+- `$1`, `$2` ... 자리에 인자가 차례로 들어갑니다. 공백이 있는 이름도 따옴표 없이 그대로 넘기는 것으로 보아 따옴표 처리를 대신해 주는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 - 사용자가 입력한 값을 문자열 이어 붙이기로 명령에 넣지 않습니다. 값이 명령으로 해석될 수 있습니다.
 - type, policy, state 이름은 `PropertyUtil.getSchemaProperty` 로 얻은 값을 넘깁니다. [심볼릭 이름](/schema/#심볼릭-이름)

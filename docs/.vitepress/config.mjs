@@ -54,6 +54,7 @@ export default defineConfig({
           items: [
             { text: '소개', link: '/guide/' },
             { text: '처음 읽는 순서', link: '/guide/roadmap' },
+            { text: '자주 틀리는 점', link: '/guide/faq' },
             { text: '문서 추가 방법', link: '/guide/contributing' }
           ]
         }

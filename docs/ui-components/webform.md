@@ -52,7 +52,7 @@ add property form_XX_MyPart on program eServiceSchemaVariableMapping.tcl to form
 | `program` | JPO 가 글자를 돌려줌 | `program`, `function` | 19 |
 | `Section Header` | 섹션 제목 줄 (필드 묶음 제목) | `Section Level` `1` | 44 |
 | `Section Separator` | 구분선 | - | 1 |
-| `Group Holder` | 다음 N 개 필드를 가로로 묶는 자리로 보임 | `Group Count` `2` | 5 |
+| `Group Holder` | 다음 N 개 필드를 가로로 묶는 자리로 보임 <Badge type="danger" text="검증 필요" /> | `Group Count` `2` | 5 |
 | `Dynamic` | 필드 여러 개를 JPO 로 만듦 | `Dynamic Field Program` / `Function` | 4 |
 | `Dynamic Attributes` | 타입의 attribute 를 자동으로 펼침 | `Create Exclude`, `Edit Exclude`, `View Exclude` | 2 |
 | `ClassificationPaths` | 분류 경로 (라이브러리) | - | 2 |
@@ -132,7 +132,7 @@ field
 ```
 
 - `Section Header` 다음 필드들은 그 섹션 아래에 들어갑니다.
-- `Group Holder` + `Group Count` `2` 는 바로 다음 두 필드를 한 줄에 놓는 것으로 보입니다.
+- `Group Holder` + `Group Count` `2` 는 바로 다음 두 필드를 한 줄에 놓는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 - 생성 화면(`emxCreate.jsp`)에서는 `Group Name` 이 같은 필드끼리 가로로 묶습니다 (`emxCreateBody.xsl`). 프로젝트 생성 form 은 `Group Name` 을 253 건 씁니다.
 
 ## 보이기 조건

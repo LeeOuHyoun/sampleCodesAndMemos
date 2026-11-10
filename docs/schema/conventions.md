@@ -18,7 +18,7 @@
 | `06.command` ~ `11.portal` | 화면: command, menu, table, webform, channel, portal | 수십 ~ 수백 |
 | `12.trigger` | trigger 설정 객체 + `mod type / policy ... add trigger` | 약 20 |
 | `13.generator` | 채번기 객체 | 약 60 |
-| `14.tcl` | 채번용 OOTB tcl 프로그램 사본으로 보입니다 | 4 |
+| `14.tcl` | 채번용 OOTB tcl 프로그램 사본으로 보입니다 <Badge type="danger" text="검증 필요" /> | 4 |
 | `19.program`, `20.rule`, `21.page` | program, rule, page | 몇 개 |
 | `15.inquiry` ~ `18.dimension`, `22.interface` ~ `25.object` | 자리만 있고 비어 있음 | 0 |
 | `97.prod-mql` | 운영 반영용 묶음 스크립트 (월별) | |
@@ -104,17 +104,17 @@ mod type 'XXMyPart'
 2. `add ...` : 정의. 템플릿의 절 순서를 따름.
 3. property 블록 : 아래 표.
 4. `add property ... on program eServiceSchemaVariableMapping.tcl` : 심볼릭 이름 등록.
-5. 나중 변경 : 처음 `add` 문을 고치지 않고, 파일 끝에 `mod ...` 를 날짜와 요청 번호 주석과 함께 덧붙이는 방식입니다. 운영에 이미 반영된 객체는 `mod` 만 다시 실행하면 되기 때문으로 보입니다.
+5. 나중 변경 : 처음 `add` 문을 고치지 않고, 파일 끝에 `mod ...` 를 날짜와 요청 번호 주석과 함께 덧붙이는 방식입니다. 운영에 이미 반영된 객체는 `mod` 만 다시 실행하면 되기 때문으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ::: warning #del 주석
-`#del` 의 주석을 풀고 파일 전체를 다시 실행하면 객체를 지우고 다시 만듭니다. 정의를 지우면 그 attribute 값이나 연결이 함께 사라지는 것으로 보입니다. 운영 데이터가 있는 객체는 `mod` 로만 고칩니다.
+`#del` 의 주석을 풀고 파일 전체를 다시 실행하면 객체를 지우고 다시 만듭니다. 정의를 지우면 그 attribute 값이나 연결이 함께 사라지는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 운영 데이터가 있는 객체는 `mod` 로만 고칩니다.
 :::
 
 ### property 블록
 
 | property | 값 | 비고 |
 | --- | --- | --- |
-| `version` | `R2025x` | 최근 파일은 `R427` (R2025x 의 내부 릴리스 번호로 보입니다) |
+| `version` | `R2025x` | 최근 파일은 `R427` (R2025x 의 내부 릴리스 번호로 보입니다 <Badge type="danger" text="검증 필요" />) |
 | `application` | `Framework` | 일부 policy 는 `ProductLine` |
 | `installer` | 프로젝트 코드 (`XX`) | 템플릿의 예시 값은 실제 파일과 다름. 실제 파일 값을 따름 |
 | `original name` | 객체 이름 그대로 | |
@@ -138,7 +138,7 @@ mod relationship 'Classified Item' to add type 'XXMyPart';
 | 고치기 | `mod` 로 필요한 부분만. OOTB state 를 지우고 다시 만드는 블록은 주석으로만 남아 있음 |
 | 새로 만들기 | OOTB command 를 `copy command 'OOTB' 'XXNew'` 로 복사해 새 것을 만드는 경우도 있음 |
 
-이미 사본을 만든 파일에서는 `copy` 줄이 주석 처리되어 있기도 합니다. 같은 이름의 사본이 있으면 `copy` 가 실패하기 때문으로 보입니다.
+이미 사본을 만든 파일에서는 `copy` 줄이 주석 처리되어 있기도 합니다. 같은 이름의 사본이 있으면 `copy` 가 실패하기 때문으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ## 권한 블록 표기
 
@@ -246,8 +246,8 @@ connect bus 'XXMyPart' 'MP-0000001' '1' relationship 'XXRelMyPartToMyDoc' to 'XX
 trace off;
 ```
 
-- 엑셀 같은 원본에서 한 줄 = 명령 하나로 만들어 낸 것으로 보입니다.
-- 이관 데이터의 name 은 채번기를 거치지 않고 직접 적습니다. 이관한 번호와 채번기의 `eService Next Number` 가 겹치지 않도록 번호 구간을 나누거나 다음 번호를 맞춰 두어야 하는 것으로 보입니다.
+- 엑셀 같은 원본에서 한 줄 = 명령 하나로 만들어 낸 것으로 보입니다. <Badge type="danger" text="검증 필요" />
+- 이관 데이터의 name 은 채번기를 거치지 않고 직접 적습니다. 이관한 번호와 채번기의 `eService Next Number` 가 겹치지 않도록 번호 구간을 나누거나 다음 번호를 맞춰 두어야 하는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ::: warning
 이관 파일에는 `set context ... password` 가 평문으로 들어 있는 것이 있습니다. 비밀번호는 파일에 남기지 않습니다. 이관 데이터의 한글 값은 명령 안에 들어가므로 파일 인코딩을 서버와 맞춥니다.

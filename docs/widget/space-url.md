@@ -40,7 +40,7 @@ getSpaceUrl(platformId)
 | `PlatformAPI.getTenant()` | 대시보드 전체의 현재 테넌트 |
 | `WidgetServices.getTenantID()` | `x3dPlatformId` → 서버가 넣은 값 → 인자 |
 
-- 온프레미스 환경의 플랫폼 id 는 `OnPremise` 로 보입니다. ENOVIA 위젯 일부는 `x3dPlatformId` 를 `defaultValue="OnPremise"` 로 선언하고, ENOCharacteristicsApp 은 값이 없으면 `'OnPremise'` 를 씁니다.
+- 온프레미스 환경의 플랫폼 id 는 `OnPremise` 로 보입니다. <Badge type="danger" text="검증 필요" /> ENOVIA 위젯 일부는 `x3dPlatformId` 를 `defaultValue="OnPremise"` 로 선언하고, ENOCharacteristicsApp 은 값이 없으면 `'OnPremise'` 를 씁니다.
 - 값이 없으면 `getServiceUrl` 에 `platformId` 를 넣지 않습니다. 그러면 모든 플랫폼 목록이 배열로 옵니다.
 
 ## 서버 주소 (3DSpace)
@@ -137,7 +137,7 @@ var preferred = p && p.role ? toContext(p.role.name, p.organization.name, p.coll
 - 목록은 협업공간 × (조직, 역할) 조합입니다. 화면 표시에는 `title`, `role.nls` 를 씁니다.
 - `select` 는 필요한 것만 넣습니다. ENOVIA 코드에는 `select=preferredcredentials` 만 (8 건), `select=collabspaces` 만 (6 건), 둘 다 (22 건) 쓰는 형태가 모두 있습니다.
 - `preferredcredentials` 는 비어 있는 객체일 수 있습니다. ENOVIA 코드도 `Object.keys(...).length > 0` 를 확인합니다.
-- `tenant` 파라미터는 WidgetServices 가 플랫폼 id 가 있을 때 붙입니다. 3DSpace 가 여러 플랫폼을 서비스하는 환경에서 필요한 것으로 보입니다.
+- `tenant` 파라미터는 WidgetServices 가 플랫폼 id 가 있을 때 붙입니다. 3DSpace 가 여러 플랫폼을 서비스하는 환경에서 필요한 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ### 기본값만 받기
 

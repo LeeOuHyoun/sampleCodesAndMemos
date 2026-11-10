@@ -48,7 +48,7 @@ add property channel_XX_MyPartInfoChannel on program eServiceSchemaVariableMappi
 | 항목 | 설명 |
 | --- | --- |
 | `command 'A','B'` | 탭 목록 (쉼표로 나열) |
-| `setting 'Height'` | 이 channel 이 있는 행의 높이 (`70%`, `30%` 처럼). 높이는 행 단위로 정해지는 것으로 보입니다 (`UIPortal.getRowHeight`) |
+| `setting 'Height'` | 이 channel 이 있는 행의 높이 (`70%`, `30%` 처럼). 높이는 행 단위로 정해지는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (`UIPortal.getRowHeight`) |
 | `setting 'Registered Suite'` | 탭 label 을 찾을 suite |
 | `Dynamic Command Program` / `Function` | 탭 목록을 JPO 로 만듦 |
 
@@ -75,7 +75,7 @@ add command 'XX_MyPartBOMPortalCmd'
 
 | 붙는 파라미터 | 값 |
 | --- | --- |
-| `portalMode` | `true`. 받는 JSP 는 이 값으로 "포털 칸 안" 인지 알고 머리글 / 버튼 배치를 바꾸는 것으로 보입니다 |
+| `portalMode` | `true`. 받는 JSP 는 이 값으로 "포털 칸 안" 인지 알고 머리글 / 버튼 배치를 바꾸는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `portalCmdName` | 탭 command 이름 |
 | `objectId` | 포털을 연 객체 id. command 에 `Alternate OID expression` 이 있으면 그 식의 객체 id |
 | `parentOID`, `relId` | 부모 객체 id, 연결 id (있을 때) |

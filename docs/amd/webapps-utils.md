@@ -53,7 +53,7 @@ var workerUrl = WebappsUtils.getWebappsBaseUrl() + 'MyWidget/worker.js';
 AmdLoader.js 가 먼저 `dsDefaultWebappsBaseUrl` 을 정해 두므로 보통은 AmdLoader 가 찾은 주소와 같습니다 ([webapps 주소를 정하는 순서](/amd/#webapps-주소를-정하는-순서)).
 
 ::: warning 3DDashboard 안에서의 webapps 주소
-3DDashboard 위젯 프레임에서는 AmdLoader 를 프레임이 먼저 읽으므로 webapps 주소도 프레임이 정하는 것으로 보입니다. 위젯 HTML 이 놓인 3DSpace 의 webapps 와 같다고 가정하지 말고, 3DSpace 서버 주소가 필요하면 [3DSpace 주소와 SecurityContext](/widget/space-url) 의 방법을 씁니다. webapps 주소는 "같은 서버의 정적 파일" 을 가리킬 때만 씁니다.
+3DDashboard 위젯 프레임에서는 AmdLoader 를 프레임이 먼저 읽으므로 webapps 주소도 프레임이 정하는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 위젯 HTML 이 놓인 3DSpace 의 webapps 와 같다고 가정하지 말고, 3DSpace 서버 주소가 필요하면 [3DSpace 주소와 SecurityContext](/widget/space-url) 의 방법을 씁니다. webapps 주소는 "같은 서버의 정적 파일" 을 가리킬 때만 씁니다.
 :::
 
 ## 같은 파일의 다른 모듈

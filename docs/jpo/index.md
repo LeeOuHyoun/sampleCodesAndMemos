@@ -62,7 +62,7 @@ public class emxPart_mxJPO extends emxPartBase_mxJPO {
 }
 ```
 
-- OOTB 동작을 바꿀 때는 파생 클래스에서 메서드를 덮어씁니다. Base 를 직접 고치면 업그레이드 때 사라지는 것으로 보입니다.
+- OOTB 동작을 바꿀 때는 파생 클래스에서 메서드를 덮어씁니다. Base 를 직접 고치면 업그레이드 때 사라지는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 - 새로 만드는 JPO 는 Base / 파생으로 나누지 않고 한 클래스로 두는 경우가 많습니다. 공통 로직은 일반 Java 패키지(jar)로 빼고 JPO 에서 부릅니다.
 
 ::: info 근거

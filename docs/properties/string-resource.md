@@ -14,7 +14,7 @@
 | --- | --- | --- |
 | `이름.properties` | 영어, ASCII | 기본. 언어 파일에 키가 없을 때 여기서 찾음 |
 | `이름_ko.properties` | 한글을 `판단` 처럼 적은 ASCII | 실행 때 읽는 한국어 파일 |
-| `이름_koNative.properties` | CP949 로 저장한 한글 원문 | 사람이 읽는 원본으로 보입니다. `_ko` 보다 줄 수가 적어 최신이 아님 |
+| `이름_koNative.properties` | CP949 로 저장한 한글 원문 | 사람이 읽는 원본으로 보입니다. <Badge type="danger" text="검증 필요" /> `_ko` 보다 줄 수가 적어 최신이 아님 |
 | `이름_en.properties` | 영어 | 영어 사용자. 없는 키는 기본 파일에서 찾음 |
 | `emxFrameworkStringResource_kernel.properties` | 영어 | kernel type 표시 이름 (`VPLMtyp/...`) |
 
@@ -43,7 +43,7 @@ OOTB 와 프로젝트 모두 `_ko` 에 `\uXXXX` 로 적습니다. 한글을 그�
 
 - 이름 안의 **공백은 `_`** 로 바꿉니다. 괄호 같은 다른 문자는 그대로 둡니다 (`Disposition_(In_Field)`).
 - **실제 이름** 기준입니다. 심볼릭 이름(`type_Part`)이 아닙니다.
-- 이 키들은 `emxFrameworkStringResource` 에서만 찾는 것으로 보입니다. OOTB 와 프로젝트 모두 이 파일에만 두고, 코드도 `"Framework"` 별칭이나 `emxFrameworkStringResource` 로 읽습니다.
+- 이 키들은 `emxFrameworkStringResource` 에서만 찾는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> OOTB 와 프로젝트 모두 이 파일에만 두고, 코드도 `"Framework"` 별칭이나 `emxFrameworkStringResource` 로 읽습니다.
 
 ```java
 String typeLabel  = i18nNow.getTypeI18NString(typeName, lang);

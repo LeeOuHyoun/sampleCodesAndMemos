@@ -19,7 +19,7 @@
 
 - 트리거는 **떠나는 state** 기준입니다. `Review` 진입 시 할 일은 `In Work` 의 Promote Action 에 둡니다.
 - demote 도 같습니다. `Review` → `In Work` 반려 처리는 `Review` 의 Demote Check / Action 에 둡니다.
-- Check 와 Action 은 같은 트랜잭션 안에서 돕니다. Action 이 예외를 던지면 state 변경도 남지 않는 것으로 보입니다.
+- Check 와 Action 은 같은 트랜잭션 안에서 돕니다. Action 이 예외를 던지면 state 변경도 남지 않는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ::: tip 진입 후 처리와 Target States
 한 state 에서 promote 하면 다음 state 는 하나뿐이므로 Target States 는 대부분 필요 없습니다. OOTB 의 `PolicyAllStateAllTransitionControlCheck` 처럼 **같은 설정 객체를 여러 state 에 붙여 두고** 특정 전이에서만 실행할 때 씁니다. [Target States](/trigger/register#target-states)
@@ -31,7 +31,7 @@
 | --- | --- |
 | `obj.promote(context)` | 다음 state 로. 트리거 실행 |
 | `obj.demote(context)` | 이전 state 로. 트리거 실행 |
-| `obj.setState(context, "Release")` | 목표 state 로 바로. 거치는 전이마다 트리거가 실행되는 것으로 보입니다 |
+| `obj.setState(context, "Release")` | 목표 state 로 바로. 거치는 전이마다 트리거가 실행되는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `promoteWithBL` / `demoteWithBL` | OOTB 라이프사이클 화면이 on-premise 에서 쓰는 것 |
 | `MqlUtil.mqlCommand(context, "promote bus $1", id)` | MQL 로 promote |
 | `override bus $1` | 다음 promote 의 서명 요건을 건너뜀 (OOTB 는 Route 객체에 사용) |
@@ -84,7 +84,7 @@ mod policy 'MyRequestPolicy' state 'Review'
 | --- | --- |
 | state 의 `promote true` | 조건을 다 채우면 다음 state 로 자동 promote |
 | `signature` | state 승인 서명 (approve / reject / ignore). 프로젝트는 쓰지 않음 |
-| `${AUTOPROMOTE}` | 트리거 안에서 자동 promote 인지 구분하는 RPE 변수로 보입니다 |
+| `${AUTOPROMOTE}` | 트리거 안에서 자동 promote 인지 구분하는 RPE 변수로 보입니다 <Badge type="danger" text="검증 필요" /> |
 
 자세한 문법은 [Policy](/schema/policy#문법에는-있지만-프로젝트에서-안-쓰는-것) 를 봅니다.
 

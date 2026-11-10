@@ -25,7 +25,7 @@ Foundation2/Foundation2.js (`applyUpdates`, `__generateUpdateWidget`, `__copyMod
 | --- | --- |
 | 3DSpace 주소 | 위젯: `i3DXCompassPlatformServices.getServiceURL('3DSpace', platformId)`. 3DSpace 안의 페이지: 현재 주소에서 `/webapps/` 앞부분 |
 | 플랫폼 id | `widget.getValue('x3dPlatformId')`. 온프레미스는 `'OnPremise'` 를 기본값으로 쓰는 코드가 많음 |
-| `tenant=` | 많은 코드가 붙입니다. 온프레미스에서는 생략해도 되는 것으로 보입니다 |
+| `tenant=` | 많은 코드가 붙입니다. 온프레미스에서는 생략해도 되는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 
 ## 두 가지 계열
 
@@ -134,7 +134,7 @@ Foundation, DocumentManagement 는 헤더 대신 **요청 본문 최상위에 `c
 | `$depth` | B | `$depth=20` | 구조 펼치기 깊이 |
 | `$filter` | - | `$filter=dimensionName+eq+Length` | 조건 |
 | `$definition` | A | `$definition=true` | 필드 정의 같이 받기 |
-| `$terse` | A | `$terse=true` | 응답 줄이기로 보입니다 |
+| `$terse` | A | `$terse=true` | 응답 줄이기로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `e6w-lang`, `e6w-timezone` | A | `e6w-lang=ko` | 언어, 시간대. Foundation2 는 `$language`, `$timezone` 로 바꿔 보냄 |
 
 ## 쓰기 본문 A

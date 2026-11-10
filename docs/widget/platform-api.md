@@ -93,7 +93,7 @@ sub.unsubscribe();
 | 호출 시점 | 비동기 (`setTimeout 0`). 콜백 안 오류는 따로 던져져 다른 구독자에 영향 없음 |
 | 와일드카드 | 점(`.`)으로 나눈 topic 에서 `*` 는 한 칸, `#` 은 여러 칸. `'myapp.*'`, `'myapp.#'` |
 | 신뢰 출처 | 플랫폼 서비스 주소(`getPlatformServices` 결과의 `http...` 값)와 같은 origin 의 창 메시지만 받음 |
-| `targets` | 기본 `['web']`. `'web-in-win'` 을 넣으면 원래 topic 대신 `webinwin:web:notification` (원래 topic 은 `message.originalTopic`) 으로도 보냄. 데스크톱 앱 안 위젯(Web-in-Win)용으로 보입니다 |
+| `targets` | 기본 `['web']`. `'web-in-win'` 을 넣으면 원래 topic 대신 `webinwin:web:notification` (원래 topic 은 `message.originalTopic`) 으로도 보냄. 데스크톱 앱 안 위젯(Web-in-Win)용으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 
 ::: warning unsubscribe 에 topic 문자열을 넘기면
 `PlatformAPI.unsubscribe('myapp.part.selected')` 는 이 프레임의 `Widgets` 채널에서 그 topic 에 맞는 **모든** 구독을 지웁니다. 같은 프레임의 다른 모듈 구독도 사라집니다. `subscribe` 가 돌려준 객체로 해제합니다.

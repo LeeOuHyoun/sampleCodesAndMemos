@@ -13,7 +13,7 @@ jpo 폴더 호출 수: `context.getLocale(` 1,617, `context.getSession(` 1,340, 
 | 메서드 | 값 |
 | --- | --- |
 | `context.getUser()` | 로그인 사용자 이름. `pushContext` 중이면 바뀐 사용자 |
-| `context.getRole()` | 현재 보안 컨텍스트 (역할 / 조직 / 공간) 로 보입니다 |
+| `context.getRole()` | 현재 보안 컨텍스트 (역할 / 조직 / 공간) 로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | `context.getLocale()` | `Locale`. 다국어 문구에 씀 |
 | `context.getSession().getLanguage()` | 언어 코드 (`ko`, `en` ...) |
 | `context.getVault().getName()` | 기본 vault |
@@ -81,7 +81,7 @@ xerinfra.jar `ContextUtil.startTransaction(Context, boolean, boolean)`: 카운�
 | 생성 폼 | `emxCreateProcess.jsp` | `createJPO`, 연결, `postProcessJPO` |
 | 편집 폼 | `emxFormEditProcess.jsp` | 필드별 `Update Function`, `postProcessJPO` |
 
-트리거는 객체를 바꾸는 MQL 명령의 트랜잭션 안에서 실행되는 것으로 보입니다. 그렇다면 위 표의 세 번째 줄에 해당해 `startTransaction` 은 아무것도 하지 않습니다. 트리거 JPO 에서 트랜잭션을 따로 열 필요는 없고, 막으려면 `1` 을 돌려줍니다 ([트리거](/trigger/)).
+트리거는 객체를 바꾸는 MQL 명령의 트랜잭션 안에서 실행되는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 그렇다면 위 표의 세 번째 줄에 해당해 `startTransaction` 은 아무것도 하지 않습니다. 트리거 JPO 에서 트랜잭션을 따로 열 필요는 없고, 막으려면 `1` 을 돌려줍니다 ([트리거](/trigger/)).
 
 ::: info 근거
 common/emxCreateProcess.jsp:190, 221 (`setSavePoint(context,"CreateObject")`), 259, 365-378. common/emxFormEditProcess.jsp:161, 268-285
@@ -112,7 +112,7 @@ try {
 - 단일 MQL 명령만 슈퍼유저로 하려면 `MqlUtil.mqlCommand(context, cmd, true, ...)` 를 씁니다 ([MqlUtil](/jpo/mql-util#boolean-인자)).
 
 ::: warning popContext 는 꼭 finally 에서
-`pushContext` 뒤에 예외가 나서 `popContext` 를 못 하면, 그 요청의 나머지 처리가 슈퍼유저로 실행됩니다. 이력 (history) 의 사용자도 User Agent 로 남는 것으로 보입니다. OOTB 는 `pushContext` 698 건, `popContext` 725 건으로 대부분 finally 에서 짝을 맞춥니다.
+`pushContext` 뒤에 예외가 나서 `popContext` 를 못 하면, 그 요청의 나머지 처리가 슈퍼유저로 실행됩니다. 이력 (history) 의 사용자도 User Agent 로 남는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> OOTB 는 `pushContext` 698 건, `popContext` 725 건으로 대부분 finally 에서 짝을 맞춥니다.
 :::
 
 ::: warning pushContext 중에는 context.getUser() 가 바뀝니다

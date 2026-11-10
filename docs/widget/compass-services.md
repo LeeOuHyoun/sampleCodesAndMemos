@@ -185,7 +185,7 @@ require(['DS/i3DXCompassPlatformServices/OpenWith'], function (OpenWith) {
 - 호환 판단은 `objectTaxonomies` (배열)가 있으면 그것, 없으면 `objectType` 으로 합니다. `objectType` 에 배열을 넣는 것은 콘솔에 deprecated 경고가 나옵니다.
 - 앱 목록은 대시보드 Compass 가 가진 것을 씁니다. 단독 실행에서는 앱 목록이 없어 동작하지 않습니다.
 - 3DXContent 항목에서 많이 쓰는 키: `envId` 115, `objectId` 112, `serviceId` 102, `objectType` 96, `contextId` 84, `displayName` 73, `displayType` 36 (ENOVIA 코드 집계).
-- 열리는 앱은 이 `content` 를 위젯 값 `X3DContentId` (JSON 문자열)로 받는 것으로 보입니다 ([위젯 설정](/widget/preferences#플랫폼이-넣어-주는-값)).
+- 열리는 앱은 이 `content` 를 위젯 값 `X3DContentId` (JSON 문자열)로 받는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> ([위젯 설정](/widget/preferences#플랫폼이-넣어-주는-값)).
 
 ## 2026 변경
 

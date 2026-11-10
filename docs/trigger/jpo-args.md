@@ -37,7 +37,7 @@ OOTB 에는 `void` 메서드도 있습니다 (`emxCommonTask.triggerPromoteActio
 | 인자 **전체** 가 값으로 바뀜 | `id=${OBJECTID}` | `1234.5678...` (앞의 `id=` 사라짐) |
 | 인자 하나에 macro 하나 | `${TYPE}/${NAME}` | `TYPE` 값만 |
 | `${` 가 없으면 그대로 | `delete` | `delete` |
-| 없는 변수 | `${NOTHING}` | 빈 값으로 보입니다 |
+| 없는 변수 | `${NOTHING}` | 빈 값으로 보입니다 <Badge type="danger" text="검증 필요" /> |
 
 값을 이어 붙여야 하면 인자를 나눠 받고 JPO 에서 합칩니다. 고정 문자열을 넣어 같은 메서드를 상황별로 나눠 쓰는 것도 흔합니다 (예: 3 번째 인자에 `create` / `delete`).
 

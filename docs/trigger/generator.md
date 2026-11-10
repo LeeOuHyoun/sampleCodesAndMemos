@@ -33,8 +33,8 @@ eService Number Generator   'type_MyPart'  ''      다음 번호
 | | `eService Retry Count` | 번호를 잠그지 못했을 때 다시 시도할 횟수 |
 | | `eService Retry Delay` | 다시 시도 전 기다리는 시간 |
 | | `eService Processing Time Limit` | 처리 제한 시간 |
-| | `eService Safety Policy` | policy 심볼릭 이름 (`policy_MyPartPolicy`). 호출 때 policy 를 주지 않으면 쓰는 값으로 보입니다 |
-| | `eService Safety Vault` | vault 심볼릭 이름 (`vault_eServiceAdministration`). 위와 같은 용도로 보입니다 |
+| | `eService Safety Policy` | policy 심볼릭 이름 (`policy_MyPartPolicy`). 호출 때 policy 를 주지 않으면 쓰는 값으로 보입니다 <Badge type="danger" text="검증 필요" /> |
+| | `eService Safety Vault` | vault 심볼릭 이름 (`vault_eServiceAdministration`). 위와 같은 용도로 보입니다 <Badge type="danger" text="검증 필요" /> |
 | Number Generator | `eService Next Number` | 다음 번호. **자리수가 그대로 유지됨** (`000001` → `000002`) |
 
 ## 만들기
@@ -70,7 +70,7 @@ generator 는 **심볼릭 type 이름** 으로 찾습니다. `'MyPart'` 처럼 �
 
 ## 번호가 만들어지는 방식
 
-OOTB 코드(`emxLibraryCentralClassificationAttributes`)가 직접 번호를 뽑는 부분을 보면 아래 순서입니다. `FrameworkUtil.autoName` 도 같은 방식으로 보입니다.
+OOTB 코드(`emxLibraryCentralClassificationAttributes`)가 직접 번호를 뽑는 부분을 보면 아래 순서입니다. `FrameworkUtil.autoName` 도 같은 방식으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 1. `pushContext` 와 트랜잭션 시작
 2. Number Generator 를 `lockForUpdate`. 실패하면 `Retry Delay` 만큼 쉬고 `Retry Count` 번까지 다시 시도

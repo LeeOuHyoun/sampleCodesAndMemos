@@ -60,5 +60,5 @@ require(['UWA/Utils/InterCom'], function (InterCom) {
 - 다른 도메인 창이면 `subscribeServer` 의 세 번째 인자에 상대 origin 을 넣습니다.
 
 ::: tip isPublic
-일부 코드는 `new InterCom.Server(id, { isPublic: true })` 를 쓰지만, 2025 InterCom 코드에서는 `isPublic` 을 읽는 곳이 없습니다. 넣어도 효과가 없는 것으로 보입니다.
+일부 코드는 `new InterCom.Server(id, { isPublic: true })` 를 쓰지만, 2025 InterCom 코드에서는 `isPublic` 을 읽는 곳이 없습니다. 넣어도 효과가 없는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 :::

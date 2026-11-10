@@ -1,4 +1,4 @@
-# 위젯 설정 (preferences)
+# 위젯 설정 (preferences) <Badge type="info" text="원본 분석" />
 
 위젯 설정은 사용자가 위젯마다 바꾸는 값입니다 (페이지 크기, 보기 방식, 자격 증명 ...). 정의는 HTML 의 `<widget:preferences>` 나 `widget.addPreference` 로 하고, 값은 `widget.getValue` / `setValue` 로 읽고 씁니다. 화면에 보이지 않는 `hidden` 항목은 위젯 상태 저장용으로 많이 씁니다.
 

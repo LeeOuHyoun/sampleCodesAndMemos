@@ -1,4 +1,4 @@
-# portal, channel
+# portal, channel <Badge type="info" text="원본 분석" />
 
 **portal** 은 한 화면을 여러 칸으로 나눈 대시보드입니다. 칸 하나가 **channel** 이고, channel 은 command 를 **탭** 으로 담습니다. 탭(command)마다 자기 `href` 화면(table, form ...)을 칸 안에 엽니다.
 

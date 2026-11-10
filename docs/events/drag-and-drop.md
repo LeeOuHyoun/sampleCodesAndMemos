@@ -1,4 +1,4 @@
-# 끌어 놓기 (DataDragAndDrop, 3DXContent)
+# 끌어 놓기 (DataDragAndDrop, 3DXContent) <Badge type="info" text="원본 분석" />
 
 3DEXPERIENCE 에서 객체를 다른 위젯으로 넘기는 표준 방법은 **HTML5 끌어 놓기 + `text` 형식의 JSON 문자열** 입니다. 이 JSON 의 약속을 **3DXContent** 라고 부릅니다. 위젯이 서로 다른 iframe 에 있어도 브라우저가 데이터를 넘겨 줍니다.
 

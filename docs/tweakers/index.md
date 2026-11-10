@@ -1,4 +1,4 @@
-# Tweakers 개요
+# Tweakers 개요 <Badge type="info" text="원본 분석" />
 
 Tweakers 는 값 하나를 보여주고 편집하는 컨트롤(편집기) 모음입니다. DataGridView 의 셀 편집기, 툴바의 버튼과 콤보, 폼과 속성 패널의 입력칸이 모두 Tweaker 입니다. enovia2025 webapps 에서 69 개 모듈 폴더가 사용합니다.
 

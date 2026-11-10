@@ -1,4 +1,4 @@
-# 보안 컨텍스트 (SecurityContext)
+# 보안 컨텍스트 (SecurityContext) <Badge type="info" text="원본 분석" />
 
 3DSpace REST 를 부를 때 헤더 `SecurityContext` 에 "어떤 역할로, 어느 조직, 어느 협업공간에서" 일하는지를 넣습니다. 같은 사용자라도 이 값에 따라 보이는 객체와 할 수 있는 일이 달라집니다.
 

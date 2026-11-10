@@ -2,7 +2,7 @@
 title: 컬럼 함수
 ---
 
-# 컬럼 함수
+# 컬럼 함수 <Badge type="info" text="원본 분석" />
 
 컬럼 옵션에 고정값 대신 함수를 넣으면 셀마다 다르게 정할 수 있습니다. 인자 `cellInfos` 에는 rowID, columnID, cellID, nodeModel(행 데이터), cellModel(셀 값) 등이 들어 있고, 함수 안의 `this` 는 그리드입니다.
 
@@ -18,6 +18,10 @@ title: 컬럼 함수
   }
 }
 ```
+
+::: info 근거
+DataGridView.js 의 DataGridViewLayout (`getColumnOptionValue(columnID, "함수명")` 으로 컬럼 함수를 읽는 getter 들), DataGridView 의 getCellInfosAt / setNodeModelValue / getCellValueForSort 호출부, CollectionView.js 의 셀 선택, 활성 판단 코드.
+:::
 
 ## 값 (표시 / 저장 / 정렬)
 

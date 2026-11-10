@@ -2,11 +2,11 @@
 title: 그리드 옵션
 ---
 
-# 그리드 옵션
+# 그리드 옵션 <Badge type="info" text="원본 분석" />
 
 `new DataGridView({ ... })` 에 넘기는 설정 객체 최상위 키입니다. DataGridView 자체 옵션과 상속받은 CollectionView, Controls/Abstract 옵션을 함께 정리했습니다.
 
-생성 후에도 `grid.옵션 = 값` 으로 바꿀 수 있습니다 (readOnly 표시 제외).
+생성 후에도 `grid.옵션 = 값` 으로 바꿀 수 있습니다 (readOnly 표시 제외). 그리드 객체에서 부르는 함수는 [그리드 메서드](/datagridview/api/grid-methods) 에 있습니다.
 
 ```js
 var grid = new DataGridView({

@@ -2,7 +2,7 @@
 title: 데이터 (TreeDocument)
 ---
 
-# 데이터 (TreeDocument / TreeNodeModel)
+# 데이터 (TreeDocument / TreeNodeModel) <Badge type="info" text="원본 분석" />
 
 그리드에 표시할 데이터입니다. `TreeDocument` 가 데이터 묶음, `TreeNodeModel` 이 행 하나입니다.
 
@@ -15,6 +15,27 @@ treeDocument.pushUpdate();
 
 ::: tip
 서버 저장 후 행 값을 바꾸거나 변경 이력을 관리하는 함수는 [저장 후 화면 반영](/datagridview/save-and-reflect) 에 정리되어 있습니다.
+:::
+
+## 그리드에서 TreeDocument 꺼내기, 바꾸기
+
+이미 만든 그리드에서 데이터를 다시 얻을 때는 `getTreeDocument()` 를 씁니다.
+
+```js
+var treeDocument = grid.getTreeDocument();
+treeDocument.getSelectedNodes();
+```
+
+| 상황 | 방법 | 비고 |
+| --- | --- | --- |
+| 그리드 객체가 있을 때 | <code>grid.getTreeDocument()</code> | 권장. 넣기 전이면 `undefined` |
+| 그리드 객체가 있을 때 | <code>grid.treeDocument</code> | 같은 객체. 넣기 전이면 `null` |
+| 행(TreeNodeModel)만 있을 때 | <code>nodeModel.getTreeDocument()</code> | 이벤트의 `cellInfos.nodeModel` 등 |
+| 툴바 동작 모듈 안 | <code>e.context.executionContext.treeDocument</code> | [툴바](/datagridview/toolbar) 참고 |
+| 데이터 통째로 교체 | <code>grid.treeDocument = newTreeDocument</code> | 별도 `setTreeDocument` 함수는 없음 |
+
+::: info 근거
+DataGridView.js 의 DataGridView.getTreeDocument (`this._rowModel._getTreeDocument()` 반환), publishedProperties `treeDocument`, `_applyTreeDocument`. 그리드의 다른 함수는 [그리드 메서드](/datagridview/api/grid-methods) 에 있습니다.
 :::
 
 ## new TreeNodeModel({ ... }) — 행

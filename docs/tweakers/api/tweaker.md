@@ -2,7 +2,7 @@
 title: Tweaker API
 ---
 
-# Tweaker API
+# Tweaker API <Badge type="info" text="원본 분석" />
 
 모든 편집기(TweakerString, TweakerNumber ...)가 `TweakerBase` 에서 물려받는 속성, 메서드, 이벤트입니다. 편집기별 세부 옵션은 [semantics](/tweakers/api/semantics) 에 있습니다.
 

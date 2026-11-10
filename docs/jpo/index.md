@@ -1,4 +1,4 @@
-# JPO 개요
+# JPO 개요 <Badge type="info" text="원본 분석" />
 
 JPO (Java Program Object) 는 3DSpace 서버에서 돌아가는 Java 클래스입니다. 표 (table), 폼 (webform), 명령 (command), 검색, 트리거가 화면이나 이벤트에서 JPO 메서드를 이름으로 불러 씁니다. 업무 로직 대부분이 여기에 들어갑니다.
 

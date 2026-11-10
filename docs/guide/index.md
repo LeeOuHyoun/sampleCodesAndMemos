@@ -33,6 +33,9 @@ ENOVIA(3DEXPERIENCE) 는 개발 사양서를 제공하지 않고, webapps 소스
 - 한쪽 버전에만 있는 키는 배지로 표시합니다.
   - <Badge type="warning" text="2026" /> 2026 에만 있음
   - <Badge type="tip" text="2025" /> 2025 에만 있음 (2026 에서 빠짐)
+- 페이지 제목 옆 배지는 내용을 어디까지 확인했는지 나타냅니다.
+  - <Badge type="tip" text="서버 확인" /> 관련 샘플을 ENOVIA 서버에서 실행해 동작을 확인함
+  - <Badge type="info" text="원본 분석" /> 원본 소스 분석으로만 작성함. 실제 동작이 다르면 원본 쪽이 맞음
 
 ## 샘플 소스
 

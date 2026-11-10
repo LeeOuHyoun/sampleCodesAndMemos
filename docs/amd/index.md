@@ -1,4 +1,4 @@
-# AMD 로딩
+# AMD 로딩 <Badge type="info" text="원본 분석" />
 
 ENOVIA webapps 의 JavaScript 는 모두 AMD 모듈(`define` / `require`)입니다. 로더는 `AmdLoader/AmdLoader.js` 하나이고, RequireJS 2.1.11 에 DS 전용 규칙(묶음 파일 먼저 읽기, `i18n!` / `css!` / `text!` 플러그인)을 덧붙인 것입니다.
 

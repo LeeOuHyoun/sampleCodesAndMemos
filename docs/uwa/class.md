@@ -1,4 +1,4 @@
-# 클래스 (UWA/Class)
+# 클래스 (UWA/Class) <Badge type="info" text="원본 분석" />
 
 ENOVIA 화면 코드 대부분이 `UWA/Class` 로 클래스를 만듭니다. `extend` 로 상속하고, `init` 이 생성자, `this._parent()` 가 부모 메서드 호출입니다. 옵션, 이벤트, 타이머 같은 기능은 mixin 으로 섞어 넣습니다.
 

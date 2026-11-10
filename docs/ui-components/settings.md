@@ -1,4 +1,4 @@
-# settings 레퍼런스
+# settings 레퍼런스 <Badge type="info" text="원본 분석" />
 
 `setting '키' '값'` 은 command, menu, column, field, channel, portal 의 동작을 정합니다. 키는 정해진 영어 문구이고 값은 항상 문자열입니다. 이 페이지는 대상별로 키를 모읍니다.
 

@@ -1,4 +1,4 @@
-# Model, Collection, View
+# Model, Collection, View <Badge type="info" text="원본 분석" />
 
 `UWA/Class/Model`, `Collection`, `View` 는 Backbone 과 비슷한 구조입니다. 데이터(Model)가 바뀌면 이벤트가 나고, 화면(View)이 그 이벤트를 듣고 다시 그립니다. 다만 이벤트 이름과 메서드 이름이 Backbone 과 다릅니다.
 

@@ -1,4 +1,4 @@
-# 고전 UI 구성 요소 개요
+# 고전 UI 구성 요소 개요 <Badge type="info" text="원본 분석" />
 
 3DSpace 의 고전 화면(AEF, Application Exchange Framework)은 JSP 를 직접 짜서 만들지 않습니다. **command, menu, table, webform, channel, portal** 같은 admin 객체를 MQL 로 정의하면, 프레임워크 JSP(`emxIndentedTable.jsp`, `emxForm.jsp` ...)가 그 정의를 읽어 화면을 그립니다. 개발자가 하는 일은 대부분 이 객체를 만들고, **setting** 으로 동작을 정하고, 데이터가 필요하면 JPO 메서드를 연결하는 것입니다.
 

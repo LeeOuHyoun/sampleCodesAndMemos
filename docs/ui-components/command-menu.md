@@ -1,4 +1,4 @@
-# command, menu
+# command, menu <Badge type="info" text="원본 분석" />
 
 **command** 는 링크 하나입니다. 무엇을 열지(`href`), 어떻게 보일지(`label`, `Image`), 어디에 열지(`Target Location`), 누구에게 보일지(`Access ...`)를 정합니다. **menu** 는 command 와 다른 menu 를 담는 묶음입니다. 같은 menu 객체가 놓이는 곳에 따라 툴바, 드롭다운, 객체 트리, 앱 메뉴가 됩니다.
 

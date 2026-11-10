@@ -1,4 +1,4 @@
-# widget 객체
+# widget 객체 <Badge type="info" text="원본 분석" />
 
 위젯 코드에서 쓰는 전역 `widget` 은 `UWA/Widget` 클래스의 인스턴스입니다. 화면 영역, 제목, 설정 값, 이벤트를 모두 이 객체로 다룹니다. 설정 정의와 값은 [위젯 설정](/widget/preferences) 에 따로 정리했습니다.
 

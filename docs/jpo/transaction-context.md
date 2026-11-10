@@ -1,4 +1,4 @@
-# Context, 트랜잭션, 권한 전환
+# Context, 트랜잭션, 권한 전환 <Badge type="info" text="원본 분석" />
 
 `Context` 는 "누가, 어떤 트랜잭션 안에서" 실행 중인지를 담은 세션 객체입니다. JPO 메서드는 항상 첫 인자로 받습니다. 이 페이지는 Context 에서 꺼내 쓰는 값, 트랜잭션 (`ContextUtil.startTransaction`), 슈퍼유저로 잠깐 바꾸기 (`pushContext` / `popContext`) 를 정리합니다.
 

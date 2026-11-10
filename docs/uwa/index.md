@@ -1,9 +1,13 @@
-# UWA 개요
+# UWA 개요 <Badge type="info" text="원본 분석" />
 
 UWA (Universal Widget API) 는 3DEXPERIENCE 화면 코드의 기반 라이브러리입니다. 유틸 함수, DOM 다루기, 클래스 / 이벤트, Model / View, Promise 를 제공합니다. enovia2025 webapps 의 모듈 폴더 1,659 개 중 1,116 개가 `UWA/Core` 또는 `UWA/Class` 를 씁니다.
 
 ::: tip 공식 문서와의 관계
 UWA 는 3DS 위젯 개발 문서에 일부 공개된 API 입니다. 이 문서는 ENOVIA 원본 코드 기준의 **실제 동작과 함정**, ENOVIA 코드에서 쓰는 패턴을 중심으로 정리합니다.
+:::
+
+::: info 근거
+webapps/UWA2/js/ 의 모듈별 소스 (Core.js, Element.js, Class.js, Class/*.js, Promise.js). 모듈 폴더 수와 참조 횟수는 enovia2025 webapps 전체 소스의 의존성 문자열 `"UWA/..."` 를 센 값.
 :::
 
 ## 원본 위치

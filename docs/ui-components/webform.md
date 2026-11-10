@@ -1,4 +1,4 @@
-# webform (상세, 편집, 생성 화면)
+# webform (상세, 편집, 생성 화면) <Badge type="info" text="원본 분석" />
 
 **webform** (MQL 이름은 `form`) 은 객체 하나의 필드(field) 목록입니다. 같은 form 을 `emxForm.jsp` 로 열면 **보기 / 편집** 화면, `emxCreate.jsp` 로 열면 **생성** 화면이 됩니다. 필드 정의는 table 의 column 과 거의 같고, 화면 배치용 필드 종류(섹션, 묶음)가 더 있습니다.
 

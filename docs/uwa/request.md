@@ -1,4 +1,4 @@
-# 서버 호출 (WAFData)
+# 서버 호출 (WAFData) <Badge type="info" text="원본 분석" />
 
 3DSpace, 플랫폼 서비스 같은 서버 호출에는 `UWA.Data.request` 가 아니라 **`DS/WAFData/WAFData` 의 `authenticatedRequest`** 를 씁니다. UWA 모듈은 아니지만 UWA 위에서 동작하며, ENOVIA 코드의 서버 호출 대부분이 이것입니다.
 

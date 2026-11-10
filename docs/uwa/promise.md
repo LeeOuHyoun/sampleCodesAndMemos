@@ -1,4 +1,4 @@
-# Promise
+# Promise <Badge type="info" text="원본 분석" />
 
 `UWA/Promise` 는 브라우저 기본 Promise 를 감싼 클래스입니다. `then` / `catch` / `await` 는 기본 Promise 와 같고, deferred 같은 몇 가지 기능이 더 있습니다.
 

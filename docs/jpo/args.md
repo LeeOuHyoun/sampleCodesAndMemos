@@ -1,4 +1,4 @@
-# 호출 종류별 인자 구조
+# 호출 종류별 인자 구조 <Badge type="info" text="원본 분석" />
 
 JPO 메서드는 모두 `(Context context, String[] args)` 를 받습니다. `args` 안에 무엇이 들어 있는지는 **누가 불렀는지** 에 따라 다릅니다. 이 페이지는 호출 종류마다 `JPO.unpackArgs(args)` 로 꺼낸 Map 의 모양과 돌려줘야 하는 값을 정리합니다.
 

@@ -1,4 +1,4 @@
-# 트리거 JPO 와 인자
+# 트리거 JPO 와 인자 <Badge type="info" text="원본 분석" />
 
 `emxTriggerManager` 가 부르는 JPO 메서드의 형태, 인자가 채워지는 규칙, 이벤트를 막고 메시지를 보여 주는 방법입니다. JPO 기본(생성자, 컴파일, 배포)은 [JPO](/jpo/) 를 봅니다.
 

@@ -2,7 +2,7 @@
 title: 툴바 (setToolbar)
 ---
 
-# 툴바 (setToolbar)
+# 툴바 (setToolbar) <Badge type="info" text="원본 분석" />
 
 툴바는 생성자 옵션이 없고 `grid.setToolbar(JSON)` 으로만 만듭니다. 돌려받은 툴바의 화면 요소(`getContent()`)를 원하는 위치에 붙입니다.
 

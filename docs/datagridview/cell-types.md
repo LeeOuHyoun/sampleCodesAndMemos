@@ -1,4 +1,4 @@
-# 셀 타입
+# 셀 타입 <Badge type="tip" text="서버 확인" />
 
 컬럼의 `typeRepresentation` 으로 셀 모양과 편집기를 정합니다. 편집하려면 `editableFlag: true` 를 같이 넣습니다.
 

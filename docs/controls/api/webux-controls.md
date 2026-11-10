@@ -2,7 +2,7 @@
 title: WebUX 컨트롤 API
 ---
 
-# WebUX 컨트롤 API
+# WebUX 컨트롤 API <Badge type="info" text="원본 분석" />
 
 `DS/Controls/*` 컨트롤별 공개 속성(publishedProperties), 메서드, 이벤트입니다. 사용법은 [WebUX 컨트롤](/controls/webux-controls) 에 있습니다.
 

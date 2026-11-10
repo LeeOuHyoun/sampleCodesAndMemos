@@ -1,4 +1,4 @@
-# 시스템 설정과 page 객체
+# 시스템 설정과 page 객체 <Badge type="info" text="원본 분석" />
 
 언어와 상관없는 동작 설정은 `emxSystem.properties` 와 앱별 `.properties` 에 있고, 프로젝트 값은 `emxFrameworkCustom.properties` 에 둡니다. 파일 대신 DB 에 두는 설정은 **page 객체** 를 씁니다.
 

@@ -2,7 +2,7 @@
 title: UIKIT API
 ---
 
-# UIKIT API
+# UIKIT API <Badge type="info" text="원본 분석" />
 
 `DS/UIKIT/*` 모듈별 옵션(`defaultOptions`), 메서드, 이벤트입니다. 사용법은 [UIKIT](/controls/uikit) 에 있습니다.
 

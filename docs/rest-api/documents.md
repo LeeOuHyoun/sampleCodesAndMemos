@@ -1,4 +1,4 @@
-# 문서 (modeler/documents)
+# 문서 (modeler/documents) <Badge type="info" text="원본 분석" />
 
 `/resources/v1/modeler/documents` 는 소스에서 가장 많이 쓰는 3DSpace REST 입니다 (80 건, 20 개 모듈). 문서 객체와 그 안의 파일을 만들고, 읽고, 고치고, 내려받습니다. 응답은 [A 계열 (Foundation 형식)](/rest-api/#응답-형식-a-업무-객체) 입니다.
 

@@ -1,4 +1,4 @@
-# 툴바
+# 툴바 <Badge type="tip" text="서버 확인" />
 
 그리드 위에 검색창, 콤보, 버튼을 놓는 툴바입니다. DataGridView 에는 툴바용 생성자 옵션이 없고 `grid.setToolbar(JSON)` 으로만 만듭니다.
 

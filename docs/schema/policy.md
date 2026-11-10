@@ -1,4 +1,4 @@
-# Policy (상태와 권한)
+# Policy (상태와 권한) <Badge type="info" text="원본 분석" />
 
 policy 는 객체의 **생애 주기** 를 정합니다. 어떤 state 를 어떤 순서로 거치는지, revision 이름을 어떻게 붙이는지, state 마다 누가 무엇을 할 수 있는지를 한 곳에 적습니다. 객체는 만들 때 policy 하나를 고르고, 이후 권한 검사는 모두 그 policy 의 **현재 state** 기준입니다.
 

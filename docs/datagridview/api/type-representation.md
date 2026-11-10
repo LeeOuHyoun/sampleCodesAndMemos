@@ -2,7 +2,7 @@
 title: typeRepresentation
 ---
 
-# typeRepresentation
+# typeRepresentation <Badge type="info" text="원본 분석" />
 
 컬럼의 `typeRepresentation` 에 넣는 값으로, 셀 모양과 편집기 종류를 정합니다. "기본 semantics" 는 따로 넣지 않아도 적용되는 값입니다.
 

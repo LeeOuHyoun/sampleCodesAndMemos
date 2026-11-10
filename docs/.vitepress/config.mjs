@@ -81,6 +81,7 @@ export default defineConfig({
           text: 'API 레퍼런스',
           items: [
             { text: '그리드 옵션', link: '/datagridview/api/grid-options' },
+            { text: '그리드 메서드', link: '/datagridview/api/grid-methods' },
             { text: 'layoutOptions', link: '/datagridview/api/layout-options' },
             { text: '컬럼 옵션', link: '/datagridview/api/column-options' },
             { text: '컬럼 함수', link: '/datagridview/api/column-functions' },

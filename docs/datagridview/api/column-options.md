@@ -2,7 +2,7 @@
 title: 컬럼 옵션
 ---
 
-# 컬럼 옵션
+# 컬럼 옵션 <Badge type="info" text="원본 분석" />
 
 `columns: [ { ... } ]` 배열의 각 컬럼 객체에 넣는 키입니다. 기본값은 DataGridView 의 defaultColumnDef 기준입니다.
 
@@ -18,6 +18,10 @@ new DataGridView({
   ]
 });
 ```
+
+::: info 근거
+DataGridView.js 의 ColumnModel (`_defaultColumnDef` 기본값과 컬럼 정의 해석), DataGridViewLayout 의 `getColumnOptionValue`. <Badge type="warning" text="2026" /> 표시 키는 enovia2026_webapps 에만 있음.
+:::
 
 ## 기본
 

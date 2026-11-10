@@ -1,4 +1,4 @@
-# 3DSpace REST API 공통 규칙
+# 3DSpace REST API 공통 규칙 <Badge type="info" text="원본 분석" />
 
 3DSpace 서버는 `/resources/...` 아래에 REST 서비스를 제공합니다. ENOVIA 화면 코드는 대부분 이것을 `WAFData.authenticatedRequest` 로 부릅니다. 이 페이지는 **화면 코드가 실제로 보내는 헤더, 파라미터, 본문, 응답 모양**을 정리합니다. 호출 함수 자체는 [서버 호출 (WAFData)](/uwa/request) 을 봅니다.
 

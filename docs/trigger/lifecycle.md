@@ -1,4 +1,4 @@
-# 라이프사이클과 promote
+# 라이프사이클과 promote <Badge type="info" text="원본 분석" />
 
 객체의 state 가 바뀔 때 어떤 순서로 무엇이 실행되는지, 코드에서 state 를 바꾸는 방법입니다. policy 정의(state, 권한, 플래그)는 [Policy](/schema/policy) 에 있습니다.
 

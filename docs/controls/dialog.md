@@ -1,4 +1,4 @@
-# 다이얼로그 (Windows)
+# 다이얼로그 (Windows) <Badge type="info" text="원본 분석" />
 
 `DS/Windows/Dialog` 로 제목, 내용, 아래쪽 버튼이 있는 창을 띄웁니다. `modalFlag: true` 면 뒤 화면을 어둡게 가리고 막습니다. 같은 모듈 묶음에 패널(`Panel`)과 창을 담는 틀(`ImmersiveFrame`)이 있습니다.
 

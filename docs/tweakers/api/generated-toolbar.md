@@ -2,7 +2,7 @@
 title: GeneratedToolbar API
 ---
 
-# GeneratedToolbar API
+# GeneratedToolbar API <Badge type="info" text="원본 분석" />
 
 툴바의 생성자 옵션, 메서드, 이벤트입니다. 엔트리 JSON 키는 [툴바 (setToolbar)](/datagridview/api/toolbar) 에 있습니다. 사용법은 [GeneratedToolbar](/tweakers/generated-toolbar) 가이드를 보세요.
 

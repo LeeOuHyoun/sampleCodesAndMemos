@@ -1,4 +1,4 @@
-# 트리거 등록
+# 트리거 등록 <Badge type="info" text="원본 분석" />
 
 등록은 두 단계입니다. **설정 객체** (`eService Trigger Program Parameters`) 를 만들어 Active 로 올리고, admin 의 이벤트에 `emxTriggerManager` 와 설정 객체 이름을 붙입니다.
 

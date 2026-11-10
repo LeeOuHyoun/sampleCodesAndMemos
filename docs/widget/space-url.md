@@ -1,4 +1,4 @@
-# 3DSpace 주소와 SecurityContext
+# 3DSpace 주소와 SecurityContext <Badge type="info" text="원본 분석" />
 
 3DSpace REST 를 부르려면 세 가지가 필요합니다. 위젯이 속한 **플랫폼 id**, 그 플랫폼의 **3DSpace 주소**, 요청 헤더에 넣을 **SecurityContext** 입니다. 이 페이지는 그 순서를 정리합니다. 호출 자체는 [서버 호출 (WAFData)](/uwa/request) 에 있습니다.
 

@@ -1,4 +1,4 @@
-# DOM (Element, Event)
+# DOM (Element, Event) <Badge type="info" text="원본 분석" />
 
 `UWA.createElement` 로 요소를 만들고, UWA 가 요소에 붙여 주는 메서드(`inject`, `addEvent`, `setStyles` ...)로 다룹니다. jQuery 처럼 감싼 객체가 아니라 **브라우저 요소에 메서드를 직접 붙이는** 방식입니다.
 

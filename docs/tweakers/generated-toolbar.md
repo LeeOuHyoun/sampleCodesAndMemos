@@ -1,4 +1,4 @@
-# GeneratedToolbar
+# GeneratedToolbar <Badge type="info" text="원본 분석" />
 
 JSON 으로 툴바를 만드는 모듈입니다. `grid.setToolbar` 도 내부에서 이것을 씁니다. 여기서는 그리드와 상관없이 직접 만드는 방법과, 만든 뒤 항목을 바꾸는 방법을 다룹니다.
 

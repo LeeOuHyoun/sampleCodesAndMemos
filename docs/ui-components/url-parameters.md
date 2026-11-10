@@ -1,4 +1,4 @@
-# URL 파라미터
+# URL 파라미터 <Badge type="info" text="원본 분석" />
 
 command 의 `href` 는 프레임워크 JSP 에 URL 파라미터로 화면을 지시합니다. 이 페이지는 JSP 별로 파라미터를 모읍니다. "사용" 은 프로젝트 MQL 정의(command, menu, column, field 의 `href` / `range`)에서 나온 횟수입니다.
 

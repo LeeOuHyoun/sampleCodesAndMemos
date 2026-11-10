@@ -1,4 +1,4 @@
-# 위젯 간 통신 (InterCom)
+# 위젯 간 통신 (InterCom) <Badge type="info" text="원본 분석" />
 
 `UWA/Utils/InterCom` 은 서로 다른 창(iframe, 위젯)끼리 이벤트를 주고받는 모듈입니다. 한쪽이 **Server** 를 열고, 다른 쪽이 **Socket** 으로 붙어서 이벤트 이름 + 데이터를 보냅니다. 내부는 `postMessage` 입니다.
 

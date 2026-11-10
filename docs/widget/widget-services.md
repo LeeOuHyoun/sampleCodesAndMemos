@@ -1,4 +1,4 @@
-# WidgetServices
+# WidgetServices <Badge type="info" text="원본 분석" />
 
 `DS/WidgetServices/WidgetServices` 는 ENOVIA 앱들이 같이 쓰는 위젯 도우미입니다. 위젯 값 읽기, 플랫폼 id, 언어, 3DSpace 주소를 "대시보드 안이든 밖이든 일단 답을 주는" 방식으로 감싸 둡니다. 같은 묶음의 `SecurityContextServices` 는 SecurityContext 를 구해 줍니다. 모듈 이름 사용 263 건 / 78 파일.
 

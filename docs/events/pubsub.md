@@ -1,4 +1,4 @@
-# PubSub (Events, ModelEvents)
+# PubSub (Events, ModelEvents) <Badge type="info" text="원본 분석" />
 
 `DS/CoreEvents` 에는 이벤트 버스가 두 개 있습니다.
 

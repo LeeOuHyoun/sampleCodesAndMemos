@@ -2,7 +2,7 @@
 title: 하위 옵션 객체
 ---
 
-# 하위 옵션 객체
+# 하위 옵션 객체 <Badge type="info" text="원본 분석" />
 
 그리드 옵션 중 객체로 넘기는 것들의 내부 키입니다.
 
@@ -13,6 +13,10 @@ new DataGridView({
   sortOptions: { maxSortedColumnsCount: 3 }
 });
 ```
+
+::: info 근거
+DataGridView.js 의 DataGridView publishedProperties (`sortOptions`, `rowGroupingOptions`, `treeNodeCellOptions`, `customViewsOptions`, `filterViewOptions`, `deleteOptions`) 와 각 키를 읽는 코드 (`_preEditSortModel`, 삭제 키 처리 등), CollectionView.js 의 `selectionBehavior` 기본값.
+:::
 
 ## selectionBehavior
 

@@ -2,7 +2,7 @@
 title: Windows API
 ---
 
-# Windows API
+# Windows API <Badge type="info" text="원본 분석" />
 
 `DS/Windows/*` 의 Window, Dialog, Panel, ImmersiveFrame 속성, 메서드, 이벤트와 열거형입니다. 사용법은 [다이얼로그](/controls/dialog) 에 있습니다.
 

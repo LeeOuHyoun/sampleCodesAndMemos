@@ -1,4 +1,4 @@
-# Compass 서비스 (i3DXCompassPlatformServices)
+# Compass 서비스 (i3DXCompassPlatformServices) <Badge type="info" text="원본 분석" />
 
 `DS/i3DXCompassPlatformServices/i3DXCompassPlatformServices` 는 플랫폼의 서비스 주소(3DSpace, 3DSwym, 3DSearch ...), 사용자에게 부여된 역할, 앱 정보를 알려 주는 모듈입니다. 위젯에서 **3DSpace 주소를 얻는 표준 방법** 이 이 모듈의 `getServiceUrl` 입니다. 모듈 이름 사용 366 건 / 216 파일.
 

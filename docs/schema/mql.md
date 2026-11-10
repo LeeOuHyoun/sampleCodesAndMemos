@@ -1,4 +1,4 @@
-# MQL 문법과 조회
+# MQL 문법과 조회 <Badge type="info" text="원본 분석" />
 
 MQL (Matrix Query Language) 은 3DSpace 의 명령 언어입니다. 스키마 정의(`add type` ...)도, 데이터 조작(`add bus` ...)도, 조회(`print`, `temp query`, `expand`)도 모두 MQL 입니다. 프로젝트의 `.mql` 파일과 JPO 의 `MqlUtil.mqlCommand(...)` 가 같은 문법을 씁니다.
 

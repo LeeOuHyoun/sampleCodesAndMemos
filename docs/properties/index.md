@@ -1,4 +1,4 @@
-# properties 개요
+# properties 개요 <Badge type="info" text="원본 분석" />
 
 3DSpace 의 화면 글자(다국어)와 동작 설정은 대부분 `.properties` 파일에 있습니다. 코드는 키 이름으로 값을 읽습니다.
 

@@ -2,7 +2,7 @@
 title: 이벤트
 ---
 
-# 이벤트
+# 이벤트 <Badge type="tip" text="서버 확인" />
 
 ```js
 grid.addEventListener('이벤트', function (event, cellInfos) { ... });
@@ -13,6 +13,10 @@ DataGridView 의 `addEventListener` 는 CollectionView 에서 재정의되어 �
 - `event.dsModel` 은 그리드, `event.options` 에 추가 정보가 들어 있습니다.
 - 그리드 영역 DOM 에 등록되므로 일반 DOM 이벤트(click 등)와 셀 편집기에서 버블링되는 이벤트도 모두 받을 수 있습니다.
 - [실시간 설정 샘플](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/DataGridViewSample/05_options.html) 의 이벤트 로그에서 실제로 언제 발생하는지 확인할 수 있습니다.
+
+::: info 근거
+CollectionView.js 의 CollectionView.addEventListener (cellInfos 를 붙여 감싼 함수 반환) 와 `fire(...)` 호출부, DataGridView.js 의 `fire(...)` 호출부, Tweakers.js 의 setTweakerValue / onPostEdit, TreeModel.js 의 TreeDocument 알림 함수. 사용 횟수는 enovia2025 webapps 전체 소스에서 센 값.
+:::
 
 ## 그리드 자체 이벤트 (DataGridView / CollectionView 가 fire)
 

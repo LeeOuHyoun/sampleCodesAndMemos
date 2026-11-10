@@ -1,4 +1,4 @@
-# MqlUtil
+# MqlUtil <Badge type="info" text="원본 분석" />
 
 `MqlUtil.mqlCommand` 는 JPO 안에서 MQL 명령을 그대로 실행합니다. `DomainObject` 에 없는 기능 (관계 정보, 정책, 역할 목록, 환경 변수, 트리거 끄기 ...) 이나 결과를 문자열 한 줄로 받고 싶을 때 씁니다.
 

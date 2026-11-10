@@ -1,4 +1,4 @@
-# 편집
+# 편집 <Badge type="info" text="원본 분석" />
 
 셀을 편집하려면 컬럼에 `editableFlag: true` 를 넣습니다. 편집기가 **언제** 열리는지는 `editionPolicy` 로 정합니다.
 

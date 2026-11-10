@@ -2,7 +2,7 @@
 title: TypeRepresentationFactory API
 ---
 
-# TypeRepresentationFactory API
+# TypeRepresentationFactory API <Badge type="info" text="원본 분석" />
 
 타입 이름으로 편집기를 만들고, 사용자 타입과 enum 을 등록합니다. 사용법은 [사용자 타입 등록](/tweakers/custom-type), [편집기 단독 사용](/tweakers/standalone#타입-이름으로-만들기) 에 있습니다.
 

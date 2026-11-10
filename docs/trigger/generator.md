@@ -1,4 +1,4 @@
-# 채번기 (Object Generator)
+# 채번기 (Object Generator) <Badge type="info" text="원본 분석" />
 
 객체 이름(name)을 `PRT-000001` 처럼 접두어 + 일련번호로 자동으로 만드는 장치입니다. 트리거가 아니라 **business object 두 개** 로 설정하고, 코드나 생성 화면이 그 설정을 읽어 이름을 만듭니다.
 

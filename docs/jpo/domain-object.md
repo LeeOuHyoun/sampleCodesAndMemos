@@ -1,4 +1,4 @@
-# DomainObject 와 select
+# DomainObject 와 select <Badge type="info" text="원본 분석" />
 
 JPO 에서 객체를 읽고 쓰는 일은 거의 `DomainObject` 와 `DomainRelationship` 으로 합니다. 무엇을 읽을지는 **select 문자열** (`name`, `attribute[Title]`, `from[EBOM].to.id` ...) 로 정합니다.
 

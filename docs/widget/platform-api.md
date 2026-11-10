@@ -1,4 +1,4 @@
-# PlatformAPI
+# PlatformAPI <Badge type="info" text="원본 분석" />
 
 `DS/PlatformAPI/PlatformAPI` 는 3DDashboard 가 가진 정보(로그인 사용자, 현재 테넌트, 대시보드 설정)를 위젯에 전달하고, 위젯 사이 메시지(publish / subscribe)를 보내는 모듈입니다. 모듈 이름 사용 746 건 / 314 파일.
 

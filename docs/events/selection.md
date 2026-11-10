@@ -1,4 +1,4 @@
-# 선택 (CSOManager, HSOManager, PSOManager)
+# 선택 (CSOManager, HSOManager, PSOManager) <Badge type="info" text="원본 분석" />
 
 `DS/Selection` 의 세 매니저는 "지금 선택된 것들" 목록을 창(window) 하나에서 공유합니다. 셋 다 같은 바탕 클래스 `DS/Selection/XSO` 로 만든 싱글톤이고, 이벤트 채널 이름만 다릅니다.
 

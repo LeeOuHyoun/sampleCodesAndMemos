@@ -2,7 +2,7 @@
 title: 필터 (filterId)
 ---
 
-# 필터 (filterId)
+# 필터 (filterId) <Badge type="info" text="원본 분석" />
 
 필터는 그리드 옵션이 아니라 **TreeDocument** 에 지정합니다. 지정한 컬럼만 헤더에 필터 기능이 생깁니다.
 
@@ -16,6 +16,10 @@ treeDocument.setFilterModel({
 
 ::: warning
 첫 트리 컬럼(`dataIndex: 'tree'`)의 키는 `tree` 가 아니라 `label` 입니다.
+:::
+
+::: info 근거
+TreeModel.js 의 TreeDocument.setFilterModel, DataGridView.js 의 DataGridViewFilterViewManager (filterId 와 필터 화면 등록 표), DataGridViewSetFilterView.
 :::
 
 사용 빈도는 webapps 전체 소스에서 센 값입니다.

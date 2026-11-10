@@ -1,4 +1,4 @@
-# 문자열 리소스 (다국어)
+# 문자열 리소스 (다국어) <Badge type="info" text="원본 분석" />
 
 화면 글자는 `...StringResource.properties` 파일에서 키로 찾아 옵니다. 스키마 이름(type, 속성, state)은 영어 그대로 저장되고, 화면에 보이는 이름만 이 파일에서 바꿉니다.
 

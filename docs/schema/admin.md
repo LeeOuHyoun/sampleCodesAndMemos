@@ -1,4 +1,4 @@
-# Attribute, Type, Relationship, Role
+# Attribute, Type, Relationship, Role <Badge type="info" text="원본 분석" />
 
 스키마 객체 네 가지를 만드는 MQL 과 자주 쓰는 절(clause)을 정리합니다. Policy 는 내용이 많아 [따로](/schema/policy) 둡니다. 모든 정의 끝에는 심볼릭 이름 등록 한 줄이 붙습니다. [심볼릭 이름](/schema/#심볼릭-이름)
 

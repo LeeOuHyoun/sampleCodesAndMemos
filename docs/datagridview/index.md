@@ -1,6 +1,10 @@
-# DataGridView 개요
+# DataGridView 개요 <Badge type="tip" text="서버 확인" />
 
 DataGridView 는 ENOVIA 화면에서 쓰는 트리/표 그리드 컨트롤입니다. 데이터를 행과 컬럼으로 보여주고, 셀 편집, 정렬, 필터, 툴바, 행 그룹핑을 지원합니다.
+
+::: info 근거
+DataGridView/DataGridView.js (`DS/DataGridView/DataGridView` 와 하위 모듈), CollectionView/CollectionView.js (상속 원본), TreeModel/TreeModel.js (`DS/TreeModel/TreeDocument`, `DS/TreeModel/TreeNodeModel`). DataGridViewSample 은 ENOVIA 서버에서 동작 확인.
+:::
 
 ## 구성 요소
 

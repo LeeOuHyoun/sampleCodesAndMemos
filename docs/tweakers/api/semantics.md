@@ -2,7 +2,7 @@
 title: semantics
 ---
 
-# semantics
+# semantics <Badge type="info" text="원본 분석" />
 
 편집기(Tweaker)에 그대로 전달되는 세부 옵션입니다. 넣는 자리는 쓰는 곳마다 다르지만 키는 같습니다.
 

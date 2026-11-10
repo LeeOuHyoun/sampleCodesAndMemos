@@ -1,4 +1,4 @@
-# table (목록, 구조 브라우저)
+# table (목록, 구조 브라우저) <Badge type="info" text="원본 분석" />
 
 **table** 은 목록 화면의 열(column) 정의입니다. 행(어떤 객체를 보여 줄지)은 table 이 아니라 **URL 의 `program` / `expandProgram` JPO** 가 정합니다. 둘을 이어 붙여 화면을 그리는 것이 `emxIndentedTable.jsp` (구조 브라우저, Structure Browser, 줄여서 SB) 입니다.
 

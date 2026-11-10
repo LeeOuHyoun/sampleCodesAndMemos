@@ -1,4 +1,4 @@
-# UIKIT
+# UIKIT <Badge type="info" text="원본 분석" />
 
 `DS/UIKIT/*` 는 UWA 컨트롤(`UWA/Controls/Abstract`) 위에 만든 Bootstrap 모양의 부품입니다. 옵션은 `this.options` 에 저장되고, 화면은 메서드(`setValue`, `show`, `hide` ...)로 바꿉니다. 이벤트 이름은 `onClick` 처럼 `on` 으로 시작합니다.
 

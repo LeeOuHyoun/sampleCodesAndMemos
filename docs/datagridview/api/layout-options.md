@@ -2,7 +2,7 @@
 title: layoutOptions
 ---
 
-# layoutOptions
+# layoutOptions <Badge type="info" text="원본 분석" />
 
 레이아웃(DataGridViewLayout) 객체를 만들 때 넘기는 옵션입니다. `new DataGridView({ layoutOptions: { ... } })` 처럼 설정 객체 **안의 하위 객체**로 넣습니다.
 
@@ -16,6 +16,10 @@ var grid = new DataGridView({
 });
 grid.layout.rowSpacing = 4;
 ```
+
+::: info 근거
+DataGridView.js 의 DataGridViewLayout publishedProperties, DataGridViewLayout.getDefaultCellHeight (compact 26 / comfortable 40), DataGridView publishedProperties 의 `layoutOptions` (readOnly).
+:::
 
 ::: tip
 행 높이 관련 키는 [행 높이](/datagridview/row-height) 가이드에 예제와 함께 정리되어 있습니다.

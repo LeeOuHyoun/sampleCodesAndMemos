@@ -1,4 +1,4 @@
-# 엔드포인트 목록
+# 엔드포인트 목록 <Badge type="info" text="원본 분석" />
 
 enovia2025 webapps 의 `.js` 에서 찾은 3DSpace REST 경로입니다. 공통 규칙(헤더, 응답, 오류)은 [공통 규칙](/rest-api/) 을 봅니다.
 

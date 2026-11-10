@@ -1,4 +1,4 @@
-# WebappsUtils
+# WebappsUtils <Badge type="info" text="원본 분석" />
 
 `DS/WebappsUtils/WebappsUtils` 는 webapps 폴더 주소와 자산(이미지, 아이콘) 주소를 만들어 주는 작은 모듈입니다. 이미지 경로를 직접 조합하지 않고 이것을 씁니다.
 

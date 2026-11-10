@@ -1,4 +1,4 @@
-# 행 높이
+# 행 높이 <Badge type="tip" text="서버 확인" />
 
 행 높이 설정은 모두 `new DataGridView({ ... })` 에 넘기는 설정 객체 안에 넣습니다. 다만 넣는 자리가 세 군데로 나뉩니다. treeDocument(데이터)에는 넣지 않습니다.
 

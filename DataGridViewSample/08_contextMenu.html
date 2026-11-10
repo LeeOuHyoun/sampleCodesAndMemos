@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>08. 우클릭 메뉴와 선택</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    .page { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .buttons { margin: 0 0 8px; }
+    .buttons button { margin-right: 4px; }
+    #selection { font-weight: bold; color: #005686; }
+    #grid { flex: 1; min-height: 320px; border: 1px solid #d1d4d4; }
+    #log { height: 110px; margin: 8px 0 0; padding: 8px; overflow: auto; font-size: 12px; background: #f4f5f6; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>08. 우클릭 메뉴와 선택</h2>
+    <p>
+      행을 우클릭하거나 오른쪽 끝의 메뉴 버튼을 누르면 직접 만든 메뉴가 열립니다. 컬럼 헤더를 우클릭하면 그리드 기본 메뉴(고정, 컬럼 관리 등)가 열립니다.
+      <a href="index.html">목록으로</a>
+    </p>
+    <div class="buttons">
+      <button id="btnSelectApproved">승인 행 모두 선택</button>
+      <button id="btnUnselectAll">선택 해제</button>
+      <span id="selection">선택된 행 없음</span>
+    </div>
+    <div id="grid"></div>
+    <pre id="log"></pre>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      function writeLog(text) {
+        var log = document.getElementById('log');
+        log.textContent = text + '\n' + log.textContent;
+      }
+
+      var treeDocument = new TreeDocument();
+      treeDocument.prepareUpdate();
+      [
+        { label: 'PRT-0001', grid: { title: '브라켓', status: '작업중', owner: '김철수' } },
+        { label: 'PRT-0002', grid: { title: '샤프트', status: '검토중', owner: '이영희' } },
+        { label: 'PRT-0003', grid: { title: '하우징', status: '승인',   owner: '박민수' } },
+        { label: 'PRT-0004', grid: { title: '커버',   status: '작업중', owner: '김철수' } },
+        { label: 'PRT-0005', grid: { title: '베어링', status: '폐기',   owner: '최지훈' } },
+        { label: 'PRT-0006', grid: { title: '볼트',   status: '승인',   owner: '이영희' } }
+      ].forEach(function (row) {
+        treeDocument.addRoot(new TreeNodeModel(row));
+      });
+      treeDocument.pushUpdate();
+
+      /*
+       * [1] 메뉴 항목 만들기
+       *   onContextualEvent 가 돌려주는 배열의 항목 형식 (WebUX 컨텍스트 메뉴 공통)
+       *     type   : 'PushItem'(누르는 항목) / 'CheckItem'(체크 항목) / 'RadioItem' / 'SeparatorItem'(구분선) / 'TitleItem'
+       *     title  : 글자
+       *     icon   : { iconName: '이름', fontIconFamily: 1 }
+       *     state  : 'enabled' / 'disabled' / 'selected' / 'unselected'  ('selected|disabled' 처럼 | 로 이어 쓸 수 있다)
+       *     action : { callback: function () { ... } }
+       *     submenu: [ 항목, ... ]  하위 메뉴
+       */
+      // #region rowMenu
+      var STATUSES = ['작업중', '검토중', '승인', '폐기'];
+
+      function buildRowMenu(clickedNode) {
+        var selectedNodes = treeDocument.getSelectedNodes();
+        var isLocked = clickedNode.getAttributeValue('status') === '승인';
+        return [
+          {
+            type: 'PushItem',
+            title: clickedNode.getLabel() + ' 상세 보기',
+            icon: { iconName: 'eye', fontIconFamily: 1 },
+            action: {
+              callback: function () {
+                writeLog('상세 보기: ' + clickedNode.getLabel() + ' / ' + clickedNode.getAttributeValue('title'));
+              }
+            }
+          },
+          {
+            type: 'PushItem',
+            title: '상태 변경',
+            state: isLocked ? 'disabled' : 'enabled',
+            submenu: STATUSES.map(function (status) {
+              return {
+                type: 'CheckItem',
+                title: status,
+                state: clickedNode.getAttributeValue('status') === status ? 'selected' : 'unselected',
+                action: {
+                  callback: function () {
+                    clickedNode.updateOptions({ grid: { status: status } });
+                    writeLog(clickedNode.getLabel() + ' 상태 → ' + status);
+                  }
+                }
+              };
+            })
+          },
+          { type: 'SeparatorItem', title: '' },
+          {
+            type: 'PushItem',
+            title: '선택한 ' + selectedNodes.length + '개 행 삭제',
+            icon: { iconName: 'trash', fontIconFamily: 1 },
+            state: selectedNodes.length ? 'enabled' : 'disabled',
+            action: {
+              callback: function () {
+                treeDocument.prepareUpdate();
+                selectedNodes.forEach(function (node) {
+                  node.remove();
+                });
+                treeDocument.pushUpdate();
+                writeLog(selectedNodes.length + '개 행 삭제');
+              }
+            }
+          }
+        ];
+      }
+      // #endregion rowMenu
+
+      /*
+       * [2] 그리드
+       *   onContextualEvent(params) : 우클릭할 때 호출된다. 메뉴 항목 배열을 돌려준다. 빈 배열이면 메뉴가 열리지 않는다.
+       *     params.cellInfos      : 우클릭한 셀. 빈 영역이면 없음. 컬럼 헤더는 cellInfos.rowID 가 -1 이하
+       *     params.collectionView : 그리드
+       *     기본값은 params.collectionView.buildDefaultContextualMenu(params) 를 돌려주는 함수다.
+       *     (DataGridView.js publishedProperties onContextualEvent 의 defaultValue)
+       *
+       *   buildDefaultContextualMenu(params, 옵션) : 그리드 기본 메뉴 항목 배열
+       *     옵션으로 묶음별로 켜고 끈다. 기본값은
+       *     { filter: true, pin: true, firstColumnsVisibility: true, columnsManagement: true,
+       *       sizeColumnToFit: true, expandCollapse: false, insertRow: false }
+       *
+       *   showContextualMenuColumnFlag: true
+       *     오른쪽 끝에 메뉴 버튼 컬럼을 추가한다. 버튼을 누르면 그 셀에서 contextmenu 이벤트를 일으키므로
+       *     우클릭과 같은 onContextualEvent 가 호출된다. (Tweakers.js chevronMenuIcon 의 contextMenuFallback)
+       *
+       *   selectionBehavior.selectOnContextualEvent (기본 true)
+       *     우클릭한 행이 선택되어 있지 않으면 먼저 그 행을 선택한다.
+       */
+      // #region grid
+      var grid = new DataGridView({
+        treeDocument: treeDocument,
+        rowSelection: 'multiple',
+        showSelectionCheckBoxesFlag: true,
+        cellActivationFeedback: 'row',
+        showContextualMenuColumnFlag: true,
+        onContextualEvent: function (params) {
+          var cellInfos = params && params.cellInfos;
+          if (!cellInfos) {
+            return [];
+          }
+          if (cellInfos.rowID < 0) {
+            return params.collectionView.buildDefaultContextualMenu(params, { sizeColumnToFit: false });
+          }
+          return cellInfos.nodeModel ? buildRowMenu(cellInfos.nodeModel) : [];
+        },
+        columns: [
+          { text: '품번', dataIndex: 'tree', width: 140 },
+          { text: '품명', dataIndex: 'title', width: 180 },
+          { text: '상태', dataIndex: 'status', width: 100 },
+          { text: '담당자', dataIndex: 'owner', width: 120 }
+        ]
+      });
+      grid.inject(document.getElementById('grid'));
+      // #endregion grid
+
+      /*
+       * [3] 선택 변경 받기
+       *   선택 목록은 그리드가 아니라 TreeDocument 가 갖고 있다. (XSO = 선택 목록 객체)
+       *     treeDocument.getXSO().onPostAdd(fn)    행이 선택된 뒤
+       *     treeDocument.getXSO().onPostRemove(fn) 행 선택이 풀린 뒤
+       *     treeDocument.getXSO().onEmpty(fn)      선택이 모두 풀릴 때
+       *   지금 선택된 행은 treeDocument.getSelectedNodes() 로 읽는다.
+       */
+      // #region selection
+      function showSelection() {
+        var labels = treeDocument.getSelectedNodes().map(function (node) {
+          return node.getLabel();
+        });
+        document.getElementById('selection').textContent = labels.length ? '선택: ' + labels.join(', ') : '선택된 행 없음';
+      }
+
+      var xso = treeDocument.getXSO();
+      xso.onPostAdd(showSelection);
+      xso.onPostRemove(showSelection);
+      xso.onEmpty(showSelection);
+      // #endregion selection
+
+      /*
+       * [4] 코드로 선택하기
+       *   grid.selectNodeModel(node, true) : 두 번째 인자 true = 기존 선택을 유지하고 추가
+       *   grid.unselectAll()               : 행, 셀, 컬럼 선택 모두 해제
+       *   행 하나만 다룰 때는 node.select() / node.unselect() / node.isSelected() 도 쓸 수 있다.
+       */
+      // #region select
+      document.getElementById('btnSelectApproved').addEventListener('click', function () {
+        grid.unselectAll();
+        treeDocument.getRoots().forEach(function (node) {
+          if (node.getAttributeValue('status') === '승인') {
+            grid.selectNodeModel(node, true);
+          }
+        });
+      });
+      document.getElementById('btnUnselectAll').addEventListener('click', function () {
+        grid.unselectAll();
+      });
+      // #endregion select
+    });
+  </script>
+</body>
+</html>

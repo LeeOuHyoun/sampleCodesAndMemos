@@ -53,6 +53,9 @@ TreeDocument 자체의 함수(행 추가, 선택 목록 등)는 [데이터 (Tree
 | <code>getModelAt(cellID)</code> | 값 | 셀 값. 행 번호 컬럼이면 `"1"` 같은 문자열 |
 | <code>setModelAt(cellID, value)</code> | - | 셀 값 바꾸기. 컬럼 `setCellValue` 가 있으면 그것을 거침 |
 | <code>getCellEditableState(cellID)</code> | <code>boolean</code> | 이 셀이 지금 편집 가능한지 |
+| <code>getCellDefaultTooltip(cellInfos)</code> | 툴팁 객체 | 그리드 기본 툴팁. `getCellTooltip` 함수 안에서 일부 셀만 직접 정하고 나머지는 기본 툴팁으로 돌려줄 때 사용 (앱 파일 24개) |
+| <code>setCellInEdition(cellID)</code> | <code>boolean &#124; Promise</code> | 셀을 편집 상태로 전환 (활성 셀로 만들고 편집기를 엶). 편집할 수 없는 셀이면 `false` |
+| <code>isCellInEdition(cellID)</code> | <code>boolean</code> | 이 셀이 지금 편집 중인지 |
 
 ::: tip
 값을 바꿀 때는 보통 `nodeModel.updateOptions({ grid: { ... } })` 를 씁니다. `setModelAt` 은 cellID 만 알고 있을 때 편합니다. 자세한 방법은 [저장 후 화면 반영](/datagridview/save-and-reflect).
@@ -78,6 +81,8 @@ TreeDocument 자체의 함수(행 추가, 선택 목록 등)는 [데이터 (Tree
 | <code>selectAll(onlyVisible?)</code> | - | 전체 선택. `'multiple'` 일 때만. `true` 면 펼쳐져 보이는 행만 |
 | <code>unselectAll()</code> | - | 행, 셀, 컬럼 선택 모두 해제 |
 | <code>selectColumn(columnID)</code> / <code>unselectColumn(columnID)</code> | - | 컬럼 선택 (`columnSelection` 옵션 필요) |
+| <code>isCellSelected(cellID)</code> / <code>isCellActive(cellID)</code> | <code>boolean</code> | 이 셀이 선택되어 있는지 / 활성 셀인지 (`cellActivationFeedback: 'row'` 면 같은 행 전체가 활성) |
+| <code>getCellsXSO()</code> / <code>getColumnsXSO()</code> | <code>XSO</code> | 셀 선택 목록 / 컬럼 선택 목록. 행 선택 목록은 `getNodesXSO()` |
 
 선택된 행 목록은 `grid.getTreeDocument().getSelectedNodes()` 로 읽습니다. 선택 변경 알림은 [이벤트](/datagridview/api/events) 의 `getXSO().onPostAdd` 를 봅니다.
 
@@ -167,3 +172,39 @@ loadRows().then(function (rows) {
 | <code>forceQuotes</code> | <code>true &#124; false</code> | 모든 값을 큰따옴표로 감쌈 |
 
 반환 문자열은 엑셀에서 한글이 깨지지 않도록 앞에 BOM(`﻿`)이 붙어 있습니다. 컬럼별 값은 컬럼 옵션 `getCellValueForExport` 로 바꿀 수 있습니다.
+
+## 우클릭 메뉴, 셀 직접 그리기, 상태바
+
+괄호 안은 DataGridView 를 쓰는 앱 파일 119개 중 그 함수를 쓰는 파일 수입니다.
+
+| 함수 | 반환 | 설명 |
+| --- | --- | --- |
+| <code>buildDefaultContextualMenu(params, options?)</code> | 메뉴 항목 배열 | 그리드 기본 우클릭 메뉴. `onContextualEvent` 안에서 기본 메뉴에 항목을 더할 때 사용 ([우클릭 메뉴](/datagridview/context-menu#그리드-기본-메뉴-쓰기)) |
+| <code>registerReusableCellContent({ id, buildContent, cleanContent })</code> | - | 직접 그리는 셀의 내용 등록 (31). 같은 id 로 다시 등록하면 대체 ([셀 직접 그리기](/datagridview/custom-cell)) |
+| <code>isReusableCellContentRegistered(id)</code> | <code>boolean</code> | 그 id 가 등록되어 있는지 |
+| <code>reuseCellContent(id)</code> | 등록한 내용 | 등록한 내용 하나를 꺼냄 (31). 컬럼 `onCellRequest` 안에서 사용 |
+| <code>buildStatusBar(items)</code> | - | 그리드 아래 상태바 만들기 (21). 만든 뒤 객체는 `grid.elements.statusBar` ([상태바](/datagridview/status-bar)) |
+| <code>getTypeRepresentationFactory()</code> | <code>TypeRepresentationFactory</code> | 그리드가 쓰는 타입 등록소. [사용자 타입 등록](/tweakers/custom-type) 에 사용 |
+
+## 사용자 뷰, 일괄 수정, 인쇄
+
+| 함수 | 반환 | 설명 |
+| --- | --- | --- |
+| <code>getCustomViewsManager()</code> | 사용자 뷰 관리 객체 | 컬럼 구성과 정렬을 "뷰" 로 저장하고 바꾸는 관리 객체 (17). 처음 부를 때 만들어짐 |
+| <code>loadCustomViews(views, current?)</code> | - | 사용자 뷰 목록 넣기. `current` 는 처음 적용할 뷰의 순번 또는 identifier |
+| <code>showCustomViewsDialog()</code> | - | 사용자 뷰 대화상자 열기 (헤더 우클릭 기본 메뉴의 항목과 같음) |
+| <code>showModelMassUpdateDialog()</code> | - | 여러 행 일괄 수정 대화상자 열기. `editableFlag` 와 `massUpdateAllowedFlag` 가 모두 true 인 컬럼이 대상 |
+| <code>generatePrintableViewHTML()</code> | <code>string</code> | 지금 보이는 행을 인쇄용 `table` HTML 문자열로 |
+| <code>openPrintableViewWindow()</code> | - | 인쇄용 화면을 만들어 엶. 컬럼 옵션 `printableFlag: false` 인 컬럼은 제외 |
+
+## 정렬, 그룹 다시 적용
+
+| 함수 | 반환 | 설명 |
+| --- | --- | --- |
+| <code>reapplySortModel()</code> | - | 지금 `sortModel` 로 다시 정렬. 행을 추가하거나 값을 바꾼 뒤 순서를 다시 맞출 때 |
+| <code>reapplyRowGrouping()</code> | - | 지금 그룹핑 설정으로 다시 묶음 |
+| <code>getFilterViewManager()</code> | 필터 화면 관리 객체 | 사용자 정의 필터 화면 등록 (`registerFilterView`) 에 사용 ([필터](/datagridview/api/filter)) |
+
+::: info 근거
+DataGridView.js 의 buildDefaultContextualMenu / getCustomViewsManager / loadCustomViews / showCustomViewsDialog / showModelMassUpdateDialog (`_buildMassUpdateDialogAttributes`) / generatePrintableViewHTML / openPrintableViewWindow / reapplySortModel / reapplyRowGrouping / setCellInEdition / isCellSelected / isCellActive / getColumnsXSO, CollectionView.js 의 registerReusableCellContent / reuseCellContent / buildStatusBar / getCellsXSO / isCellInEdition.
+:::

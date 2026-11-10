@@ -26,6 +26,7 @@ sampleCodesAndMemos/
 │     └─ api/                레퍼런스
 ├─ DataGridViewSample/ ...   주제별 샘플 (주제이름Sample)
 ├─ scripts/verify-list.mjs   검증 대기 목록 생성
+├─ scripts/coverage.mjs      원본과 문서를 비교해 빠진 이름 찾기
 └─ package.json
 ```
 
@@ -81,6 +82,41 @@ var grid = new DataGridView({ ... });
 - `##`, `###` 제목은 오른쪽 "이 페이지에서" 목차에 나타납니다.
 - 다른 페이지 링크는 `/datagridview/row-height` 처럼 `/` 로 시작하는 경로로 씁니다.
 - 본문에 꺾쇠(`<`)나 중괄호 두 개를 그대로 쓰면 Vue 템플릿으로 해석되어 화면이 깨질 수 있습니다. 코드는 백틱(`` ` ``)이나 코드 블록으로 감쌉니다.
+
+## 샘플 코드를 문서에 불러오기
+
+가이드의 예제 코드는 문서에 다시 적지 않고 샘플 파일에서 불러옵니다. 샘플을 고치면 문서도 같이 바뀌므로 둘이 어긋나지 않습니다.
+
+샘플 파일에서 보여줄 범위를 `#region 이름` 주석으로 감쌉니다.
+
+```js
+// #region data
+var treeDocument = new TreeDocument();
+// #endregion data
+```
+
+문서에서는 `<<<` 로 그 범위를 불러옵니다. `@` 는 `docs/` 폴더이고, 중괄호 안은 코드 색칠에 쓸 언어입니다.
+
+```md
+<<< @/../DataGridViewSample/06_tree.html#data{js}
+```
+
+- 범위 이름은 영문, 숫자, `-`, `_` 만 씁니다.
+- 지금은 DataGridView 의 새 가이드(트리 구조, 컬럼 함수, 우클릭 메뉴와 선택, 셀 직접 그리기, 상태바)가 이 방식입니다.
+
+## 원본과 문서 비교 (빠진 이름 찾기)
+
+```sh
+npm run docs:coverage
+npm run docs:coverage -- <webapps 폴더 경로>
+```
+
+원본 `DataGridView/DataGridView.js` 에서 그리드 옵션, 그리드 메서드, layoutOptions, 컬럼 옵션과 컬럼 함수 이름을 뽑아서 `docs/datagridview/` 에 한 번도 나오지 않는 이름을 출력합니다. 이름 앞의 숫자는 DataGridView 를 쓰는 앱 파일 중 그 이름이 나오는 파일 수라서, 숫자가 큰 것부터 문서에 보태면 됩니다.
+
+- 경로를 주지 않으면 저장소 옆의 `../enovia2025/3dspace/webapps` 를 읽습니다. 2026 과 비교하려면 2026 webapps 경로를 줍니다.
+- 원본이 들여쓰기된 상태(코드 정리 도구로 줄을 나눈 상태)여야 합니다. 한 줄로 붙은 원본에서는 이름을 뽑지 못합니다.
+- 남는 이름이 모두 문서에 있어야 하는 것은 아닙니다. 내부용 함수도 섞여 있으므로 사용 파일 수를 보고 고릅니다.
+- 문서의 "사용" 칸(그리드 옵션, 컬럼 함수)도 같은 기준(이름이 나오는 앱 파일 수)으로 센 값입니다.
 
 ## 내 PC 에서 미리 보기
 

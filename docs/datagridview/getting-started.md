@@ -68,4 +68,7 @@ new DataGridView({
 
 - 셀을 콤보, 체크박스, 날짜 등으로 바꾸기 → [셀 타입](/datagridview/cell-types)
 - 셀 편집하기 → [편집](/datagridview/editing)
+- 하위 행이 있는 트리로 만들기 → [트리 구조](/datagridview/tree)
+- 행마다 값, 콤보 목록, 모양을 다르게 하기 → [컬럼 함수](/datagridview/cell-functions)
+- 우클릭 메뉴 넣기, 선택된 행 알기 → [우클릭 메뉴와 선택](/datagridview/context-menu)
 - 모든 옵션 보기 → [그리드 옵션](/datagridview/api/grid-options)

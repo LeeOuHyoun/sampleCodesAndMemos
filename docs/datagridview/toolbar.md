@@ -5,7 +5,7 @@
 샘플: [03_toolbar.html](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/DataGridViewSample/03_toolbar.html), [ToolbarActions.js](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/DataGridViewSample/ToolbarActions.js)
 
 ::: info 근거
-DataGridView.js 의 setToolbar, Tweakers.js 의 GeneratedToolbar
+DataGridView.js 의 setToolbar, Tweakers.js 의 GeneratedToolbar. 호출부: ENOChgGovernanceUX, CfgBaseUX, ParameterizationSkeleton, IssueComponents.
 :::
 
 ## 툴바 만들기

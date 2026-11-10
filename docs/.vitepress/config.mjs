@@ -275,7 +275,12 @@ const WEBAPPS_SIDEBAR = [
           { text: '저장 후 화면 반영', link: '/datagridview/save-and-reflect' },
           { text: '행 높이', link: '/datagridview/row-height' },
           { text: '정렬과 필터', link: '/datagridview/sort-filter' },
-          { text: '툴바', link: '/datagridview/toolbar' }
+          { text: '툴바', link: '/datagridview/toolbar' },
+          { text: '트리 구조', link: '/datagridview/tree' },
+          { text: '컬럼 함수', link: '/datagridview/cell-functions' },
+          { text: '우클릭 메뉴와 선택', link: '/datagridview/context-menu' },
+          { text: '셀 직접 그리기', link: '/datagridview/custom-cell' },
+          { text: '상태바', link: '/datagridview/status-bar' }
         ]
       },
       {

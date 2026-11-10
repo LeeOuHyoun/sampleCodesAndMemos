@@ -7,7 +7,7 @@
 ```
 
 ::: info 근거
-DataGridView.getEditionManager, CollectionView.js 의 edition/* 클래스
+DataGridView.getEditionManager, CollectionView.js 의 edition/* 클래스. 호출부: ENOChgGovernanceUX, CfgMassVariantEffectivityEditor, ENOXEngineer (editionPolicy), CATWebUXPreferences (EditionOnOver).
 :::
 
 샘플: [02_cellTypes.html](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/DataGridViewSample/02_cellTypes.html) (셀 타입별 편집기), [05_options.html](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/DataGridViewSample/05_options.html) (editionPolicy 를 바꿔 가며 확인)
@@ -33,7 +33,7 @@ DataGridView.getEditionManager, CollectionView.js 의 edition/* 클래스
 
 ## 행마다 편집 가능 여부 다르게
 
-`getCellEditableState` 가 false 를 돌려주면 그 셀은 편집되지 않습니다. `editableFlag: true` 인 컬럼에서만 동작합니다.
+`getCellEditableState` 가 false 를 돌려주면 그 셀은 편집되지 않습니다. `editableFlag: true` 인 컬럼에서만 동작합니다. 콤보 목록이나 셀 타입을 행마다 다르게 하는 방법은 [컬럼 함수](/datagridview/cell-functions) 에 있습니다.
 
 ```js
 {

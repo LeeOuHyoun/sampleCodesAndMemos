@@ -64,6 +64,8 @@
 | program 객체 | JPO 소스나 CSS 같은 코드를 담는 admin 객체 | [OOTB program 을 고칠 때](/deploy/#ootb-program-을-고칠-때) |
 | `_mxJPO` | JPO 파일과 class 이름 끝에 붙는 접미어 | [이름 규칙](/jpo/#이름-규칙) |
 | `${CLASSNAME}`, `${CLASS:이름}` | JPO 소스에서 자기 class, 다른 JPO class 를 가리키는 매크로 | [매크로](/jpo/#classname-class-이름) |
+| 패키지 JPO | `package` 선언이 있는 JPO. 설정에는 `jpo.plmprovider.Connect` 처럼 패키지까지 씀 | [패키지가 있는 JPO](/jpo/#패키지가-있는-jpo) |
+| `mxMain` | 메서드 이름 없이 JPO 를 실행할 때 불리는 기본 메서드. `execute program`, 트리거가 씀 | [MQL 에서 실행](/jpo/#mql-에서-실행-mxmain) |
 | Context | 접속 사용자, 역할, 트랜잭션을 가진 객체. 거의 모든 API 의 첫 인자 | [Context 와 트랜잭션](/jpo/transaction-context) |
 | programMap, paramMap, requestMap | 화면이 JPO 에 넘기는 `Map`. `JPO.unpackArgs(args)` 로 꺼냄 | [호출 형태별 인자](/jpo/args#공통) |
 | packArgs, unpackArgs | `Map` 을 `String[]` 로 싸고 푸는 함수. JPO 인자 전달에 씀 | [다른 JPO 에서](/jpo/#다른-jpo-에서) |

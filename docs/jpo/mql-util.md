@@ -3,7 +3,7 @@
 `MqlUtil.mqlCommand` 는 JPO 안에서 MQL 명령을 그대로 실행합니다. `DomainObject` 에 없는 기능 (관계 정보, 정책, 역할 목록, 환경 변수, 트리거 끄기 ...) 이나 결과를 문자열 한 줄로 받고 싶을 때 씁니다.
 
 ::: info 근거
-jpo 폴더 `MqlUtil.mqlCommand(` 2,365 건. 시그니처와 동작은 xerinfra.jar `com.matrixone.apps.domain.util.MqlUtil` class 파일 (오버로드 16 개) 의 바이트코드 기준
+jpo 폴더 `MqlUtil.mqlCommand(` 2,365 건. 시그니처와 동작은 xerinfra.jar `com.matrixone.apps.domain.util.MqlUtil` class 파일 (public `mqlCommand` 13 개, `mqlCommandStream` 2 개) 의 바이트코드 기준
 :::
 
 샘플: [XX_MyPartAction_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/JPOSample/XX_MyPartAction_mxJPO.java) (mqlCommand 의 $1 인자, notice, print bus)
@@ -17,8 +17,12 @@ MqlUtil.mqlCommand(context, "modify bus $1 owner $2", objectId, newOwner);
 ```
 
 - 명령 안의 `$1`, `$2` ... 를 뒤의 인자로 채웁니다. 값에 공백이나 따옴표가 있어도 안전합니다.
-- 결과는 `String` 입니다. 끝의 줄바꿈은 잘라서 돌려주는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
-- 명령이 실패하면 MQL 오류 문구를 담은 `FrameworkException` 을 던집니다.
+- 결과는 `String` 입니다. MQL 이 끝에 붙이는 줄바꿈을 빼려고 **마지막 한 글자를 잘라서** 돌려줍니다. 결과가 빈 문자열이면 그대로 돌려줍니다.
+- 명령이 실패하면 MQL 오류 문구 (마찬가지로 끝 한 글자를 자름) 를 담은 `FrameworkException` 을 던집니다.
+
+::: info 근거
+xerinfra.jar `MqlUtil` 의 private `mqlCommand(Context, String, boolean, boolean, boolean, String[])`: `MQLCommand.executeCommand` 가 실패하면 `getError()`, 성공하면 `getResult()` 를 받아 길이가 0 보다 크면 `substring(0, length - 1)`. 줄바꿈인지는 확인하지 않고 한 글자를 자름
+:::
 
 ::: warning 문자열을 이어 붙이지 않습니다
 `"print bus " + id + " select name dump"` 처럼 값을 이어 붙이면 MQL 인젝션 위험이 있고, 이름에 공백이 있으면 깨집니다. OOTB 는 2011 년 무렵 `$1` 형태로 고쳤다는 주석 (`Mql Injection:parameterized Mql`) 을 곳곳에 남겼습니다. 새 코드는 항상 `$1` 을 씁니다.
@@ -61,21 +65,28 @@ xerinfra.jar `MqlUtil`: `mqlCommand(Context, String, boolean, String[])` → `mq
 
 ## 많이 쓰는 명령
 
+건수는 jpo 폴더 바로 아래 1,615 개 파일에서 **문자열이 그 명령으로 시작하는 곳** 의 수입니다.
+
 | 명령 | 건수 | 용도 |
 | --- | --- | --- |
-| `print bus $1 select $2 dump` | 209 | 객체 값 하나 |
-| `notice $1` | 148 | 사용자에게 알림 |
-| `get env $1` | 74 | 환경 변수 (트리거 매크로, RPE) |
-| `modify bus $1 ...` / `mod bus` | 59 / 34 | 객체 수정 |
-| `print connection $1 select $2 dump` | 58 | 관계 정보 |
-| `temp query bus $1 $2 $3 select $4 dump $5` | 54 | 검색 |
-| `print policy $1 select $2 dump` | 43 | 정책 상태 목록 등 |
-| `set env $1 $2` | 27 | 환경 변수 쓰기 |
-| `list role $1` | 26 | 역할 목록 |
-| `trigger off` / `trigger on` | 23 / 21 | 트리거 끄기 / 켜기 |
-| `print person $1 select $2 dump` | 19 | 사람 정보 |
-| `history off` / `history on` | 15 / 18 | 히스토리 기록 끄기 |
-| `eval expr $1 on temp query bus $2 $3 $4 where $5` | 17 (`eval expr` 전체) | 개수 세기 같은 식 계산 |
+| `print bus $1 select ...` | 380 | 객체 값 읽기. 그중 `print bus $1 select $2 dump` 그대로가 178 |
+| `modify bus $1 ...` / `mod bus $1 ...` | 132 / 62 | 객체 수정 (속성, 소유자, `add interface` ...) |
+| `notice $1` | 146 | 사용자에게 알림 |
+| `temp query bus ...` | 140 | 검색. `temp query bus $1 $2 $3 select $4 dump $5` 형태가 많음 |
+| `get env ...` | 137 | 환경 변수 읽기 (트리거 매크로, RPE) |
+| `print connection $1 ...` | 97 | 관계 정보 |
+| `print policy ...` | 69 | 정책 상태 목록 등 |
+| `print type $1 select $2 dump` | 67 (`print type` 전체) | 타입 정보 |
+| `trigger off` / `trigger on` | 53 / 53 | 트리거 끄기 / 켜기 |
+| `modify connection ...` / `mod connection ...` | 33 / 17 | 관계 수정 |
+| `expand bus ...` | 38 | 관계 따라 펼치기 |
+| `print person ...` | 37 | 사람 정보 |
+| `print role $1 select ...` / `list role ...` | 36 / 33 | 역할 정보, 역할 목록 |
+| `disconnect ...` / `connect bus ...` | 34 / 28 | 관계 끊기 / 연결 |
+| `eval expr $1 on temp query bus ...` | 33 (`eval expr` 전체) | 개수 세기 같은 식 계산 |
+| `set env $1 ...` / `set env global $1 ...` | 31 / 17 | 환경 변수 쓰기 |
+| `history off` / `history on` | 15 / 18 | 히스토리 기록 끄기 / 켜기 |
+| `print page $1 select content dump` | 17 (`print page` 전체) | page 객체 (설정 파일) 내용 읽기 |
 
 ### 여러 값 받기
 

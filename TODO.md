@@ -34,13 +34,13 @@
 
 ## 실무 검증: 추정 사양 확인
 
-문서 본문에 <검증 필요> 배지가 붙은 문장(원본에서 확인하지 못한 추정, 147 곳)입니다. 확인하면 배지를 지우고 문장을 단정형으로 고친 뒤 `npm run docs:verify-list` 로 `docs/guide/verify-list.md` 를 다시 만듭니다. 문장별 목록은 그 페이지에 있습니다. 괄호 안은 배지 수입니다.
+문서 본문에 <검증 필요> 배지가 붙은 문장(원본에서 확인하지 못한 추정, 141 곳)입니다. 확인하면 배지를 지우고 문장을 단정형으로 고친 뒤 `npm run docs:verify-list` 로 `docs/guide/verify-list.md` 를 다시 만듭니다. 문장별 목록은 그 페이지에 있습니다. 괄호 안은 배지 수입니다.
 
 - [ ] server-java (18): `rest-service` 6, `mail` 4, `scheduler` 4, `index` 3, `external-db` 1
 - [ ] deploy (10): `index` 10 (JPO 컴파일 명령, 재시작 필요 여부, jar 위치 등)
 - [ ] ui-components (28): `settings` 10, `url-parameters` 7, `command-menu` 4, `table` 3, `portal-channel` 2, `webform` 2
 - [ ] schema (22): `conventions` 7, `mql` 7, `policy` 5, `admin` 2, `index` 1
-- [ ] jpo (19): `args` 5, `domain-object` 4, `i18n-exception` 4, `transaction-context` 3, `mql-util` 2, `index` 1
+- [ ] jpo (13): `args` 5, `domain-object` 3, `transaction-context` 2, `i18n-exception` 1, `mql-util` 1, `index` 1
 - [ ] trigger (11): `generator` 3, `lifecycle` 3, `index` 2, `register` 2, `jpo-args` 1
 - [ ] widget (22): `dashboard-register` 12, `index` 2, `preferences` 2, `space-url` 2, `widget-api` 2, `compass-services` 1, `platform-api` 1
 - [ ] properties (7): `system-settings` 5, `string-resource` 2

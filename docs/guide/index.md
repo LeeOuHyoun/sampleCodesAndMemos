@@ -6,11 +6,12 @@ ENOVIA(3DEXPERIENCE) 는 개발 사양서를 제공하지 않고, webapps 소스
 
 ## 문서 구성
 
-문서는 두 분야로 나뉩니다. 상단 메뉴의 같은 이름에서 고릅니다.
+문서는 두 분야와 찾아보기로 나뉩니다. 상단 메뉴의 같은 이름에서 고릅니다.
 
 | 분야 | 다루는 것 | 문서 |
 | --- | --- | --- |
-| 3DSpace 서버 | 데이터 모델과 MQL, 화면 정의(command, table, webform ...), JPO, 트리거, properties | [데이터 모델](/schema/), [UI 구성 요소](/ui-components/), [JPO](/jpo/), [트리거](/trigger/), [properties](/properties/) |
+| 3DSpace 서버 | 데이터 모델과 MQL, 화면 정의(command, table, webform ...), JPO, 트리거, properties, JPO 밖의 서버 Java, 서버 반영 절차 | [데이터 모델](/schema/), [UI 구성 요소](/ui-components/), [JPO](/jpo/), [트리거](/trigger/), [properties](/properties/), [서버 Java](/server-java/), [서버 반영](/deploy/) |
+| 찾아보기 | 증상, 용어, 모듈 이름으로 문서 찾기. 추정으로 적힌 문장 목록 | [자주 틀리는 점](/guide/faq), [용어집](/guide/glossary), [모듈 경로 색인](/guide/module-index), [검증 대기 목록](/guide/verify-list) |
 | webapps | 3DDashboard 위젯과 브라우저 화면. AMD 로딩, 위젯, UWA, 화면 컨트롤, 이벤트, REST API, DataGridView, Tweakers | [AMD](/amd/), [위젯](/widget/), [UWA](/uwa/), [컨트롤](/controls/), [이벤트](/events/), [REST API](/rest-api/), [DataGridView](/datagridview/), [Tweakers](/tweakers/) |
 
 분야 안의 각 주제는 대체로 아래 순서로 페이지를 둡니다.
@@ -36,7 +37,7 @@ ENOVIA(3DEXPERIENCE) 는 개발 사양서를 제공하지 않고, webapps 소스
 - 페이지 제목 옆 배지는 내용을 어디까지 확인했는지 나타냅니다.
   - <Badge type="tip" text="서버 확인" /> 관련 샘플을 ENOVIA 서버에서 실행해 동작을 확인함
   - <Badge type="info" text="원본 분석" /> 원본 소스 분석으로만 작성함. 실제 동작이 다르면 원본 쪽이 맞음
-- 본문 문장 끝의 <Badge type="danger" text="검증 필요" /> 는 원본에서 직접 확인하지 못하고 **추정한 사양** 입니다 ("~것으로 보입니다"). 실무에 쓰기 전에 서버에서 확인합니다.
+- 본문 문장 끝의 <Badge type="danger" text="검증 필요" /> 는 원본에서 직접 확인하지 못하고 **추정한 사양** 입니다 ("~것으로 보입니다"). 실무에 쓰기 전에 서버에서 확인합니다. 전체 목록은 [검증 대기 목록](/guide/verify-list) 에 있습니다.
 
 ## 샘플 소스
 

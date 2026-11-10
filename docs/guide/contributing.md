@@ -9,12 +9,13 @@ sampleCodesAndMemos/
 ├─ docs/
 │  ├─ .vitepress/config.mjs   상단 메뉴, 왼쪽 메뉴 설정
 │  ├─ index.md               홈 (분야별 문서 표, 하고 싶은 일로 찾기)
-│  ├─ guide/                 이 문서에 대해, 처음 읽는 순서
+│  ├─ guide/                 이 문서에 대해, 처음 읽는 순서, 찾아보기
 │  │
 │  ├─ schema/                3DSpace 서버: 데이터 모델 / MQL
 │  ├─ ui-components/         3DSpace 서버: command, table, webform ...
 │  ├─ jpo/                   3DSpace 서버: JPO
 │  ├─ trigger/, properties/  3DSpace 서버: 트리거, properties
+│  ├─ server-java/, deploy/  3DSpace 서버: JPO 밖의 Java, 서버 반영 절차
 │  │
 │  ├─ amd/, widget/          webapps: AMD 로딩, 위젯과 플랫폼
 │  ├─ uwa/, controls/        webapps: UWA, 화면 컨트롤
@@ -24,6 +25,7 @@ sampleCodesAndMemos/
 │     ├─ cell-types.md       가이드 페이지
 │     └─ api/                레퍼런스
 ├─ DataGridViewSample/ ...   주제별 샘플 (주제이름Sample)
+├─ scripts/verify-list.mjs   검증 대기 목록 생성
 └─ package.json
 ```
 
@@ -37,6 +39,8 @@ sampleCodesAndMemos/
 ```
 
 3. 자주 찾을 페이지면 홈(`docs/index.md`)의 분야별 표나 "하고 싶은 일로 찾기" 표에도 링크를 넣습니다.
+4. 새 webapps 모듈(`DS/폴더/모듈`)을 다루면 [모듈 경로 색인](/guide/module-index) 에 한 줄을 추가합니다.
+5. 처음 나오는 용어는 [용어집](/guide/glossary) 에 한 줄을 추가합니다.
 
 ## 새 주제 추가
 
@@ -72,6 +76,7 @@ var grid = new DataGridView({ ... });
 
 - 페이지 제목(`#`) 끝에 확인 상태 배지를 붙입니다. 새 페이지는 `<Badge type="info" text="원본 분석" />` 로 시작하고, 관련 샘플을 서버에서 실행해 확인하면 `<Badge type="tip" text="서버 확인" />` 로 바꿉니다.
 - 원본에서 확인하지 못하고 추정한 사양("~것으로 보입니다")은 문장 뒤에 `<Badge type="danger" text="검증 필요" />` 를 붙입니다. 서버에서 확인하면 배지를 지우고 문장을 단정형으로 고칩니다.
+- 배지를 붙이거나 지운 뒤에는 `npm run docs:verify-list` 를 실행해 [검증 대기 목록](/guide/verify-list) 을 다시 만듭니다. 그 페이지는 직접 고치지 않습니다.
 - `::: warning` 으로 자주 틀리는 점을 새로 쓰면 [자주 틀리는 점](/guide/faq) 의 증상별 표에도 한 줄 추가하고 그 절로 링크합니다.
 - `##`, `###` 제목은 오른쪽 "이 페이지에서" 목차에 나타납니다.
 - 다른 페이지 링크는 `/datagridview/row-height` 처럼 `/` 로 시작하는 경로로 씁니다.

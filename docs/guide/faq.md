@@ -124,3 +124,6 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 화면에서 막았는데 다른 길로 통과 | 상태 규칙은 화면이 아니라 Check 트리거에 둠 | [화면에 보이는 것](/trigger/jpo-args#화면에-보이는-것) |
 | `mod type ... add attribute` 실패 | attribute 를 먼저 만듦 (`01.attribute` 먼저 실행) | [나중에 고치기](/schema/admin#나중에-고치기) |
 | 고친 properties 가 업그레이드 뒤 사라짐 | OOTB 파일 대신 Custom 파일, 내 앱 문자열 파일에 둠 | [고친 뒤 반영](/properties/#고친-뒤-반영) |
+| command, table 을 MQL 로 고쳤는데 화면이 그대로 | 서버가 UI 정의를 기억해 둠. Reload Cache 실행 | [Reload Cache](/deploy/#reload-cache) |
+| 커스텀 설정 파일 값을 고쳤는데 그대로 | `static` 블록에서 한 번만 읽는 값은 재시작해야 바뀜 | [설정 로더](/server-java/#설정-로더) |
+| 커스텀 REST 가 실패했는데 `onFailure` 가 안 불림 | 예외여도 HTTP 200. 응답의 `result` 값을 확인 | [응답 형식](/server-java/rest-service#응답-형식) |

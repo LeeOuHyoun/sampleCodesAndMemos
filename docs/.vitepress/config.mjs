@@ -103,6 +103,24 @@ const SERVER_SIDEBAR = [
       { text: '문자열 리소스 (다국어)', link: '/properties/string-resource' },
       { text: '시스템 설정과 page 객체', link: '/properties/system-settings' }
     ]
+  },
+  {
+    text: '서버 Java',
+    collapsed: true,
+    items: [
+      { text: '개요', link: '/server-java/' },
+      { text: '커스텀 REST 서비스', link: '/server-java/rest-service' },
+      { text: '스케줄러', link: '/server-java/scheduler' },
+      { text: '외부 DB (MyBatis)', link: '/server-java/external-db' },
+      { text: '메일', link: '/server-java/mail' }
+    ]
+  },
+  {
+    text: '서버 반영',
+    collapsed: true,
+    items: [
+      { text: '서버 반영 절차', link: '/deploy/' }
+    ]
   }
 ]
 
@@ -308,6 +326,13 @@ const WEBAPPS_SIDEBAR = [
   }
 ]
 
+const LOOKUP_ITEMS = [
+  { text: '자주 틀리는 점', link: '/guide/faq' },
+  { text: '용어집', link: '/guide/glossary' },
+  { text: '모듈 경로 색인', link: '/guide/module-index' },
+  { text: '검증 대기 목록', link: '/guide/verify-list' }
+]
+
 const sidebarFor = (prefixes, sidebar) => Object.fromEntries(prefixes.map((prefix) => [prefix, sidebar]))
 
 export default defineConfig({
@@ -319,7 +344,7 @@ export default defineConfig({
   lastUpdated: true,
   themeConfig: {
     nav: [
-      { text: '이 문서에 대해', link: '/guide/', activeMatch: '/guide/' },
+      { text: '이 문서에 대해', link: '/guide/', activeMatch: '^/guide/($|roadmap|contributing)' },
       {
         text: '3DSpace 서버',
         items: [
@@ -327,7 +352,9 @@ export default defineConfig({
           { text: 'UI 구성 요소', link: '/ui-components/' },
           { text: 'JPO', link: '/jpo/' },
           { text: '트리거', link: '/trigger/' },
-          { text: 'properties', link: '/properties/' }
+          { text: 'properties', link: '/properties/' },
+          { text: '서버 Java', link: '/server-java/' },
+          { text: '서버 반영', link: '/deploy/' }
         ]
       },
       {
@@ -346,14 +373,29 @@ export default defineConfig({
       {
         text: 'API 레퍼런스',
         items: [
-          { text: 'UI settings', link: '/ui-components/settings' },
-          { text: 'JPO 인자 구조', link: '/jpo/args' },
-          { text: 'REST 엔드포인트', link: '/rest-api/catalog' },
-          { text: '화면 컨트롤', link: '/controls/api/webux-controls' },
-          { text: 'DataGridView', link: '/datagridview/api/grid-options' },
-          { text: 'Tweakers', link: '/tweakers/api/tweaker' }
+          {
+            text: '3DSpace 서버',
+            items: [
+              { text: 'UI settings', link: '/ui-components/settings' },
+              { text: 'URL 파라미터', link: '/ui-components/url-parameters' },
+              { text: 'JPO 인자 구조', link: '/jpo/args' },
+              { text: '트리거 JPO 인자', link: '/trigger/jpo-args' }
+            ]
+          },
+          {
+            text: 'webapps',
+            items: [
+              { text: 'widget 객체', link: '/widget/widget-api' },
+              { text: 'PlatformAPI', link: '/widget/platform-api' },
+              { text: 'REST 엔드포인트', link: '/rest-api/catalog' },
+              { text: '화면 컨트롤', link: '/controls/api/webux-controls' },
+              { text: 'DataGridView', link: '/datagridview/api/grid-options' },
+              { text: 'Tweakers', link: '/tweakers/api/tweaker' }
+            ]
+          }
         ]
-      }
+      },
+      { text: '찾아보기', items: LOOKUP_ITEMS }
     ],
     sidebar: {
       '/guide/': [
@@ -362,12 +404,12 @@ export default defineConfig({
           items: [
             { text: '소개', link: '/guide/' },
             { text: '처음 읽는 순서', link: '/guide/roadmap' },
-            { text: '자주 틀리는 점', link: '/guide/faq' },
             { text: '문서 추가 방법', link: '/guide/contributing' }
           ]
-        }
+        },
+        { text: '찾아보기', items: LOOKUP_ITEMS }
       ],
-      ...sidebarFor(['/schema/', '/ui-components/', '/jpo/', '/trigger/', '/properties/'], SERVER_SIDEBAR),
+      ...sidebarFor(['/schema/', '/ui-components/', '/jpo/', '/trigger/', '/properties/', '/server-java/', '/deploy/'], SERVER_SIDEBAR),
       ...sidebarFor(['/amd/', '/widget/', '/uwa/', '/controls/', '/events/', '/rest-api/', '/datagridview/', '/tweakers/'], WEBAPPS_SIDEBAR)
     },
     socialLinks: [

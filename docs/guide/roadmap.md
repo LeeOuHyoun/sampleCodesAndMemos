@@ -16,7 +16,8 @@ ENOVIA 개발이 처음이라면 아래 순서로 읽습니다. 화면 하나는
  ├─ UI 정의: command, menu, table, webform, portal        (mql/)
  ├─ JPO: *_mxJPO.java                                      (jpo/)
  ├─ 트리거: 생성, 수정, promote 때 JPO 실행                 (mql/12.trigger)
- └─ properties: 다국어 문자열, 시스템 설정                   (properties/)
+ ├─ properties: 다국어 문자열, 시스템 설정                   (properties/)
+ └─ 서버 Java: REST 주소, 배치, 외부 DB, 메일               (src/, resources/custom/)
 ```
 
 ## 1 단계: 3DSpace 서버 (먼저)
@@ -31,6 +32,8 @@ ENOVIA 개발이 처음이라면 아래 순서로 읽습니다. 화면 하나는
 | 6 | [DomainObject 와 select](/jpo/domain-object) | 객체 조회, 관계 탐색, 값 저장 |
 | 7 | [트리거](/trigger/) | 생성, 수정, 상태 변경 때 실행되는 검사와 후처리 |
 | 8 | [properties](/properties/) | 다국어 문자열과 설정 키 |
+| 9 | [서버 반영 절차](/deploy/) | 고친 MQL, JPO, properties 를 서버에 넣는 방법과 순서 |
+| 10 | [서버 Java](/server-java/) | JPO 밖의 코드가 필요할 때. REST 주소, 배치, 외부 DB, 메일 |
 
 ## 2 단계: webapps (위젯을 만들 때)
 
@@ -48,6 +51,7 @@ ENOVIA 개발이 처음이라면 아래 순서로 읽습니다. 화면 하나는
 ## 막혔을 때
 
 - 동작하지 않는데 오류가 없으면 [자주 틀리는 점](/guide/faq) 에서 증상으로 찾습니다.
+- 모르는 말은 [용어집](/guide/glossary) 에서, 원본에서 본 모듈 이름은 [모듈 경로 색인](/guide/module-index) 에서 찾습니다.
 - 키 이름, 함수 이름은 상단 검색(<kbd>Ctrl</kbd> + <kbd>K</kbd>)으로 찾습니다.
 - 각 페이지의 "근거" 상자에 원본 파일이 적혀 있습니다. 문서와 실제 동작이 다르면 원본이 맞습니다.
 - 문서에 없는 것은 "아직 분석하지 않음" 일 뿐 "없음" 이 아닙니다.

@@ -29,11 +29,19 @@ DomainObject plain = new DomainObject(objectId);
 
 | 방법 | 설명 |
 | --- | --- |
-| `DomainObject.newInstance(context, id)` | id 로 타입을 조회해 알맞은 하위 클래스 (`Part`, `Document` ...) 로 만들어 주는 것으로 보입니다. <Badge type="danger" text="검증 필요" /> 가장 많이 씀 |
+| `DomainObject.newInstance(context, id)` | 객체를 열어 타입을 읽고, 그 타입에 등록된 클래스 (`Part`, `Document` ...) 로 만듭니다. 등록된 클래스가 없으면 `DomainObject`. 가장 많이 씀 |
 | `DomainObject.newInstance(context, type, app)` | 타입을 알 때. `newInstance(context, TYPE_TASK, PROGRAM)` 뒤에 `setId(id)` |
 | `DomainObject.newInstance(context)` | 빈 객체. `createObject` 전에 씀 |
 | `new DomainObject(id)` | 타입 조회 없이 바로 |
 | `obj.setId(id)` | 같은 인스턴스를 다른 id 로 재사용 (1,216 건) |
+
+::: tip 하위 클래스가 필요 없으면 new DomainObject(id)
+`newInstance(context, id)` 는 타입을 알아내려고 객체를 한 번 엽니다. `getInfo`, `setAttributeValue` 처럼 `DomainObject` 의 메서드만 쓴다면 `new DomainObject(id)` 나 `setId(id)` 재사용으로 이 조회를 줄일 수 있습니다.
+:::
+
+::: info 근거
+xerinfra.jar `DomainObject.newInstance(Context, String)` 바이트코드: id 에 타입 정보가 없으면 `FrameworkUtil.getType(context, new BusinessObject(id))` (`open` → `getBusinessType` → `close`) 로 타입을 읽고, `FrameworkUtil.lookupObject(context, "type", 타입, DomainObject.class, app)` 로 찾은 클래스를 `String` 생성자로 만듦. 못 찾으면 `DomainObject`
+:::
 
 ## 정보 읽기
 
@@ -44,6 +52,7 @@ DomainObject plain = new DomainObject(objectId);
 | `getInfo(context, StringList selects, StringList multiSelects)` | `Map` | 여러 값 select 를 항상 `StringList` 로 받음 |
 | `getInfoList(context, String select)` | `StringList` | 여러 값 select 하나 (`from[X].to.id` 등) |
 | `DomainObject.getInfo(context, String[] ids, StringList selects)` | `MapList` | 여러 객체를 한 번에. 열 function 에서 씀 |
+| `BusinessObject.getSelectBusinessObjectData(context, String[] ids, StringList selects)` | `BusinessObjectWithSelectList` | 위와 같은 일을 하는 하위 API (OOTB 168 건). 값은 `list.getElement(i).getSelectData(select)`, 여러 값은 `getSelectDataList(select)` |
 | `getAttributeValue(context, attrName)` | `String` | 속성 하나 |
 | `getAttributeMap(context)` | `Map` | 모든 속성 |
 | `isKindOf(context, type)` | `boolean` | 타입 (하위 포함) 확인 |
@@ -155,6 +164,8 @@ attrs.put(attrStatus, "Approved");
 attrs.put(attrComment, comment);
 obj.setAttributeValues(context, attrs);
 ```
+
+값은 모두 문자열입니다. 날짜 속성은 `MM/dd/yyyy hh:mm:ss a` 형식 문자열로 읽고 씁니다 ([날짜](/jpo/utils#날짜)).
 
 ### createObject
 

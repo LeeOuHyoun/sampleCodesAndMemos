@@ -42,7 +42,7 @@ features:
 | --- | --- | --- |
 | 데이터 모델 / MQL | type, attribute, policy, relationship, role. MQL 문법과 조회 | [개요](/schema/) · [Admin 객체](/schema/admin) · [Policy](/schema/policy) · [MQL 문법](/schema/mql) · [mql 폴더 규칙](/schema/conventions) |
 | UI 구성 요소 | command, menu, table, webform, portal, channel 로 화면 조립 | [개요](/ui-components/) · [command, menu](/ui-components/command-menu) · [table](/ui-components/table) · [webform](/ui-components/webform) · [portal, channel](/ui-components/portal-channel) · [URL 파라미터](/ui-components/url-parameters) · [settings](/ui-components/settings) |
-| JPO | 화면과 트리거에서 부르는 서버 Java 코드 | [개요](/jpo/) · [인자 구조](/jpo/args) · [DomainObject, select](/jpo/domain-object) · [MqlUtil](/jpo/mql-util) · [트랜잭션, 권한 전환](/jpo/transaction-context) · [다국어, 예외](/jpo/i18n-exception) |
+| JPO | 화면과 트리거에서 부르는 서버 Java 코드 | [개요](/jpo/) · [인자 구조](/jpo/args) · [DomainObject, select](/jpo/domain-object) · [MqlUtil](/jpo/mql-util) · [유틸리티](/jpo/utils) · [트랜잭션, 권한 전환](/jpo/transaction-context) · [다국어, 예외](/jpo/i18n-exception) |
 | 트리거 | 생성, 수정, promote 때 실행되는 검사와 후처리 | [개요](/trigger/) · [등록](/trigger/register) · [JPO 인자](/trigger/jpo-args) · [라이프사이클](/trigger/lifecycle) · [채번기](/trigger/generator) |
 | properties | 다국어 문자열과 시스템 설정 | [개요](/properties/) · [문자열 리소스](/properties/string-resource) · [시스템 설정](/properties/system-settings) |
 | 서버 Java | JPO 밖의 서버 코드. REST 주소, 배치, 외부 DB, 메일 | [개요](/server-java/) · [커스텀 REST 서비스](/server-java/rest-service) · [스케줄러](/server-java/scheduler) · [외부 DB](/server-java/external-db) · [메일](/server-java/mail) |
@@ -77,6 +77,8 @@ features:
 | 저장이나 승인 전에 검사하고 싶다 | [트리거](/trigger/) → [트리거 JPO 인자](/trigger/jpo-args) |
 | 화면 글자를 다국어로 바꾸고 싶다 | [문자열 리소스](/properties/string-resource) |
 | JPO 에서 MQL 을 실행하고 싶다 | [MqlUtil](/jpo/mql-util) |
+| JPO 에서 로그인 사용자, 날짜 속성, HTML 열을 다루고 싶다 | [자주 쓰는 유틸리티](/jpo/utils) |
+| MQL 에서 JPO 를 한 번 실행하고 싶다 (마이그레이션, 정리) | [MQL 에서 실행](/jpo/#mql-에서-실행-mxmain) |
 | 권한이 없는 사용자 대신 서버가 처리하게 하고 싶다 | [Context, 트랜잭션, 권한 전환](/jpo/transaction-context) |
 | 객체 이름을 자동으로 채번하고 싶다 | [채번기](/trigger/generator) |
 | 고친 것을 서버에 반영하고 싶다 | [서버 반영 절차](/deploy/) |

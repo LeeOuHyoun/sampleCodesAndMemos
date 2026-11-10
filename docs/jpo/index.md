@@ -3,18 +3,56 @@
 JPO (Java Program Object) 는 3DSpace 서버에서 돌아가는 Java 클래스입니다. 표 (table), 폼 (webform), 명령 (command), 검색, 트리거가 화면이나 이벤트에서 JPO 메서드를 이름으로 불러 씁니다. 업무 로직 대부분이 여기에 들어갑니다.
 
 ::: info 근거
-enovia2025 `jpo/` 의 `*_mxJPO.java` 1,615 개 (그중 `*Base_mxJPO.java` 570 개). `JPO.unpackArgs(` 5,783 건, `JPO.invoke(` 408 건. 예: emxPart_mxJPO, emxPartBase_mxJPO, emxCommonDocumentUIBase_mxJPO, emxECPartBase_mxJPO, emxDomainAccessBase_mxJPO. 프레임워크 쪽은 WEB-INF/lib 의 eMatrixServletRMI.jar (`matrix.db.JPO`), xerinfra.jar (`DomainObject`, `MqlUtil`, `ContextUtil`), framework.jar (`UITable`, `UIForm`)
+enovia2025 `jpo/` 바로 아래의 `*_mxJPO.java` 1,615 개 (그중 `*Base_mxJPO.java` 570 개) 와 하위 폴더 (`jpo/jpo/`, `jpo/com/`) 의 패키지 JPO 55 개. **이 섹션의 건수는 따로 적지 않으면 바로 아래 1,615 개 파일 기준** 입니다. `JPO.unpackArgs(` 5,783 건, `JPO.invoke(` 408 건. 예: emxPart_mxJPO, emxPartBase_mxJPO, emxCommonDocumentUIBase_mxJPO, emxECPartBase_mxJPO, emxDomainAccessBase_mxJPO. 프레임워크 쪽은 WEB-INF/lib 의 eMatrixServletRMI.jar (`matrix.db.JPO`), xerinfra.jar (`DomainObject`, `MqlUtil`, `ContextUtil`), framework.jar (`UITable`, `UIForm`)
 :::
+
+## 하고 싶은 일로 찾기
+
+| 하고 싶은 일 | 쓰는 것 | 문서 |
+| --- | --- | --- |
+| 표의 행 목록을 만들기 | `getRelatedObjects` → `MapList` | [표 program](/jpo/args#표-program) |
+| 표 열 값을 채우기 | `DomainObject.getInfo(context, ids, selects)` → `Vector` | [표 열 function](/jpo/args#표-열-function) |
+| 명령, 열, 필드를 숨기기 | `Access Function` → `Boolean` | [접근](/jpo/args#접근-access-function) |
+| 콤보 목록 만들기 | `field_choices`, `field_display_choices` | [범위](/jpo/args#범위-range-function) |
+| 편집한 값을 저장하기 | `paramMap.get("New Value")` | [저장](/jpo/args#저장-update-function) |
+| 생성 화면에서 객체를 만들고 후처리하기 | `createJPO`, `postProcessJPO` | [생성 폼](/jpo/args#생성-폼-createjpo-postprocessjpo) |
+| 객체 값 읽기, 쓰기, 연결 | `getInfo`, `setAttributeValue`, `DomainRelationship.connect` | [DomainObject](/jpo/domain-object) |
+| 여러 변경을 함께 되돌릴 수 있게 묶기 | `ContextUtil.startTransaction` | [트랜잭션](/jpo/transaction-context#트랜잭션) |
+| 사용자 권한 밖의 작업 | `ContextUtil.pushContext` / `popContext` | [슈퍼유저로 바꾸기](/jpo/transaction-context#슈퍼유저로-바꾸기-pushcontext) |
+| MQL 명령 실행 | `MqlUtil.mqlCommand(context, "... $1", 값)` | [MqlUtil](/jpo/mql-util) |
+| 화면 문구 다국어, 오류 알리기 | `EnoviaResourceBundle.getProperty`, `throw new FrameworkException(msg)` | [다국어, 예외, 로그](/jpo/i18n-exception) |
+| 로그인 사용자, 날짜, HTML 이스케이프 | `PersonUtil`, `eMatrixDateFormat`, `XSSUtil` | [자주 쓰는 유틸리티](/jpo/utils) |
+| MQL 에서 한 번 돌리는 배치 | `execute program`, `mxMain` | [MQL 에서 실행](#mql-에서-실행-mxmain) |
 
 ## 원본 위치
 
 | 경로 | 내용 |
 | --- | --- |
 | `jpo/*_mxJPO.java` | JPO 소스. OOTB 는 `emx*`, `ENO*`, `enoX*` 등, 사용자 정의는 회사 접두어를 붙임 |
+| `jpo/jpo/**`, `jpo/com/**` | 패키지가 있는 JPO 55 개 ([패키지가 있는 JPO](#패키지가-있는-jpo)) |
 | `mql/08.table`, `mql/09.webform`, `mql/06.command` | JPO 를 부르는 쪽. `setting "program"` / `"function"`, href 의 `program=JPO:method` |
 | `mql/12.trigger` | 트리거가 부르는 JPO 이름과 메서드 ([트리거](/trigger/)) |
+| `mql/03.policy` | 접근 조건 `program[이름 -method 메서드 ${OBJECTID}]` 에서 JPO 를 부름 ([Policy](/schema/policy)) |
 | `3dspace/common/*.jsp` | JSP 에서 `JPO.invoke` 로 직접 부르는 곳 (402 개 파일) |
 | `3dspace/WEB-INF/lib/*.jar` | `DomainObject`, `MqlUtil` 같은 API 클래스. 소스는 없고 class 파일만 있음 |
+
+## 원본 jpo 폴더의 JPO 종류
+
+`jpo/` 의 1,670 개 파일이 모두 화면에서 부르는 JPO 는 아닙니다. 아래처럼 나눠 보면 읽을 대상을 좁힐 수 있습니다.
+
+| 종류 | 파일 수 | 알아보는 법 | 읽을 때 |
+| --- | --- | --- | --- |
+| OOTB 앱 JPO | 883 (Base 448, 파생 435) | `emx*`, `ENO*`, `eno*` 이름과 `이름Base` 짝 | 화면, 트리거가 부르는 JPO. 이 섹션이 다루는 대상 |
+| EKL 완성 (Completion) JPO | 284 | `public final class ... extends CompletionJPOEvaluator`. 이름에 `Export`, `Completion`, `Exchange` 가 많음 (202 개) | 데이터 교환, 내보내기 규칙에서 쓰는 코드. `evaluate(Context, PLMIDSet, PLMIDSet)` 하나와 기계가 붙인 이름의 상수 (`_STRING_0__...`) 만 있고 화면에서 부르지 않음 |
+| CAD 연동 | 198 | `IEF*`, `MCAD*`, `DSC*`, `DEC*` 이름, `com.matrixone.MCADIntegration` import | CAD 통합 전용. 일반 화면 개발에서는 볼 일이 적음 |
+| 마이그레이션 | 171 | 이름에 `Migration` | 버전을 올릴 때 MQL 에서 한 번 돌리는 배치 ([MQL 에서 실행](#mql-에서-실행-mxmain)) |
+| 패키지 JPO | 55 | 하위 폴더에 있고 `package` 선언이 있음 | [패키지가 있는 JPO](#패키지가-있는-jpo) |
+| 사용자 정의 | 50 | 회사 접두어 | 프로젝트 코드. Base / 파생으로 나누지 않음 |
+| 그 밖의 단일 클래스 | 29 | `emxTypeAhead`, `emxTriggerUtil` 같은 이름 | 짝이 없는 OOTB 유틸 |
+
+::: info 근거
+jpo 폴더 1,670 개 파일을 표의 종류 중 먼저 맞는 하나로 셈 (패키지 → EKL → 사용자 정의 → CAD → 마이그레이션 → Base / 파생 → 그 밖). EKL 예: AlternateCompletion_mxJPO.java:14 (`_STRING_0__com_dot_dassault_syst`), 22-24 (`evaluate` 에서 `Completion.ExecuteJavaProcedure`). 284 개 모두 `public final class` 이고 `public final void evaluate(` 를 가짐
+:::
 
 ## 이름 규칙
 
@@ -44,6 +82,30 @@ public class ${CLASSNAME} extends ${CLASS:emxPartBase} {
 ```
 
 이 분석 자료의 OOTB 소스는 이미 `_mxJPO` 이름으로 풀린 형태입니다. 주석에만 `${CLASSNAME}` (876 건), `${CLASS:...}` 가 남아 있습니다. 사용자 정의 JPO 는 처음부터 `_mxJPO` 이름을 직접 쓰고 있습니다. 두 방식 모두 동작합니다. IDE 에서 컴파일 오류 없이 다루려면 `_mxJPO` 이름을 직접 쓰는 편이 편합니다.
+
+### 패키지가 있는 JPO
+
+`jpo/jpo/`, `jpo/com/` 아래의 55 개는 Java 패키지를 가진 JPO 입니다. 설정과 호출에는 **패키지까지 붙인 이름** 에서 `_mxJPO` 를 뺀 것을 씁니다.
+
+```java
+package jpo.plmprovider;
+
+public class Connect_mxJPO extends jpo.plmprovider.ConnectBase_mxJPO {
+```
+
+| 구분 | 예 |
+| --- | --- |
+| 파일 | `jpo/jpo/plmprovider/Connect_mxJPO.java` |
+| Java 클래스 | `jpo.plmprovider.Connect_mxJPO` |
+| 프로그램 이름 (설정, 호출) | `jpo.plmprovider.Connect` |
+| 설정에 쓴 예 | `chooserJPO="jpo.materialscompliance.Part:getReferenceDocs"`, `program[jpo.materialscompliance.Part -method getCompliances ${OBJECTID}]` |
+
+- 패키지가 다르면 같은 클래스 이름을 함께 쓸 수 있습니다 (`jpo.componentcentral.sep.Part`, `jpo.manufacturerequivalentpart.Part`).
+- 상속도 패키지까지 적습니다 (`extends com.dassault_systemes.enovia.geographyconfiguration.ui.CountryBase_mxJPO`).
+
+::: info 근거
+jpo/jpo/plmprovider/Connect_mxJPO.java:1, 23, jpo/com/dassault_systemes/enovia/geographyconfiguration/ui/Country_mxJPO.java:1, 17. 패키지 이름으로 부르는 설정: mql/99.config/config.xml:1798-1814 (`chooserJPO="jpo.materialscompliance.Part:..."`, `program[jpo.materialscompliance.Part -method ...]`)
+:::
 
 ## Base / 파생 구조
 
@@ -175,9 +237,15 @@ URL  emxIndentedTable.jsp?program=XX_MyPartUI:getMyPartList&table=XX_MyPartTable
 | 생성 폼 | href `createJPO=`, `postProcessJPO=` | [생성](/jpo/args#생성-폼-createjpo-postprocessjpo) |
 | 검색 | href `includeOIDprogram=`, `excludeOIDprogram=` | [검색](/jpo/args#검색-포함-제외-program) |
 | 트리거 | `eService Trigger Program Parameters` 객체 | [트리거](/trigger/) |
+| policy 접근 조건, select 식 | `program[이름 -method 메서드 ${OBJECTID}]` | 위치 인자 (`args[0]` ...) 를 받고 `String` 을 돌려줌. 돌려준 값이 그 select 의 값 ([Policy](/schema/policy)) |
+| MQL 명령 | `execute program 이름 -method 메서드 인자...` | [MQL 에서 실행](#mql-에서-실행-mxmain) |
 | JSP, 다른 JPO | `JPO.invoke` | [아래](#다른-곳에서-jpo-부르기) |
 
 설정 키 자체 (`Column Type`, `Editable` 등) 는 [UI 설정](/ui-components/settings) 에 정리되어 있습니다.
+
+::: info 근거
+`program[...]` select: mql/99.config/config.xml:2596 (`program[emxPLCCommon -method getSelecatableVal '${OBJECTID}' 'to[CONFIGURATION STRUCTURES].from.id' ]`) 가 부르는 emxPLCCommonBase_mxJPO.java:3301 (`public String getSelecatableVal(Context context, String args[])`, `args[0]`, `args[1]` 로 `print bus $1 select $2 dump $3`). mql 폴더의 `program[이름 -method` 284 건 (03.policy, 99.config)
+:::
 
 ## 다른 곳에서 JPO 부르기
 
@@ -218,6 +286,45 @@ UI 용 메서드를 다른 곳에서 부를 때는 UI 가 넘기는 Map 모양 (
 ENOProductSpecificationUIBase_mxJPO.java:187, DECModifyUpdateStamp_mxJPO.java:197, ENOCharacteristicBase_mxJPO.java:240, common/emxAEFSubmitJPO.jsp:34-39
 :::
 
+## MQL 에서 실행 (mxMain)
+
+마이그레이션이나 한 번만 돌리는 정리 작업은 MQL 의 `execute program` 으로 JPO 를 바로 실행합니다.
+
+```text
+execute program emxCommonMigration 'C:/Temp/oids/' 1 n;
+execute program emxCommonMigration -method customMigration 'C:/Temp/oids/' file1.txt;
+execute program emxTriggerManager -method resetCache;
+```
+
+| 형태 | 불리는 메서드 | 인자 |
+| --- | --- | --- |
+| `execute program 이름 인자...` | `public int mxMain(Context, String[])` | 공백으로 나눈 값이 `args[0]`, `args[1]` ... 로 그대로 들어옴 (`unpackArgs` 하지 않음) |
+| `execute program 이름 -method 메서드 인자...` | 그 메서드 | 위와 같음 |
+
+```java
+public int mxMain(Context context, String[] args) throws Exception {
+    BufferedWriter writer = new BufferedWriter(new MatrixWriter(context));
+    if (args.length < 1) {
+        writer.write("Usage: execute program XX_MyMigration directory\n");
+        writer.flush();
+        return 0;
+    }
+    String directory = args[0];
+    writer.write("start: " + directory + "\n");
+    writer.flush();
+    return 0;
+}
+```
+
+- `new BufferedWriter(new MatrixWriter(context))` 로 쓴 글자는 MQL 창에 나옵니다 (79 건). `BufferedWriter` 라서 `flush` 나 `close` 를 해야 보입니다.
+- OOTB 마이그레이션은 시작할 때 `context.isConnected()` 를 확인하고, `print person ... select system dump` 로 실행한 사람이 관리자인지 봅니다.
+- 화면용 메서드 (`unpackArgs` 로 Map 을 받는 메서드) 는 인자 형태가 달라서 `execute program` 으로 바로 부를 수 없습니다. 같은 로직이 필요하면 위치 인자를 받는 메서드를 따로 둡니다.
+- 트리거와 `program[...]` select 도 같은 위치 인자 형태입니다 ([트리거 JPO 와 인자](/trigger/jpo-args)).
+
+::: info 근거
+emxCommonMigrationBase_mxJPO.java:93 (`new BufferedWriter(new MatrixWriter(context))`), 127-131 (`mxMain`, `context.isConnected()`), 142 (`print person ... select system dump`), 168-173 (`args.length`, `args[0]`), 811-847 (사용법 출력: `execute program emxCommonMigration ...`, `-method customMigration ...`), emxCommonDocumentMigrationBase_mxJPO.java 의 `customMigration(Context, String[])` (`args.length`). jpo 폴더 `public int mxMain(Context` 427 개 파일, `new MatrixWriter(context)` 79 건. `execute program emxTriggerManager -method resetCache;` 는 [트리거 등록](/trigger/register)
+:::
+
 ## 자주 틀리는 것
 
 | 틀린 생각 | 실제 | 문서 |
@@ -229,6 +336,10 @@ ENOProductSpecificationUIBase_mxJPO.java:187, DECModifyUpdateStamp_mxJPO.java:19
 | `startTransaction` 을 부르면 항상 새 트랜잭션 | 이미 열려 있으면 참조 카운트만 올림. 가장 바깥에서만 commit | [트랜잭션](/jpo/transaction-context#트랜잭션) |
 | 값이 여러 개인 select 는 항상 StringList | 하나면 String, 여럿이면 StringList 로 섞여 옴 | [DomainObject](/jpo/domain-object#여러-값-select) |
 | 접근 함수가 `null` 을 돌려도 숨김 처리 | "JPO Access Program Returns NULL" 오류 | [접근](/jpo/args#접근-access-function) |
+| 저장 함수에는 언제나 이전 값 (`Old value`) 이 옴 | 편집 폼만 넘김. 표 셀 저장과 생성 폼에는 없음 | [저장](/jpo/args#저장-update-function) |
+| `UIUtil.isNullOrEmpty` 뒤에 `"null"` 도 따로 검사 | `"null"` (대소문자 무시) 과 공백도 이미 빈 값으로 봄 | [빈 값과 문자열](/jpo/utils#빈-값과-문자열) |
+| HTML 열에 이름, 제목을 그대로 이어 붙임 | `XSSUtil.encodeForHTML` 로 감쌈 | [HTML 이스케이프](/jpo/utils#html-이스케이프) |
+| 날짜 속성을 `new SimpleDateFormat(형식)` 으로 읽고 씀 | `Locale.US` 를 줘야 `AM` / `PM` 이 맞음 | [날짜](/jpo/utils#날짜) |
 
 ## 이 섹션의 문서
 
@@ -237,6 +348,7 @@ ENOProductSpecificationUIBase_mxJPO.java:187, DECModifyUpdateStamp_mxJPO.java:19
 | [호출 종류별 인자 구조](/jpo/args) | 표, 폼, 명령, 접근 함수가 넘기는 `args` 의 내용 |
 | [DomainObject 와 select](/jpo/domain-object) | 객체 조회, 관계 탐색, 값 저장, select 문법 |
 | [MqlUtil](/jpo/mql-util) | JPO 안에서 MQL 명령 실행 |
+| [자주 쓰는 유틸리티](/jpo/utils) | 빈 값 검사, HTML 이스케이프, 현재 사용자, 날짜, 타입 / 상태 이름, 캐시 |
 | [Context, 트랜잭션, 권한 전환](/jpo/transaction-context) | 트랜잭션 시작 / 끝, `pushContext` |
 | [다국어, 예외, 로그](/jpo/i18n-exception) | 문자열 리소스 읽기, 예외로 실패 알리기, 서버 로그 |
 

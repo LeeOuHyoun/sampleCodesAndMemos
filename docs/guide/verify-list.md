@@ -1,6 +1,6 @@
 # 검증 대기 목록
 
-본문에 <Badge type="danger" text="검증 필요" /> 배지가 붙은 추정 사양 147 곳을 모은 목록입니다. 실무에 쓰기 전에 서버에서 확인합니다.
+본문에 <Badge type="danger" text="검증 필요" /> 배지가 붙은 추정 사양 141 곳을 모은 목록입니다. 실무에 쓰기 전에 서버에서 확인합니다.
 
 - 각 줄 앞의 링크는 그 문장이 있는 절로 갑니다.
 - 확인했으면 원래 페이지에서 배지를 지우고 문장을 단정형으로 고칩니다. 다르게 동작하면 내용을 고칩니다.
@@ -93,7 +93,7 @@
 - [필드 종류: Field Type](/ui-components/webform#필드-종류-field-type) : `Group Holder` : 다음 N 개 필드를 가로로 묶는 자리로 보임
 - [배치](/ui-components/webform#배치) : `Group Holder` + `Group Count` `2` 는 바로 다음 두 필드를 한 줄에 놓는 것으로 보입니다.
 
-## JPO (19)
+## JPO (13)
 
 ### 호출 종류별 인자 구조 (5)
 
@@ -101,34 +101,28 @@
 - [구조 펼치기 program](/jpo/args#구조-펼치기-program) : href 에 `expandProgram=` 을 따로 주면 루트 목록은 `program`, 펼치기는 `expandProgram` 이 맡는 것으로 보입니다.
 - [셀 스타일 (Style Function)](/jpo/args#셀-스타일-style-function) : 열 설정에 붙으므로 그 열의 셀에 적용되는 것으로 보입니다.
 - [범위 (Range Function)](/jpo/args#범위-range-function) : `fieldMap` (폼) / `columnMap` (표) : 표에서는 `columnMap` 이 오는 것으로 보입니다
-- [검사 순서](/jpo/args#검사-순서) : `setting "Access Behavior" "disable"` 이면 숨기지 않고 회색으로 비활성 처리하는 것으로 보입니다
+- [검사 순서](/jpo/args#검사-순서) : `GrayOut` 은 숨기지 않고 회색 비활성으로 그리라는 표시로 보입니다.
 
-### DomainObject 와 select (4)
+### DomainObject 와 select (3)
 
-- [객체 얻기](/jpo/domain-object#객체-얻기) : `DomainObject.newInstance(context, id)` : id 로 타입을 조회해 알맞은 하위 클래스 (`Part`, `Document` ...) 로 만들어 주는 것으로 보입니다.
 - [여러 값 select](/jpo/domain-object#여러-값-select) : 2 이상 : 구분자로 이어 붙인 `String` 으로 오는 경우도 있는 것으로 보입니다
 - [연결, 끊기](/jpo/domain-object#연결-끊기) : `DomainRelationship.connect(context, fromId, relName, toId, preserve)` : id 로 연결. `preserve=true` 면 MQL `connect ... preserve` 로 실행 (수정 일자를 바꾸지 않는 옵션으로 보입니다
 - [관계](/jpo/domain-object#관계) : `attribute[없는이름]` 처럼 이름을 틀리면 예외 없이 `null` / 빈 값이 오는 것으로 보입니다.
 
-### 다국어, 예외, 로그 (4)
+### 다국어, 예외, 로그 (1)
 
-- [문자열 리소스](/jpo/i18n-exception#문자열-리소스) : `getProperty(context, suite, 키, 언어)` : suite 이름으로 그 suite 의 문자열 리소스를 찾는 것으로 보입니다
-- [문자열 리소스](/jpo/i18n-exception#문자열-리소스) : 키가 없으면 빈 값이나 키 그대로가 오는 것으로 보입니다.
 - [사용자에게 오류 보여 주기](/jpo/i18n-exception#사용자에게-오류-보여-주기) : `JPO.invoke` 를 거친 예외 문구에는 `System Error: #5000001: java.lang.Exception:` 같은 앞부분이 붙는 것으로 보입니다.
-- [로그](/jpo/i18n-exception#로그) : 서버에 slf4j 가 들어 있어 따로 jar 를 넣지 않아도 되는 것으로 보입니다.
 
 ### JPO 개요 (1)
 
 - [Base / 파생 구조](/jpo/#base-파생-구조) : Base 를 직접 고치면 업그레이드 때 사라지는 것으로 보입니다.
 
-### MqlUtil (2)
+### MqlUtil (1)
 
-- [기본 형태](/jpo/mql-util#기본-형태) : 끝의 줄바꿈은 잘라서 돌려주는 것으로 보입니다.
 - [트리거 / 히스토리 끄기](/jpo/mql-util#트리거-히스토리-끄기) : `trigger off` 는 같은 context (세션) 의 이후 명령 전체에 적용되는 것으로 보입니다.
 
-### Context, 트랜잭션, 권한 전환 (3)
+### Context, 트랜잭션, 권한 전환 (2)
 
-- [Context 에서 꺼내는 값](/jpo/transaction-context#context-에서-꺼내는-값) : `context.getRole()` : 현재 보안 컨텍스트 (역할 / 조직 / 공간) 로 보입니다
 - [UI 가 열어 주는 트랜잭션](/jpo/transaction-context#ui-가-열어-주는-트랜잭션) : 트리거는 객체를 바꾸는 MQL 명령의 트랜잭션 안에서 실행되는 것으로 보입니다.
 - [슈퍼유저로 바꾸기 (pushContext)](/jpo/transaction-context#슈퍼유저로-바꾸기-pushcontext) : 이력 (history) 의 사용자도 User Agent 로 남는 것으로 보입니다.
 

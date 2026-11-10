@@ -107,8 +107,11 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 그리드에서 `node.remove()` 해도 행이 남음 | 변경 트랜잭션 모드에서는 삭제 표시만 함. `acceptChanges()` 때 제거 | [행의 변경 상태](/datagridview/save-and-reflect#행의-변경-상태) |
 | select 결과가 String 이었다 StringList 였다 함 | 값이 하나면 String, 여럿이면 StringList | [여러 값 select](/jpo/domain-object#여러-값-select) |
 | attribute 값이 계속 비어 있음 | 이름 오타도 예외 없이 빈 값. MQL `print bus ... select ... dump` 로 확인 | [관계](/jpo/domain-object#관계) |
-| 폼 저장에서 이전 값이 `null` | 키는 `"Old value"` (`v` 소문자) | [저장](/jpo/args#저장-update-function) |
+| 저장 함수에서 이전 값이 `null` | 이전 값 (`Old value`) 은 편집 폼만 넘김. 표 셀 저장과 생성 폼은 저장 전에 직접 읽음 | [저장](/jpo/args#저장-update-function) |
 | 표 / 폼의 range 표시 이름이 안 나옴 | 폼은 `RangeDisplayValues`, 표는 `RangeDisplayValue` | [표 (Structure Browser)](/jpo/args#표-structure-browser) |
+| 날짜 속성을 읽을 때 ParseException, 오전 / 오후가 틀림 | `SimpleDateFormat` 을 `Locale.US` 로 만듦 (`a` 는 `AM` / `PM`) | [날짜](/jpo/utils#날짜) |
+| 로그인 사용자 정보 (`PersonUtil`) 가 User Agent 로 나옴 | `pushContext` 안에서 부름. push 전에 구해 둠 | [현재 사용자](/jpo/utils#현재-사용자) |
+| 다른 사용자의 값이 보임 | `CacheUtil` 은 서버 전체가 같이 씀. 사용자별 값을 넣지 않음 | [서버 전체 캐시](/jpo/utils#서버-전체-캐시-cacheutil) |
 | 화면에 문자열 키가 그대로 보임 | 키 오타나 배포 누락. 없을 때 키를 돌려주는 함수를 둠 | [문자열 리소스 Java](/properties/string-resource#java) |
 | `_ko` 파일 한글이 깨짐 | `\uXXXX` 로 적음 | [파일 규칙](/properties/string-resource#파일-규칙) |
 | 어떤 policy 에서는 state 이름이 안 맞음 | `In Work` / `InWork` 가 섞임. 심볼릭 이름 `state_InWork` 로 찾음 | [state 이름](/schema/policy#state-이름과-심볼릭-이름) |
@@ -122,6 +125,7 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | "JPO Access Program Returns NULL" | 접근 함수는 `null` 대신 `false` 를 돌려줌 | [검사 순서](/jpo/args#검사-순서) |
 | 표 열이 느림 | 행마다 `getInfo` 하지 말고 id 배열로 `DomainObject.getInfo` 한 번 | [표 열 function](/jpo/args#표-열-function) |
 | 내보내기 / 인쇄에 HTML 이 섞임 | `reportFormat`, `exportFormat` 이 있으면 글자만 돌려줌 | [표 열 function](/jpo/args#표-열-function) |
+| 이름에 `<` 나 따옴표가 든 객체에서 표가 깨짐 | HTML 열 값은 `XSSUtil.encodeForHTML` 로 감쌈 | [HTML 이스케이프](/jpo/utils#html-이스케이프) |
 | commit 에서 엉뚱한 오류 | 앞에서 예외를 삼켜 트랜잭션이 aborting 상태. 로그를 남겨도 다시 던짐 | [예외](/jpo/i18n-exception#많이-쓰는-형태), [트랜잭션](/jpo/transaction-context#중첩-호출은-참조-카운트로-처리) |
 | 안쪽에서 abort 했는데 변경이 남음 | 안쪽 abort 는 카운트만 줄임. 예외를 다시 던져 바깥도 abort | [트랜잭션](/jpo/transaction-context#중첩-호출은-참조-카운트로-처리) |
 | 이후 처리가 슈퍼유저로 실행됨 | `popContext` 를 finally 에서 부르지 않음 | [pushContext](/jpo/transaction-context#슈퍼유저로-바꾸기-pushcontext) |

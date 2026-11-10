@@ -3,7 +3,7 @@
 `Context` 는 "누가, 어떤 트랜잭션 안에서" 실행 중인지를 담은 세션 객체입니다. JPO 메서드는 항상 첫 인자로 받습니다. 이 페이지는 Context 에서 꺼내 쓰는 값, 트랜잭션 (`ContextUtil.startTransaction`), 슈퍼유저로 잠깐 바꾸기 (`pushContext` / `popContext`) 를 정리합니다.
 
 ::: info 근거
-jpo 폴더 호출 수: `context.getLocale(` 1,617, `context.getSession(` 1,340, `context.getUser(` 742, `ContextUtil.pushContext(` 698, `ContextUtil.popContext(` 725, `ContextUtil.startTransaction(` 359, `ContextUtil.commitTransaction(` 369, `ContextUtil.abortTransaction(` 378. 동작은 xerinfra.jar `ContextUtil`, eMatrixServletRMI.jar `matrix.db.Context` class 파일의 바이트코드 기준
+jpo 폴더 호출 수: `context.getLocale(` 1,617, `context.getSession(` 1,340, `context.getUser(` 742, `ContextUtil.pushContext(` 698, `ContextUtil.popContext(` 725, `ContextUtil.startTransaction(` 359, `ContextUtil.commitTransaction(` 369, `ContextUtil.abortTransaction(` 378. 동작은 xerinfra.jar `ContextUtil`, eMatrixServletRMI.jar `matrix.db.Context` class 파일의 바이트코드 기준. `context.getRole()` 의 형식은 xerinfra.jar `PersonUtil.getActiveSecurityContext` (`getRole()` 이 `ctx::` 로 시작하면 그 뒤를 돌려줌) 와 `getActiveOrganization`, `getActiveProject` (보안 컨텍스트를 나눠 씀) 기준
 :::
 
 샘플: [XX_MyPartAction_mxJPO.java](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/JPOSample/XX_MyPartAction_mxJPO.java) (startTransaction / commit / abort, pushContext / popContext)
@@ -13,7 +13,7 @@ jpo 폴더 호출 수: `context.getLocale(` 1,617, `context.getSession(` 1,340, 
 | 메서드 | 값 |
 | --- | --- |
 | `context.getUser()` | 로그인 사용자 이름. `pushContext` 중이면 바뀐 사용자 |
-| `context.getRole()` | 현재 보안 컨텍스트 (역할 / 조직 / 공간) 로 보입니다 <Badge type="danger" text="검증 필요" /> |
+| `context.getRole()` | 현재 보안 컨텍스트. `ctx::역할.조직.협업공간` 형태 ([형식](/rest-api/security-context#형식)). `PersonUtil.getActiveSecurityContext(context)` 는 여기서 `ctx::` 를 뗀 값 |
 | `context.getLocale()` | `Locale`. 다국어 문구에 씀 |
 | `context.getSession().getLanguage()` | 언어 코드 (`ko`, `en` ...) |
 | `context.getVault().getName()` | 기본 vault |
@@ -22,6 +22,7 @@ jpo 폴더 호출 수: `context.getLocale(` 1,617, `context.getSession(` 1,340, 
 | `context.getApplication()` | 현재 앱 이름 |
 | `context.getClientTasks()` | 쌓인 `notice` / `error` 메시지 ([MqlUtil](/jpo/mql-util#사용자에게-메시지-보내기)) |
 
+- 로그인 사용자의 Person 객체 id, 전체 이름, 역할, 조직, 보안 컨텍스트는 `PersonUtil` 로 얻습니다 ([현재 사용자](/jpo/utils#현재-사용자)).
 - JSP 에서는 공통 include (`emxNavigatorInclude.inc` 등) 가 `context` 변수를 만들어 둡니다. 직접 얻을 때는 `Framework.getFrameContext(session)` 를 씁니다.
 - Context 를 static 변수나 캐시에 담아 두지 않습니다. 요청마다 다른 사용자, 다른 트랜잭션입니다.
 
@@ -104,7 +105,7 @@ try {
 | --- | --- |
 | `ContextUtil.pushContext(context)` | User Agent (`person_UserAgent`) (432 건) |
 | `ContextUtil.pushContext(context, user, password, vault)` | 지정한 사용자. `user` 가 비면 User Agent |
-| `ContextUtil.pushContext(context, PropertyUtil.getSchemaProperty(context, "person_UserAgent"), "", "")` | 위와 같음. OOTB 에 흔한 형태 (95 건) |
+| `ContextUtil.pushContext(context, PropertyUtil.getSchemaProperty(context, "person_UserAgent"), DomainConstants.EMPTY_STRING, DomainConstants.EMPTY_STRING)` | 위와 같음. OOTB 에 흔한 형태 (119 건) |
 | `ContextUtil.popContext(context)` | 바로 전 사용자로 복귀 |
 
 - 바꾸기 전 사용자를 context 의 `"context-stack"` 에 쌓습니다. `push` 를 두 번 하면 `pop` 도 두 번 해야 합니다.

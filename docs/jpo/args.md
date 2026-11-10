@@ -17,7 +17,7 @@ Map requestMap = (Map) programMap.get("requestMap");
 ```
 
 - 꺼낸 값은 `HashMap` 입니다. OOTB 는 `(HashMap)` 으로 캐스팅하지만 `(Map)` 으로 받아도 됩니다.
-- 값은 대부분 `String` 입니다. URL 파라미터를 그대로 담기 때문에 없는 키는 `null` 입니다. `"null"` 문자열이 들어오는 경우도 있어 OOTB 는 `UIUtil.isNullOrEmpty` 와 `"null".equals` 를 함께 씁니다.
+- 값은 대부분 `String` 입니다. URL 파라미터를 그대로 담기 때문에 없는 키는 `null` 이고, `"null"` 문자열이 들어오는 경우도 있습니다. `UIUtil.isNullOrEmpty` 는 `null`, 공백뿐인 문자열, `"null"` (대소문자 무시) 을 모두 빈 값으로 보므로 이것 하나로 검사합니다 ([빈 값과 문자열](/jpo/utils#빈-값과-문자열)).
 - `RequestValuesMap` 이 있으면 값이 `String[]` 입니다 (`((String[]) map.get("objectId"))[0]`).
 
 ## 한눈에 보기
@@ -120,11 +120,11 @@ return children;
 ```
 
 - `getRelatedObjects` 의 단계 `0` 이 "끝까지" 입니다.
-- 여러 단계를 한 번에 돌려줄 때 OOTB 는 마지막에 `expandMultiLevelsJPO = "true"` 만 든 Map 을 붙입니다. JPO 가 단계를 직접 처리했다는 표시로 보입니다. <Badge type="danger" text="검증 필요" /> 목록 개수를 셀 때는 이 Map 을 빼야 합니다 (ENOQuestionUIBase 가 그렇게 함).
+- 여러 단계를 한 번에 돌려줄 때 OOTB 는 마지막에 `expandMultiLevelsJPO = "true"` 만 든 Map 을 붙입니다. 프레임워크는 돌려받은 목록의 마지막 Map 에 이 키가 있으면 목록에서 빼고 화면을 만듭니다. JPO 가 단계를 직접 처리했다는 표시로 보입니다. <Badge type="danger" text="검증 필요" /> JPO 안에서 목록 개수를 셀 때도 이 Map 을 빼야 합니다 (ENOQuestionUIBase 가 그렇게 함).
 - href 에 `expandProgram=` 을 따로 주면 루트 목록은 `program`, 펼치기는 `expandProgram` 이 맡는 것으로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ::: info 근거
-emxCommonPartBase_mxJPO.java:700-790 (`expandLevel`, `expandMultiLevelsJPO`), 1021-1038 (`getExpandLevel`: `"All"` → 0), ENOQuestionUIBase_mxJPO.java:216, 248-258
+emxCommonPartBase_mxJPO.java:700-790 (`expandLevel`, `expandMultiLevelsJPO`), 1021-1038 (`getExpandLevel`: `"All"` → 0), ENOQuestionUIBase_mxJPO.java:216, 248-258. framework.jar `UITableIndented.getChildObjects` (마지막 Map 이 `expandMultiLevelsJPO` 키를 가지면 `MapList.remove`)
 :::
 
 ## 표 열 function
@@ -175,8 +175,12 @@ public Vector getStatusColumn(Context context, String[] args) throws Exception {
 - 결과를 HTML 로 그리려면 열에 `setting "Column Type" "programHTMLOutput"` 을 줍니다. `"program"` 이면 글자로 나옵니다. 설정은 [UI 설정](/ui-components/settings) 참고.
 - `objectList` 의 Map 에는 표 program 이 넣은 키가 그대로 있습니다. 표 program 에서 select 로 미리 담아 두면 열 function 에서 다시 조회하지 않아도 됩니다.
 
+::: warning HTML 로 돌려줄 때는 값을 이스케이프합니다
+`programHTMLOutput` 열은 돌려준 문자열을 HTML 로 그립니다. 이름, 제목처럼 사용자가 넣은 값을 그대로 이어 붙이면 `<` 나 따옴표가 든 값이 화면을 깨뜨리고 스크립트가 실행될 수도 있습니다. 글자 자리는 `XSSUtil.encodeForHTML(context, value)` (OOTB 649 건), 속성 값 자리는 `encodeForHTMLAttribute`, URL 인자는 `encodeForURL`, `onclick` 안의 값은 `encodeForJavaScript` 로 감쌉니다 ([HTML 이스케이프](/jpo/utils#html-이스케이프)).
+:::
+
 ::: info 근거
-emxCommonDocumentUIBase_mxJPO.java:303-383 (getNameOrTitle: `objectList`, `paramList.reportFormat`, `jsTreeID`), emxDomainAccessBase_mxJPO.java:1956-1980 (표 program 이 넣은 `org`, `project` 키를 열에서 읽음). framework.jar `UITableCommon` 상수 `objectList`, `paramList`, `columnMap`, `programHTMLOutput`
+emxCommonDocumentUIBase_mxJPO.java:303-383 (getNameOrTitle: `objectList`, `paramList.reportFormat`, `jsTreeID`), emxDomainAccessBase_mxJPO.java:1956-1980 (표 program 이 넣은 `org`, `project` 키를 열에서 읽음). framework.jar `UITableCommon` 상수 `objectList`, `paramList`, `columnMap`, `programHTMLOutput`. jpo 폴더 `XSSUtil.encodeForHTML(` 649 건, `encodeForHTMLAttribute(` 374 건, `encodeForURL(` 311 건, `encodeForJavaScript(` 619 건
 :::
 
 ### 셀 편집 가능 (Edit Access Function)
@@ -294,19 +298,26 @@ common/emxFormRefresh.jsp:53-142, common/emxFreezePaneGetData.jsp:396-451, emxDo
 
 ## 저장 (Update Function)
 
-편집 화면에서 값을 저장할 때 필드 / 셀마다 불립니다. 폼 편집은 이미 트랜잭션 안에서 부르므로 JPO 에서 따로 열지 않아도 됩니다 ([트랜잭션](/jpo/transaction-context#ui-가-열어-주는-트랜잭션)).
+편집 화면에서 값을 저장할 때 `Update Function` 이 있는 필드 / 셀마다 불립니다. 생성 폼도 객체를 만든 뒤 같은 방식으로 필드마다 부릅니다. 폼 편집은 이미 트랜잭션 안에서 부르므로 JPO 에서 따로 열지 않아도 됩니다 ([트랜잭션](/jpo/transaction-context#ui-가-열어-주는-트랜잭션)).
 
-| `paramMap` 키 | 내용 |
-| --- | --- |
-| `objectId` | 편집 중인 객체 id. 표에서는 그 행의 id |
-| `relId` | 그 행의 관계 id (표, 관계 속성) |
-| `New Value` | 새 값 |
-| `Old value` | 이전 값 (소문자 v) |
-| `New OID` / `Old OID` | 검색으로 고른 객체 id (chooser 필드) |
-| `New Values` | 다중 선택 값 |
-| `languageStr` | 언어 |
+`paramMap` 에 들어 있는 키는 **어느 화면에서 저장했는지** 에 따라 다릅니다.
 
-그 밖에 `requestMap`, 그리고 폼은 `fieldMap`, 표는 `columnMap` 이 같이 옵니다.
+| `paramMap` 키 | 내용 | 편집 폼 | 생성 폼 | 표 셀 |
+| --- | --- | --- | --- | --- |
+| `objectId` | 저장할 객체 id. 표에서는 그 행, 생성 폼에서는 새 객체 | O | O | O |
+| `relId` | 관계 id (관계 속성) | O | | O |
+| `New Value` | 새 값 | O | O | O |
+| `New OID` | 검색으로 고른 객체 id (chooser 필드) | O | O | |
+| `New Values` | 다중 선택 값 | O | O | |
+| `Old value`, `Old Value` | 이전 값. 두 키에 같은 값이 들어 있음 | O | | |
+| `Old OID` | 이전에 고른 객체 id (chooser 필드) | O | | |
+| `languageStr` | 언어 | O | O | O |
+| `locale` | `Locale` 객체 | | | O |
+
+| `programMap` 키 | 편집 폼 | 생성 폼 | 표 셀 |
+| --- | --- | --- | --- |
+| `paramMap`, `requestMap` | O | O | O |
+| 필드 / 열 정의 | `fieldMap` | `fieldMap` | `columnMap` |
 
 ```java
 public Boolean updateStatus(Context context, String[] args) throws Exception {
@@ -326,12 +337,16 @@ public Boolean updateStatus(Context context, String[] args) throws Exception {
 DomainRelationship.setAttributeValue(context, relId, attrName, newValue);
 ```
 
-::: warning 키 이름 대소문자
-`"Old value"` 는 `v` 가 소문자입니다 (19 건). `"Old Value"` 로 쓴 코드 (2 건) 는 `null` 을 받습니다. chooser 필드는 `New OID` 가 비어 있으면 `New Value` 에 id 가 오는 경우가 있어 OOTB 는 둘 다 확인합니다.
+::: warning 이전 값은 편집 폼에서만 옵니다
+`Old value` (`Old Value` 에도 같은 값) 는 편집 폼 저장에만 들어 있습니다. 표 셀 저장과 생성 폼에는 이전 값 키가 없어서 `null` 입니다. 이전 값이 필요하면 저장하기 전에 JPO 에서 직접 읽습니다. 이 함수가 저장하기 전이므로 DB 에는 아직 이전 값이 있습니다.
+:::
+
+::: tip chooser 필드
+chooser 필드는 `New OID` 가 비어 있으면 `New Value` 에 id 가 오는 경우가 있어 OOTB 는 둘 다 확인합니다.
 :::
 
 ::: info 근거
-emxECPartBase_mxJPO.java:9354-9364 (updateFindNumber: `relId`, `New Value`), 4600-4618 (updateManufacturer: `New OID` 없으면 `New Value`), emxDomainAccessBase_mxJPO.java:1447-1455 (표: `requestMap.objectId` 는 화면 객체, `paramMap.objectId` 는 행). framework.jar `UIFormCommon` 상수 `New Value`, `Old value`, `New OID`, `Old OID`, `New Values`
+emxECPartBase_mxJPO.java:9354-9364 (updateFindNumber: `relId`, `New Value`), 4600-4618 (updateManufacturer: `New OID` 없으면 `New Value`), emxDomainAccessBase_mxJPO.java:1447-1455 (표: `requestMap.objectId` 는 화면 객체, `paramMap.objectId` 는 행). `paramMap` 을 만드는 곳 (framework.jar 바이트코드): 편집 폼은 common/emxFormEditProcess.jsp:169 → `UIForm.commitFields` → `UIFormCommon.commitFields` (`Old value`, `Old Value` 를 같은 변수로 연달아 put, 필드 정의는 `fieldMap`), 생성 폼은 `UIFormCommon.createObject` 안의 `updateFiledValues` (`objectId`, `languageStr`, `New Value`, `New OID`, `New Values`), 표 셀은 `UITableIndented.updateTableData` (`objectId`, `relId`, `languageStr`, `New Value`, `locale`, 열 정의는 `columnMap`)
 :::
 
 ## 접근 (Access Function)
@@ -365,12 +380,13 @@ public Boolean canEditMyPart(Context context, String[] args) throws Exception {
 | 순서 | 설정 |
 | --- | --- |
 | 1 | `Licensed Product` (라이선스) |
-| 2 | `Access Mask` (`read`, `modify` 같은 권한) |
-| 3 | `Access Expression` (`type==Part` 같은 식) |
-| 4 | `Access Program` + `Access Function` (JPO) |
+| 2 | `Hide Mode` (`Cloud`, `Mobile`, `Desktop` 같은 실행 환경 조건) |
+| 3 | `Access Mask` (`read`, `modify` 같은 권한) |
+| 4 | `Access Expression` (`type==Part` 같은 식) |
+| 5 | `Access Program` + `Access Function` (JPO) |
 
 - JPO 는 `JPO.invoke(..., Boolean.class)` 로 불립니다. `public boolean` 으로 선언해도 됩니다 (`boolean` 989 건, `Boolean` 313 건).
-- `setting "Access Behavior" "disable"` 이면 숨기지 않고 회색으로 비활성 처리하는 것으로 보입니다 <Badge type="danger" text="검증 필요" /> (`GrayOut` 값을 넣음).
+- 3 ~ 5 중 하나라도 거짓이어도 `setting "Access Behavior" "disable"` 이면 `checkAccessForSettings` 는 `true` 를 돌려주고 설정 Map 에 `GrayOut` = `"true"` 를 넣습니다. `GrayOut` 은 숨기지 않고 회색 비활성으로 그리라는 표시로 보입니다. <Badge type="danger" text="검증 필요" />
 
 ::: warning null 을 돌려주지 않습니다
 `null` 을 돌려주면 "JPO Access Program Returns NULL" 메시지로 `FrameworkException` 이 납니다. 판단할 수 없을 때는 `false` 를 돌려줍니다.
@@ -381,7 +397,7 @@ public Boolean canEditMyPart(Context context, String[] args) throws Exception {
 :::
 
 ::: info 근거
-xerinfra.jar `UINavigatorUtil.checkAccessForSettings` (설정 이름 `Access Mask`, `Access Expression`, `Access Program`, `Access Function`, `SETTINGS`, `Access Behavior`, 문자열 "JPO Access Program Returns NULL"), emxECPartBase_mxJPO.java:4630-4637 (isMepPart), emxProjectSpaceBase_mxJPO.java:8014-8027 (isFromProgram), emxCompanyBase_mxJPO.java:1536-1556 (`SETTINGS`), emxECPartBase_mxJPO.java:10291 (`RequestValuesMap`)
+xerinfra.jar `UINavigatorUtil.checkAccessForSettings` (설정 이름 `Licensed Product`, `Access Mask`, `Access Expression`, `Access Program`, `Access Function`, `SETTINGS`, `Access Behavior`, 문자열 "JPO Access Program Returns NULL". Mask 와 Expression 결과가 모두 참일 때만 `JPO.invoke`. 최종 결과가 거짓이고 `Access Behavior` 가 `disable` 이면 `GrayOut` 을 put 하고 참으로 바꿈), `UINavigatorUtil.checkModeTest` (`Hide Mode` 의 `Cloud`, `!Cloud`, `Mobile`, `!Mobile`, `Desktop`), emxECPartBase_mxJPO.java:4630-4637 (isMepPart), emxProjectSpaceBase_mxJPO.java:8014-8027 (isFromProgram), emxCompanyBase_mxJPO.java:1536-1556 (`SETTINGS`), emxECPartBase_mxJPO.java:10291 (`RequestValuesMap`)
 :::
 
 ## 생성 폼 (createJPO, postProcessJPO)
@@ -442,7 +458,7 @@ public Map createMyPart(Context context, String[] args) throws Exception {
 - 예외를 던지면 생성 전체가 abort 되고 예외 문구가 화면에 나옵니다.
 
 ::: info 근거
-common/emxCreateProcess.jsp:78 (`action = "CONTINUE"`), 172-191, 299-336, 365-378, common/emxFormEditProcess.jsp:54, 161, 210-233, 268-279, emxECPartBase_mxJPO.java:17093-17142 (createPartJPO: `TypeActual`, `put("id")`), 12938-12946 (performPostProcessActions)
+common/emxCreateProcess.jsp:78 (`action = "CONTINUE"`), 172-191, 299-336, 365-378, common/emxFormEditProcess.jsp:54, 161, 210-233, 268-279, emxECPartBase_mxJPO.java:17093-17164 (createPartJPO: `TypeActual`, `put("id")`), 12938-12946 (performPostProcessActions)
 :::
 
 ## 검색 포함 / 제외 program

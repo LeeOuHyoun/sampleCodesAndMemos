@@ -72,7 +72,8 @@ const SERVER_SIDEBAR = [
         items: [
           { text: '호출 종류별 인자 구조', link: '/jpo/args' },
           { text: 'DomainObject 와 select', link: '/jpo/domain-object' },
-          { text: 'MqlUtil', link: '/jpo/mql-util' }
+          { text: 'MqlUtil', link: '/jpo/mql-util' },
+          { text: '자주 쓰는 유틸리티', link: '/jpo/utils' }
         ]
       },
       {
@@ -385,6 +386,7 @@ export default defineConfig({
               { text: 'UI settings', link: '/ui-components/settings' },
               { text: 'URL 파라미터', link: '/ui-components/url-parameters' },
               { text: 'JPO 인자 구조', link: '/jpo/args' },
+              { text: 'JPO 유틸리티', link: '/jpo/utils' },
               { text: '트리거 JPO 인자', link: '/trigger/jpo-args' }
             ]
           },

@@ -69,7 +69,7 @@ DataGridView 레퍼런스에 나오는 옵션, 함수, 이벤트 이름 476개�
 | <code>children</code> | [데이터 (TreeDocument / TreeNodeModel) › new TreeNodeModel({ ... }) — 행](/datagridview/api/data#new-treenodemodel-—-행) | 하위 행. 없으면 끝 행(펼침 아이콘 없음), 빈 배열 <code>[]</code> 이면 "하위 행이 있지만 아직 안 불러옴" 으로 펼침 아이콘이 생김 ([트리 구조](/datagridview/tree)) |
 | <code>children</code> | [컬럼 옵션 › 컬럼 그룹 (2단 헤더)](/datagridview/api/column-options#컬럼-그룹-2단-헤더) | 컬럼 그룹. { text: '그룹명', dataIndex: '그룹키', children: [컬럼, 컬럼] } 형태로 헤더를 2단으로 묶음 (CATFLCockpitWidget 사용 예) |
 | <code>children</code> | [툴바 (setToolbar)](/datagridview/api/toolbar) | 하위 메뉴 (메뉴형 버튼). `children` 의 `label` 은 `title` 로 바뀜. `dataElements.value: { menu: [{ type: 'PushItem', title, icon, action: { callback } }] }` 도 같은 메뉴이고 앱에서는 이쪽이 더 흔함 ([메뉴형 버튼](/tweakers/generated-toolbar#메뉴형-버튼)) |
-| <code>className</code> | [컬럼 옵션 › 표시 / 기능 on-off](/datagridview/api/column-options#표시-기능-on-off) | 이 컬럼 셀에 붙일 CSS 클래스 |
+| <code>className</code> | [컬럼 옵션 › 표시 / 기능 on-off](/datagridview/api/column-options#표시-기능-on-off) | 이 컬럼의 데이터 셀에 붙일 CSS 클래스. 헤더 칸에는 붙지 않음. 컬럼 함수 `getCellClassName` 을 넣으면 쓰이지 않음 ([헤더 칸에 CSS 클래스 주기](/datagridview/header#헤더-칸에-css-클래스-주기)) |
 | <code>click</code> | [이벤트 › 일반 DOM 이벤트 (그리드 영역)](/datagridview/api/events#일반-dom-이벤트-그리드-영역) | 클릭한 행: cellInfos.nodeModel. 헤더면 rowID -1 |
 | <code>closeFind</code> | [그리드 메서드 › 툴바, 그룹, 내보내기](/datagridview/api/grid-methods#툴바-그룹-내보내기) | 찾기 실행 / 닫기 |
 | <code>collapse</code> | [데이터 (TreeDocument / TreeNodeModel) › TreeNodeModel](/datagridview/api/data#treenodemodel) | 이 행 펼치기 / 접기 / 하위까지 모두 펼치기 / 펼쳐져 있는지 |
@@ -183,7 +183,7 @@ DataGridView 레퍼런스에 나오는 옵션, 함수, 이벤트 이름 476개�
 | <code>getAttributeValue</code> | [데이터 (TreeDocument / TreeNodeModel) › TreeNodeModel](/datagridview/api/data#treenodemodel) | 셀 값 읽기 |
 | <code>getCellActivableState</code> | [컬럼 함수 › 셀 타입 / 편집](/datagridview/api/column-functions#셀-타입-편집) | false 면 클릭/키보드로 활성(포커스)되지 않음 |
 | <code>getCellAttributes</code> | [컬럼 함수 › 모양](/datagridview/api/column-functions#모양) | 셀 DOM 에 속성 추가 (CSS 선택자, 테스트용) |
-| <code>getCellClassName</code> | [컬럼 함수 › 모양](/datagridview/api/column-functions#모양) | 조건부 셀 스타일 (CSS 는 페이지에 직접 정의) |
+| <code>getCellClassName</code> | [컬럼 함수 › 모양](/datagridview/api/column-functions#모양) | 조건부 셀 스타일 (CSS 는 페이지에 직접 정의). 헤더 칸(rowID 음수)에서도 불려서 헤더에 클래스를 줄 때도 씀 ([헤더 칸에 CSS 클래스 주기](/datagridview/header#헤더-칸에-css-클래스-주기)). 넣으면 컬럼 옵션 `className` 은 쓰이지 않음 |
 | <code>getCellCoordinatesAt</code> | [레이아웃 메서드 (grid.layout) › 셀 번호와 위치](/datagridview/api/layout-methods#셀-번호와-위치) | cellID → 행 번호, 컬럼 번호 |
 | <code>getCellDefaultTooltip</code> | [그리드 메서드 › 셀 정보와 값](/datagridview/api/grid-methods#셀-정보와-값) | 그리드 기본 툴팁. `getCellTooltip` 함수 안에서 일부 셀만 직접 정하고 나머지는 기본 툴팁으로 돌려줄 때 사용 (앱 파일 24개) |
 | <code>getCellEditableState</code> | [그리드 메서드 › 셀 정보와 값](/datagridview/api/grid-methods#셀-정보와-값) | 이 셀이 지금 편집 가능한지 |

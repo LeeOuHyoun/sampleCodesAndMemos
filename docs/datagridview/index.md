@@ -72,6 +72,7 @@ require([
 | 헤더 줄, 행 머리(번호 칸) 숨기기 | `columnsHeader`, `rowsHeader`, `showRowIndexFlag` | `layoutOptions`, 그리드 옵션 | [헤더 숨기기](/datagridview/header#헤더-숨기기) |
 | 헤더를 2단으로 묶기 | `children` | 컬럼 옵션 | [컬럼 그룹](/datagridview/header#헤더를-2단으로-묶기-컬럼-그룹) |
 | 헤더 글자, 아이콘, 툴팁 | `text`, `icon`, `description` | 컬럼 옵션 | [헤더 글자](/datagridview/header#헤더-글자-아이콘-툴팁) |
+| 헤더 칸에 CSS 클래스 주기 | `getCellClassName` (`rowID` 가 음수일 때) | 컬럼 함수 | [헤더 칸에 CSS 클래스 주기](/datagridview/header#헤더-칸에-css-클래스-주기) |
 | 행 높이 바꾸기 | `cellHeight`, `layoutDensity` | `layoutOptions` | [행 높이](/datagridview/row-height) |
 | 긴 글에 맞춰 행 높이 자동 | `autoRowHeightFlag` | 컬럼 옵션 | [행 높이](/datagridview/row-height#예제-6-긴-글에-맞춰-자동으로) |
 | 그리드 전체 높이 | `height`, `maxVisibleRowCount` | 그리드 옵션 | [행 높이](/datagridview/row-height#예제-7-그리드-전체-높이-행-높이-아님) |

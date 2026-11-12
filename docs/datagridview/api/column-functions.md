@@ -54,7 +54,7 @@ DataGridView.js 의 DataGridViewLayout (`getColumnOptionValue(columnID, "함수�
 
 | 키 | 사용 | 호출 형태 (this) | 반환값 | 예 | 설명 |
 | --- | --- | --- | --- | --- | --- |
-| <code>getCellClassName</code> | 34 | fn(cellInfos)  this=그리드 | CSS 클래스 문자열 | <code>return cellInfos.nodeModel.options.grid.progress &lt; 30 ? 'cell-warn' : '';</code> | 조건부 셀 스타일 (CSS 는 페이지에 직접 정의) |
+| <code>getCellClassName</code> | 34 | fn(cellInfos)  this=그리드 | CSS 클래스 문자열 | <code>return cellInfos.nodeModel.options.grid.progress &lt; 30 ? 'cell-warn' : '';</code> | 조건부 셀 스타일 (CSS 는 페이지에 직접 정의). 헤더 칸(rowID 음수)에서도 불려서 헤더에 클래스를 줄 때도 씀 ([헤더 칸에 CSS 클래스 주기](/datagridview/header#헤더-칸에-css-클래스-주기)). 넣으면 컬럼 옵션 `className` 은 쓰이지 않음 |
 | <code>getCellAttributes</code> | 1 | fn(cellInfos)  this=그리드 | { 속성명: 값 } | <code>return { 'data-status': cellInfos.nodeModel.options.grid.status };</code> | 셀 DOM 에 속성 추가 (CSS 선택자, 테스트용) |
 | <code>getCellTooltip</code> | 52 | fn(cellInfos)  ※ this 없음 | 툴팁 객체 | return { shortHelp: '담당: ' + cellInfos.nodeModel.options.grid.owner }; | 셀 툴팁. 없으면 그리드 기본 툴팁. ※ 그리드 옵션 <code>getCellTooltip</code> 을 넣으면 그리드 쪽만 호출되고 컬럼 쪽은 무시됨 |
 | <code>getCellIcons</code> | 3 | fn(cellInfos)  ※ this 없음 | 아이콘 배열 | <code>return [{ iconName: 'lock', fontIconFamily: 1 }];</code> | 셀 앞 아이콘 (기본: nodeModel.getIcons()) |

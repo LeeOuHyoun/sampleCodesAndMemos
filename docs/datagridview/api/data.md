@@ -33,6 +33,7 @@ treeDocument.getSelectedNodes();
 | 행(TreeNodeModel)만 있을 때 | <code>nodeModel.getTreeDocument()</code> | 이벤트의 `cellInfos.nodeModel` 등 |
 | 툴바 동작 모듈 안 | <code>e.context.executionContext.treeDocument</code> | [툴바](/datagridview/toolbar) 참고 |
 | 데이터 통째로 교체 | <code>grid.treeDocument = newTreeDocument</code> | 별도 `setTreeDocument` 함수는 없음 |
+| <code>dataSource</code> 그리드일 때 | <code>grid.getTreeDocument()</code> | 그리드가 안에서 만든 TreeDocument. 불러온 행만 들어 있고 <code>grid.treeDocument</code> 는 <code>null</code> ([서버 사이드 데이터](/datagridview/server-side)) |
 
 ::: info 근거
 DataGridView.js 의 DataGridView.getTreeDocument (`this._rowModel._getTreeDocument()` 반환), publishedProperties `treeDocument`, `_applyTreeDocument`. 그리드의 다른 함수는 [그리드 메서드](/datagridview/api/grid-methods) 에 있습니다.
@@ -75,7 +76,8 @@ TreeModel.js 의 TreeNodeModel 생성자 (`defaultOptions`: label, badges, icons
 | 키 | 값 | 설명 |
 | --- | --- | --- |
 | <code>useAsyncPreExpand</code> | <code>true &#124; false</code> | 펼칠 때 <code>node.preExpandDone()</code> 이 불릴 때까지 기다림. 하위 행 지연 로딩용 ([트리 구조](/datagridview/tree#펼칠-때-하위-행-불러오기)) |
-| <code>shouldAcceptDrop</code> | <code>function (info) → boolean</code> | 행 드래그앤드롭 허용 판단 |
+| <code>shouldAcceptDrag</code> | <code>function (nodeModel) → boolean</code> | false 면 그 행은 끌리지 않음. 기본은 항상 true ([예제](/datagridview/drag-and-drop#예제-7-특정-행은-못-끌게-하기)) |
+| <code>shouldAcceptDrop</code> | <code>function (info) → boolean</code> | 끌어 온 행을 그 자리에 놓아도 되는지. info = { dropNode, dropPosition, parentTreeNodeModel, draggedNodes, draggedTreeNodeModel }. 기본은 항상 true ([놓아도 되는 자리 정하기](/datagridview/drag-and-drop#놓아도-되는-자리-정하기-shouldacceptdrop)) |
 | <code>nodeModelClass</code> | 클래스 | 행 클래스 교체 |
 
 ## 자주 쓰는 함수
@@ -98,10 +100,11 @@ TreeModel.js 의 TreeNodeModel 생성자 (`defaultOptions`: label, badges, icons
 
 | 함수 | 설명 |
 | --- | --- |
-| <code>addChild(node)</code> | 하위 행 추가 |
+| <code>addChild(node, index?)</code> | 하위 행 추가. index 를 주면 그 순번에 넣음. 이미 다른 부모에 달린 행을 넘기면 그쪽에서 떼어 옮김 |
 | <code>remove()</code> | 이 행 제거 (최상위 행에도 사용 가능) |
 | <code>getChildren() / hasChildren() / getParent()</code> | 하위 행 배열 / 하위 행이 1개 이상인지 / 부모 행 |
 | <code>isRoot() / getNodeDepth()</code> | 최상위 행인지 / 깊이 |
+| <code>getNodeSource()</code> | <code>TreeNodeModel.NODE_SOURCE.MODEL</code>(0, 일반 행) / <code>GROUPING</code>(1, 그룹 행). 그룹 행 거르기에 사용 ([행 그룹핑](/datagridview/row-grouping#일반-행과-구분하기)) |
 | <code>expand() / collapse() / expandAll() / isExpanded()</code> | 이 행 펼치기 / 접기 / 하위까지 모두 펼치기 / 펼쳐져 있는지 |
 | <code>preExpandDone()</code> | 비동기 펼치기에서 "하위 행 준비 끝" 을 알림 |
 | <code>getAttributeValue(dataIndex)</code> | 셀 값 읽기 |

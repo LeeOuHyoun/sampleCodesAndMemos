@@ -91,6 +91,8 @@
 | `DS/CollectionView/CollectionView` | 그리드의 부모 클래스. 2026 에서 일부 메서드가 여기로 옮겨짐 | [그리드 메서드](/datagridview/api/grid-methods) |
 | `DS/CollectionView/CollectionViewStatusBar` | 그리드 상태바. `STATUS` 값으로 항목 종류 지정 | [상태바](/datagridview/status-bar) |
 | `DS/TreeModel/TreeDocument`, `DS/TreeModel/TreeNodeModel` | 그리드 데이터 (행) | [데이터 (TreeDocument)](/datagridview/api/data) · [트리 구조](/datagridview/tree) |
+| `DS/TreeModel/DataSourceBase` | 행을 필요한 만큼만 불러오는 그리드의 데이터 소스 | [서버 사이드 데이터](/datagridview/server-side) |
+| `DS/DataGridView/DataGridViewPaginationManager` | 그리드 행을 페이지로 나눠 표시 | [그리드 옵션](/datagridview/api/grid-options#데이터) |
 | `DS/Tweakers/TypeRepresentationFactory` | 값 타입별 편집기 등록, 생성 | [사용자 타입 등록](/tweakers/custom-type) · [API](/tweakers/api/type-representation-factory) |
 | `DS/Tweakers/TweakerString`, `TweakerNumber`, `TweakerBoolean` | 값 타입별 편집기 | [편집기 단독 사용](/tweakers/standalone) · [API](/tweakers/api/tweaker) |
 | `DS/Tweakers/GeneratedToolbar` | JSON 으로 만드는 툴바 | [GeneratedToolbar](/tweakers/generated-toolbar) · [API](/tweakers/api/generated-toolbar) |

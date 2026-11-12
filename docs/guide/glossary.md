@@ -95,6 +95,15 @@
 | WebUX (WUX), UIKIT | 화면 컨트롤의 두 계열 | [두 계열의 차이](/controls/#두-계열의-차이) |
 | DataGridView | WebUX 의 표 / 트리 그리드 | [DataGridView](/datagridview/) |
 | TreeDocument, TreeNodeModel | 그리드의 데이터 모델. 문서 하나에 행(노드)들이 달림 | [구성 요소](/datagridview/#구성-요소) |
+| 행 머리 (row header) | 그리드 맨 왼쪽의 행 번호, 체크박스, 끌기 손잡이가 있는 칸. cellInfos 에서는 columnID 가 -1 | [헤더의 구역](/datagridview/header#헤더의-구역) |
+| 컬럼 그룹 | 컬럼 여러 개를 한 제목 아래로 묶은 2단 헤더. 컬럼 옵션 `children` 으로 만듦 | [헤더를 2단으로 묶기](/datagridview/header#헤더를-2단으로-묶기-컬럼-그룹) |
+| layout (grid.layout) | 그리드의 컬럼 배치와 높이를 맡는 객체. 만든 뒤 컬럼을 숨기거나 너비를 바꾸는 함수가 여기에 있음 | [레이아웃 메서드](/datagridview/api/layout-methods) |
+| 행 그룹핑, 그룹 행 | 같은 컬럼 값을 가진 행을 그룹 행 아래로 모으는 그리드 기능. 그룹 행은 그리드가 TreeDocument 에 만들어 넣는 행 | [행 그룹핑](/datagridview/row-grouping) |
+| 사용자 뷰 (custom view) | 이름을 붙여 저장해 두는 그리드 컬럼 구성(표시, 너비, 순서, 고정, 정렬, 행 그룹). 화면에서는 "테이블 보기 구성..." | [사용자 뷰와 화면 상태 저장](/datagridview/custom-views) |
+| 화면 상태 (user preferences) | 사용자가 그리드에서 바꾼 컬럼 너비, 순서, 표시, 정렬. `identifier` 가 있으면 그리드가 자동 저장 | [무엇이 어디에 저장되나](/datagridview/custom-views#무엇이-어디에-저장되나) |
+| 서버 사이드 데이터 (dataSource) | 행을 다 넣지 않고 그리드가 필요한 범위만 서버에 요청하는 방식. `DataSourceBase` 객체의 `getModelItems` 를 덮어써서 씀 | [서버 사이드 데이터](/datagridview/server-side) |
+| 무한 스크롤 (onInfiniteScroll) | 스크롤이 끝에 닿으면 불리는 콜백에서 TreeDocument 에 행을 이어 붙이는 방식 | [스크롤이 끝에 닿으면 행 더하기](/datagridview/server-side#예제-5-대안-스크롤이-끝에-닿으면-행-더하기) |
+| dropPosition | 끌어 온 것이 행의 어디에 있는지. top(앞에 넣기), middle(하위로 넣기), bottom(뒤에 넣기) | [놓을 위치 표시](/datagridview/drag-and-drop#놓을-위치-표시) |
 | typeRepresentation | 컬럼의 타입 이름. 셀 모양과 편집기를 정함 | [typeRepresentation](/datagridview/api/type-representation) |
 | semantics | 편집기에 넘기는 세부 옵션 (`possibleValues`, `minValue` ...) | [semantics](/tweakers/api/semantics) |
 | Tweaker | 값 하나를 보여 주고 고치는 편집기 컨트롤 | [Tweakers](/tweakers/) |

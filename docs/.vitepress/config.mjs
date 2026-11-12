@@ -269,27 +269,44 @@ const WEBAPPS_SIDEBAR = [
         ]
       },
       {
-        text: '가이드',
+        text: '가이드: 모양',
         items: [
           { text: '셀 타입', link: '/datagridview/cell-types' },
+          { text: '헤더 (높이, 글자, 2단 헤더)', link: '/datagridview/header' },
+          { text: '행 높이', link: '/datagridview/row-height' },
+          { text: '컬럼 함수', link: '/datagridview/cell-functions' },
+          { text: '셀 직접 그리기', link: '/datagridview/custom-cell' }
+        ]
+      },
+      {
+        text: '가이드: 데이터와 편집',
+        items: [
           { text: '편집', link: '/datagridview/editing' },
           { text: '저장 후 화면 반영', link: '/datagridview/save-and-reflect' },
-          { text: '행 높이', link: '/datagridview/row-height' },
-          { text: '정렬과 필터', link: '/datagridview/sort-filter' },
-          { text: '툴바', link: '/datagridview/toolbar' },
           { text: '트리 구조', link: '/datagridview/tree' },
-          { text: '컬럼 함수', link: '/datagridview/cell-functions' },
+          { text: '서버 사이드 데이터 (나눠 불러오기)', link: '/datagridview/server-side' }
+        ]
+      },
+      {
+        text: '가이드: 기능',
+        items: [
+          { text: '정렬과 필터', link: '/datagridview/sort-filter' },
+          { text: '행 그룹핑', link: '/datagridview/row-grouping' },
           { text: '우클릭 메뉴와 선택', link: '/datagridview/context-menu' },
-          { text: '셀 직접 그리기', link: '/datagridview/custom-cell' },
-          { text: '상태바', link: '/datagridview/status-bar' }
+          { text: '드래그앤드롭', link: '/datagridview/drag-and-drop' },
+          { text: '툴바', link: '/datagridview/toolbar' },
+          { text: '상태바', link: '/datagridview/status-bar' },
+          { text: '사용자 뷰와 화면 상태 저장', link: '/datagridview/custom-views' }
         ]
       },
       {
         text: 'API 레퍼런스',
         items: [
+          { text: '이름 색인 (A-Z)', link: '/datagridview/api/key-index' },
           { text: '그리드 옵션', link: '/datagridview/api/grid-options' },
           { text: '그리드 메서드', link: '/datagridview/api/grid-methods' },
           { text: 'layoutOptions', link: '/datagridview/api/layout-options' },
+          { text: '레이아웃 메서드', link: '/datagridview/api/layout-methods' },
           { text: '컬럼 옵션', link: '/datagridview/api/column-options' },
           { text: '컬럼 함수', link: '/datagridview/api/column-functions' },
           { text: 'typeRepresentation', link: '/datagridview/api/type-representation' },
@@ -430,6 +447,18 @@ export default defineConfig({
     search: {
       provider: 'local',
       options: {
+        miniSearch: {
+          options: {
+            tokenize: (text) =>
+              text.split(/[\n\r\p{Z}\p{P}]+/u).flatMap((token) => {
+                const parts = token.split(/(?<=[a-z0-9])(?=[A-Z])/)
+                return [token, ...parts.slice(1).map((part, index) => parts.slice(index + 1).join(''))]
+              })
+          },
+          searchOptions: {
+            tokenize: (text) => text.split(/[\n\r\p{Z}\p{P}]+/u)
+          }
+        },
         translations: {
           button: { buttonText: '검색', buttonAriaLabel: '검색' },
           modal: {

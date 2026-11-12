@@ -14,7 +14,7 @@ DataGridViewSample/01_basic.html (ENOVIA 서버에서 동작 확인), DataGridVi
 <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
 <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
 
-<div id="grid" style="height: 400px"></div>
+<div id="grid" style="position: relative; height: 400px"></div>
 ```
 
 | 파일 | 역할 |
@@ -24,6 +24,8 @@ DataGridViewSample/01_basic.html (ENOVIA 서버에서 동작 확인), DataGridVi
 
 ::: warning 그리드를 넣을 요소에 높이를 꼭 주세요
 그리드 높이 기본값은 `'inherit'` 이라 부모 요소 높이를 그대로 씁니다. 부모에 높이가 없으면 그리드가 보이지 않습니다. 행 수만큼 높이를 맞추려면 그리드 옵션 `maxVisibleRowCount` 를 씁니다.
+
+높이 기본값일 때 그리드는 자신을 `position: absolute` (위, 왼쪽, 아래 0, 너비 100%) 로 놓습니다 (CollectionView `_applyHeight`). 그래서 그리드를 넣을 요소에 `position: relative` 도 줘야 그 요소 안에 맞게 들어갑니다. 없으면 가장 가까운 위치 지정 조상(없으면 페이지 전체)을 덮습니다 (로컬 실행 확인).
 :::
 
 ## 2. 데이터 준비

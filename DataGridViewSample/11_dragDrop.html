@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>11. 드래그앤드롭</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    .page { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .buttons { margin: 0 0 8px; font-size: 12px; }
+    .buttons label { margin-right: 10px; }
+    .buttons button { margin-right: 4px; }
+    .main { display: flex; flex: 1; gap: 8px; min-height: 320px; }
+    #grid { position: relative; flex: 1; min-height: 320px; border: 1px solid #d1d4d4; }
+    .side { display: flex; flex-direction: column; gap: 8px; width: 220px; }
+    .box { flex: 1; padding: 8px; font-size: 12px; border: 2px dashed #9aa0a6; border-radius: 4px; }
+    #dragSource { cursor: grab; background: #eef5fb; }
+    #dropBox.over { border-color: #368ec4; background: #eef5fb; }
+    #log { height: 130px; margin: 8px 0 0; padding: 8px; overflow: auto; font-size: 12px; background: #f4f5f6; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>11. 드래그앤드롭 (순서 바꾸기, 하위로 옮기기, 밖에서 받기, 밖으로 끌어 내기)</h2>
+    <p>
+      행 머리에 마우스를 올리면 나오는 손잡이나 셀을 잡고 끌어 순서를 바꿉니다. 오른쪽 위 상자는 그리드로 끌어 올 수 있고, 그리드 행은 오른쪽 아래 상자에 놓을 수 있습니다.
+      <a href="index.html">목록으로</a>
+    </p>
+    <div class="buttons">
+      <label><input type="checkbox" id="chkRowDrag" checked /> rowDragEnabledFlag</label>
+      <label><input type="checkbox" id="chkReorder" checked /> rowReorderEnabledFlag</label>
+      <label>놓기 규칙
+        <select id="selDropRule">
+          <option value="all">모두 허용</option>
+          <option value="noMiddle">하위로 넣기 금지 (예제 1)</option>
+          <option value="folderOnly">폴더에만 넣기 (예제 3)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="chkCustomMove" /> 하위로 넣기는 직접 처리 (예제 4)</label>
+      <label><input type="checkbox" id="chkLockApproved" /> 승인 행 못 끌게 (예제 7)</label>
+    </div>
+    <div class="buttons">
+      <button id="btnSort">품명순 정렬</button>
+      <button id="btnFilter">상태 '작업중' 만 보기</button>
+      <button id="btnClearFilter">필터 해제</button>
+      <button id="btnDump">순서 보기</button>
+    </div>
+    <div class="main">
+      <div id="grid"></div>
+      <div class="side">
+        <div id="dragSource" class="box" draggable="true">끌어 올 수 있는 상자 (예제 5)<br />이 상자를 그리드의 행이나 빈 곳에 놓으면 새 행이 생깁니다.</div>
+        <div id="dropBox" class="box">놓는 상자 (예제 6)<br />그리드 행을 여기에 놓으면 받은 내용을 로그에 남깁니다.</div>
+      </div>
+    </div>
+    <pre id="log"></pre>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      function writeLog(text) {
+        var log = document.getElementById('log');
+        log.textContent = text + '\n' + log.textContent;
+      }
+
+      function createRow(id, title, type, status, children) {
+        return new TreeNodeModel({ label: id, grid: { id: id, title: title, type: type, status: status }, children: children });
+      }
+
+      var treeDocument = new TreeDocument();
+      treeDocument.prepareUpdate();
+      [
+        createRow('FLD-0001', '조립 부품', 'Folder', '작업중', [
+          createRow('PRT-0001', '브라켓', 'Part', '작업중'),
+          createRow('PRT-0002', '샤프트', 'Part', '승인')
+        ]),
+        createRow('FLD-0002', '구매 부품', 'Folder', '작업중', [
+          createRow('PRT-0003', '베어링', 'Part', '작업중')
+        ]),
+        createRow('PRT-0004', '하우징', 'Part', '검토중'),
+        createRow('PRT-0005', '커버', 'Part', '작업중'),
+        createRow('PRT-0006', '볼트', 'Part', '승인')
+      ].forEach(function (row) {
+        treeDocument.addRoot(row);
+      });
+      treeDocument.pushUpdate();
+      treeDocument.expandAll();
+
+      /*
+       * [예제 1] 행 순서 바꾸기
+       *   rowDragEnabledFlag: true  행 머리에 손잡이가 생기고, 잡고 끌면 그리드가 행을 옮긴다.
+       *   cellDragEnabledFlag: true 셀을 잡고 끌어도 옮긴다.
+       *   rowReorderEnabledFlag 는 기본값이 이미 true 라서 넣지 않는다.
+       *   rowDragEnabledFlag, rowReorderEnabledFlag 는 만든 뒤에 바꿔도 바로 적용된다 (위 체크박스).
+       *   cellDragEnabledFlag 는 만들 때 정한다. 만든 뒤 false 로 바꿔도 이미 그려진 셀 내용은 계속 끌린다.
+       */
+      // #region grid
+      var grid = new DataGridView({
+        treeDocument: treeDocument,
+        columns: [
+          { text: '품번', dataIndex: 'tree', width: 200 },
+          { text: '품명', dataIndex: 'title', width: 160 },
+          { text: '구분', dataIndex: 'type', width: 100 },
+          { text: '상태', dataIndex: 'status', width: 100 }
+        ],
+        rowDragEnabledFlag: true,
+        cellDragEnabledFlag: true
+      });
+      grid.inject(document.getElementById('grid'));
+      // #endregion grid
+
+      /*
+       * [예제 1, 3] 놓아도 되는 자리 (TreeDocument 의 shouldAcceptDrop)
+       *   info.dropPosition       'top' | 'middle' | 'bottom'  ('middle' = 그 행의 하위로)
+       *   info.dropNode           마우스 아래의 행
+       *   info.parentTreeNodeModel 옮긴 뒤의 부모
+       *   info.draggedTreeNodeModel 지금 검사하는 끄는 행 (끄는 행마다 한 번씩 불림)
+       *   false 를 돌려주면 거절. 'middle' 을 거절하면 행 높이를 반으로 나눠 'top' / 'bottom' 만 남는다.
+       */
+      // #region noMiddle
+      function rejectMiddle(info) {
+        return info.dropPosition !== 'middle';
+      }
+      // #endregion noMiddle
+
+      // #region folderOnly
+      function folderOnly(info) {
+        if (info.dropPosition === 'middle') {
+          return info.dropNode.getAttributeValue('type') === 'Folder';
+        }
+        return info.parentTreeNodeModel === info.draggedTreeNodeModel.getParent();
+      }
+      // #endregion folderOnly
+
+      /*
+       * [예제 7] 특정 행은 못 끌게 하기 (TreeDocument 의 shouldAcceptDrag)
+       *   끌기 시작할 때 한 번 불린다. false 면 끌기가 취소되고 DragStart 콜백도 불리지 않는다.
+       */
+      // #region acceptDrag
+      function notApproved(nodeModel) {
+        return nodeModel.getAttributeValue('status') !== '승인';
+      }
+      // #endregion acceptDrag
+
+      /*
+       * [예제 2] 순서가 바뀐 뒤 저장하기
+       *   Drop 콜백 시점에는 행이 아직 옮겨지기 전이다. cellInfos.droppedNodes 로 "같은 그리드의 행이 놓였다" 는 것만 기억하고,
+       *   끌기가 끝난 DragEnd 콜백에서 새 순서를 읽는다. 손잡이로 끌면 ...RowHeader, 셀로 끌면 ...Cell 콜백이 불린다.
+       */
+      // #region saveOrder
+      var dropped = false;
+
+      function markDropped(event, cellInfos) {
+        dropped = !!(cellInfos.droppedNodes && cellInfos.droppedNodes.length > 0);
+        return true;
+      }
+
+      function saveOrderAfterDrag(event, cellInfos) {
+        if (dropped) {
+          dropped = false;
+          var ids = treeDocument.getAllDescendants().map(function (node) {
+            return (node.isRoot() ? '' : node.getParent().getLabel() + '/') + node.getAttributeValue('id');
+          });
+          writeLog('저장할 새 순서: ' + ids.join(', '));
+        }
+        return true;
+      }
+
+      grid.onDragEndRowHeader = saveOrderAfterDrag;
+      grid.onDragEndCell = saveOrderAfterDrag;
+      // #endregion saveOrder
+
+      /*
+       * [예제 4] 옮기는 처리를 직접 하기
+       *   Drop 콜백에서 직접 옮기고 false 를 돌려주면 그리드의 기본 이동은 실행되지 않는다.
+       *   여기서는 하위로 넣는 경우('middle')만 직접 하고, 나머지는 true 로 기본 이동에 맡긴다.
+       */
+      // #region customDrop
+      function moveIntoTarget(event, cellInfos) {
+        var nodes = cellInfos.droppedNodes;
+        var target = cellInfos.nodeModel;
+        if (!nodes || nodes.length === 0 || !target || cellInfos.dropPosition !== 'middle') {
+          return true;
+        }
+        event.preventDefault();
+        treeDocument.prepareUpdate();
+        nodes.forEach(function (node) {
+          target.addChild(node);
+        });
+        treeDocument.pushUpdate();
+        target.expand();
+        writeLog('직접 옮김: ' + nodes.map(function (node) { return node.getLabel(); }).join(', ') + ' -> ' + target.getLabel() + ' 하위');
+        return false;
+      }
+      // #endregion customDrop
+
+      /*
+       * [예제 5] 밖에서 끌어 온 객체 받기
+       *   DragOver 콜백에서 event.preventDefault() 를 불러야 브라우저가 놓기를 허용한다.
+       *   그리드 안의 행을 끌고 있을 때(cellInfos.draggedNodes 가 있음)는 건드리지 않고 true 를 돌려 순서 바꾸기에 맡긴다.
+       *   반환값이 true 면 기본 동작이 행에 파란 테두리, 빈 곳에 그리드 테두리 강조를 그린다.
+       *   단 순서 바꾸기가 켜진 그리드에서는 행 위의 테두리가 거절 색(어두운 빨강)으로 그려지므로 행 위에서는 false 를 돌려준다.
+       *   Drop 에서 event.dataTransfer 의 3DXContent 를 읽어 행 위면 그 행의 하위로, 빈 곳이면 최상위로 넣는다.
+       */
+      // #region external
+      function allowExternalDrop(event, cellInfos) {
+        if (cellInfos.draggedNodes) {
+          return true;
+        }
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'copy';
+        return !cellInfos.nodeModel || !this.getRowReorderEnabledState();
+      }
+
+      function addDroppedItems(event, parentNode) {
+        var content;
+        try {
+          content = JSON.parse(event.dataTransfer.getData('text'));
+        } catch (e) {
+          return;
+        }
+        if (!content || content.protocol !== '3DXContent' || !content.data) {
+          return;
+        }
+        treeDocument.prepareUpdate();
+        (content.data.items || []).forEach(function (item) {
+          var node = new TreeNodeModel({
+            label: item.displayName,
+            grid: { id: item.objectId, title: '밖에서 받은 객체', type: item.objectType, status: '작업중' }
+          });
+          if (parentNode) {
+            parentNode.addChild(node);
+            parentNode.expand();
+          } else {
+            treeDocument.addRoot(node);
+          }
+        });
+        treeDocument.pushUpdate();
+        writeLog('밖에서 받음: ' + content.data.items.length + '개 -> ' + (parentNode ? parentNode.getLabel() + ' 하위' : '최상위'));
+      }
+
+      function dropExternal(event, cellInfos) {
+        event.preventDefault();
+        addDroppedItems(event, cellInfos.nodeModel);
+        return true;
+      }
+      // #endregion external
+
+      /*
+       * [예제 6] 그리드 행을 밖으로 끌어 내기
+       *   DragStart 콜백에서 event.dataTransfer 에 3DXContent 를 넣는다. cellInfos.draggedNodes 에 선택된 행이 모두 들어 있다.
+       *   true 를 돌려주면 그리드가 같은 'text' 값에 행 정보(DataGridView_Row_Options)를 합쳐 넣는다 (순서 바꾸기가 켜져 있을 때).
+       *   위젯 안에서는 source, widgetId, envId 에 widget.getValue('appId'), widget.id, widget.getValue('x3dPlatformId') 를 쓴다.
+       */
+      // #region dragOut
+      function putContent(event, cellInfos) {
+        var content = {
+          protocol: '3DXContent',
+          version: '1.1',
+          source: 'MYAPP',
+          widgetId: 'sample-widget',
+          data: {
+            items: cellInfos.draggedNodes.map(function (node) {
+              return {
+                envId: 'OnPremise',
+                serviceId: '3DSpace',
+                contextId: '',
+                objectId: node.getAttributeValue('id'),
+                objectType: node.getAttributeValue('type'),
+                displayName: node.getLabel()
+              };
+            })
+          }
+        };
+        event.dataTransfer.setData('text', JSON.stringify(content));
+        event.dataTransfer.effectAllowed = 'all';
+        return true;
+      }
+
+      grid.onDragStartRowHeader = putContent;
+      grid.onDragStartCell = putContent;
+      // #endregion dragOut
+
+      /*
+       * [같이 쓰기] Drop 콜백은 하나만 넣을 수 있으므로 예제 2, 4, 5 를 한 함수로 묶는다.
+       *   cellInfos.droppedNodes 가 없으면 같은 그리드의 행이 아니므로 밖에서 온 것으로 처리한다.
+       */
+      // #region combine
+      function onDrop(event, cellInfos) {
+        if (!cellInfos.droppedNodes) {
+          return dropExternal(event, cellInfos);
+        }
+        markDropped(event, cellInfos);
+        if (document.getElementById('chkCustomMove').checked) {
+          return moveIntoTarget(event, cellInfos);
+        }
+        return true;
+      }
+
+      grid.onDragOverCell = allowExternalDrop;
+      grid.onDragOverBlank = allowExternalDrop;
+      grid.onDropRowHeader = onDrop;
+      grid.onDropCell = onDrop;
+      grid.onDropBlank = onDrop;
+      // #endregion combine
+
+      function applyOptions() {
+        var rules = { all: function () { return true; }, noMiddle: rejectMiddle, folderOnly: folderOnly };
+        grid.rowDragEnabledFlag = document.getElementById('chkRowDrag').checked;
+        grid.rowReorderEnabledFlag = document.getElementById('chkReorder').checked;
+        treeDocument.options.shouldAcceptDrop = rules[document.getElementById('selDropRule').value];
+        treeDocument.options.shouldAcceptDrag = document.getElementById('chkLockApproved').checked ? notApproved : function () { return true; };
+        writeLog('getRowReorderEnabledState() = ' + grid.getRowReorderEnabledState());
+      }
+
+      ['chkRowDrag', 'chkReorder', 'selDropRule', 'chkLockApproved'].forEach(function (id) {
+        document.getElementById(id).addEventListener('change', applyOptions);
+      });
+      applyOptions();
+
+      var externalCount = 0;
+      document.getElementById('dragSource').addEventListener('dragstart', function (event) {
+        externalCount++;
+        event.dataTransfer.setData('text', JSON.stringify({
+          protocol: '3DXContent',
+          version: '1.1',
+          source: 'OTHER_APP',
+          data: { items: [{ envId: 'OnPremise', serviceId: '3DSpace', contextId: '', objectId: 'EXT-' + externalCount, objectType: 'Part', displayName: 'PRT-01' + (externalCount < 10 ? '0' : '') + externalCount }] }
+        }));
+        event.dataTransfer.effectAllowed = 'copy';
+      });
+
+      var dropBox = document.getElementById('dropBox');
+      dropBox.addEventListener('dragover', function (event) {
+        event.preventDefault();
+        dropBox.classList.add('over');
+      });
+      dropBox.addEventListener('dragleave', function () {
+        dropBox.classList.remove('over');
+      });
+      dropBox.addEventListener('drop', function (event) {
+        event.preventDefault();
+        dropBox.classList.remove('over');
+        var content = JSON.parse(event.dataTransfer.getData('text'));
+        var names = content.data.items.map(function (item) { return item.displayName; });
+        writeLog('상자가 받음: ' + names.join(', ') + ' (행 정보 합쳐짐: ' + !!content.data.DataGridView_Row_Options + ')');
+      });
+
+      document.getElementById('btnSort').addEventListener('click', function () {
+        grid.sortModel = [{ dataIndex: 'title', sort: 'asc' }];
+      });
+      document.getElementById('btnFilter').addEventListener('click', function () {
+        treeDocument.setFilterModel({ status: { filterId: 'set', filterModel: ['작업중'] } });
+        writeLog('필터 적용 뒤 getRowReorderEnabledState() = ' + grid.getRowReorderEnabledState());
+      });
+      document.getElementById('btnClearFilter').addEventListener('click', function () {
+        treeDocument.setFilterModel({});
+      });
+      document.getElementById('btnDump').addEventListener('click', function () {
+        writeLog('지금 순서: ' + treeDocument.getAllDescendants().map(function (node) { return node.getLabel(); }).join(', ')
+          + ' / sortModel: ' + JSON.stringify(grid.sortModel));
+      });
+
+      window.sample = { grid: grid, treeDocument: treeDocument };
+    });
+  </script>
+</body>
+</html>

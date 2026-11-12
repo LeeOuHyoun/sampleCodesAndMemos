@@ -27,6 +27,9 @@ sampleCodesAndMemos/
 ├─ DataGridViewSample/ ...   주제별 샘플 (주제이름Sample)
 ├─ scripts/verify-list.mjs   검증 대기 목록 생성
 ├─ scripts/coverage.mjs      원본과 문서를 비교해 빠진 이름 찾기
+├─ scripts/datagridview-index.mjs   DataGridView 이름 색인 (A-Z) 생성
+├─ scripts/docs-utils.mjs    위 스크립트들이 같이 쓰는 함수
+├─ scripts/samples-server.mjs   샘플을 ENOVIA 서버 없이 로컬에서 띄우는 서버
 └─ package.json
 ```
 
@@ -41,6 +44,8 @@ sampleCodesAndMemos/
 
 3. 자주 찾을 페이지면 홈(`docs/index.md`)의 분야별 표나 "하고 싶은 일로 찾기" 표에도 링크를 넣습니다.
 4. 새 webapps 모듈(`DS/폴더/모듈`)을 다루면 [모듈 경로 색인](/guide/module-index) 에 한 줄을 추가합니다.
+   - DataGridView 레퍼런스(`docs/datagridview/api/`)의 표를 고쳤으면 `npm run docs:dgv-index` 로 [이름 색인 (A-Z)](/datagridview/api/key-index) 을 다시 만듭니다. 그 페이지는 직접 고치지 않습니다.
+   - DataGridView 가이드를 추가했으면 [개요의 "하고 싶은 일로 찾기"](/datagridview/#하고-싶은-일로-찾기) 표에도 한 줄을 넣습니다.
 5. 처음 나오는 용어는 [용어집](/guide/glossary) 에 한 줄을 추가합니다.
 
 ## 새 주제 추가
@@ -102,7 +107,9 @@ var treeDocument = new TreeDocument();
 ```
 
 - 범위 이름은 영문, 숫자, `-`, `_` 만 씁니다.
-- 지금은 DataGridView 의 새 가이드(트리 구조, 컬럼 함수, 우클릭 메뉴와 선택, 셀 직접 그리기, 상태바)가 이 방식입니다.
+- 지금은 DataGridView 의 가이드 중 트리 구조, 컬럼 함수, 우클릭 메뉴와 선택, 셀 직접 그리기, 상태바, 드래그앤드롭, 헤더, 레이아웃 메서드, 사용자 뷰, 행 그룹핑, 서버 사이드 데이터가 이 방식입니다.
+- region 안에는 주석을 넣지 않습니다. 설명은 region 바로 위 블록 주석에 씁니다 (문서에는 region 안만 보입니다).
+- 샘플에서 그리드를 담는 요소에는 높이와 `position: relative` 를 꼭 줍니다. 그리드는 높이 기본값(`'inherit'`)일 때 자신을 `position: absolute` 로 놓아서, 없으면 페이지 전체를 덮습니다.
 
 ## 원본과 문서 비교 (빠진 이름 찾기)
 
@@ -111,12 +118,23 @@ npm run docs:coverage
 npm run docs:coverage -- <webapps 폴더 경로>
 ```
 
-원본 `DataGridView/DataGridView.js` 에서 그리드 옵션, 그리드 메서드, layoutOptions, 컬럼 옵션과 컬럼 함수 이름을 뽑아서 `docs/datagridview/` 에 한 번도 나오지 않는 이름을 출력합니다. 이름 앞의 숫자는 DataGridView 를 쓰는 앱 파일 중 그 이름이 나오는 파일 수라서, 숫자가 큰 것부터 문서에 보태면 됩니다.
+원본 `DataGridView/DataGridView.js` 에서 그리드 옵션, 그리드 메서드, layoutOptions, 레이아웃 메서드, 컬럼 옵션과 컬럼 함수 이름을, `CollectionView/CollectionView.js` 에서 상속받는 옵션과 메서드 이름을 뽑아서 `docs/datagridview/` 에 한 번도 나오지 않는 이름을 출력합니다. 이름 앞의 숫자는 DataGridView 를 쓰는 앱 파일 중 그 이름이 나오는 파일 수라서, 숫자가 큰 것부터 문서에 보태면 됩니다.
 
 - 경로를 주지 않으면 저장소 옆의 `../enovia2025/3dspace/webapps` 를 읽습니다. 2026 과 비교하려면 2026 webapps 경로를 줍니다.
 - 원본이 들여쓰기된 상태(코드 정리 도구로 줄을 나눈 상태)여야 합니다. 한 줄로 붙은 원본에서는 이름을 뽑지 못합니다.
 - 남는 이름이 모두 문서에 있어야 하는 것은 아닙니다. 내부용 함수도 섞여 있으므로 사용 파일 수를 보고 고릅니다.
+- 컬럼 정의에서 직접 읽는 키(`customHeader`, `columnGroupShow` 처럼 기본값 표에 없는 것)는 이 스크립트가 찾지 못합니다. 원본에서 컬럼 객체를 읽는 코드를 따로 봐야 합니다.
+- 상속 옵션, 상속 메서드는 클래스가 `name: "CollectionView"` 형태로 정의된 2025 원본에서만 뽑힙니다.
 - 문서의 "사용" 칸(그리드 옵션, 컬럼 함수)도 같은 기준(이름이 나오는 앱 파일 수)으로 센 값입니다.
+
+## 샘플을 내 PC 에서 실행하기
+
+```sh
+npm run samples
+npm run samples -- <webapps 폴더 경로>
+```
+
+저장소 옆의 `../enovia2025/3dspace/webapps` 와 `*Sample` 폴더를 한 서버로 묶어 `http://127.0.0.1:8080/webapps/DataGridViewSample/index.html` 같은 주소로 열 수 있게 합니다. ENOVIA 서버 없이 DataGridView 같은 화면 컨트롤이 실제로 동작합니다. 3DSpace 서버를 부르는 부분(WAFData 등)과 위젯 객체(`widget`)가 필요한 샘플은 동작하지 않습니다. 포트는 `PORT=9000 npm run samples` 로 바꿉니다.
 
 ## 내 PC 에서 미리 보기
 

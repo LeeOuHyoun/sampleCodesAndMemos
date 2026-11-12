@@ -30,7 +30,7 @@ CollectionView.js 의 CollectionView.addEventListener (cellInfos 를 붙여 감�
 | <code>columnVisibleStateChange</code> | 컬럼 표시/숨김이 바뀔 때 | <code>{ visibleState, columnID }</code> | 없음 | - |
 | <code>columnWidthChange</code> | 컬럼 너비가 바뀔 때 | { columnID } 또는 { columnIDs } | 없음 | - |
 | <code>columnGroupExpandedState</code> | 컬럼 그룹(children) 펼침/접힘 | <code>{ visibleState, rowID, ... }</code> | 없음 | - |
-| <code>userPreferencesChange</code> | 사용자 화면 상태(너비, 순서, 표시, 사용자 뷰)가 바뀔 때 | - | 없음 | 화면 상태를 저장할 시점 |
+| <code>userPreferencesChange</code> | 그리드가 화면 상태(너비, 순서, 표시, 고정, 정렬, 행 그룹)를 저장할 때마다, 사용자 뷰를 적용할 때 | - | 없음 | event.options 는 빈 객체. 한 번 조작에 여러 번 남 (헤더 경계 끌기 1번, 컬럼 하나를 끌어 옮기기 6번, loadCustomViews 8번) 이므로 모아서 처리. 바뀐 내용은 grid.layout.exportPreferencesInJson() 으로 읽음 ([사용자 뷰와 화면 상태 저장](/datagridview/custom-views#이벤트와-콜백)) |
 
 ## 셀 편집기(Tweaker)에서 버블링되는 이벤트
 
@@ -50,7 +50,7 @@ CollectionView.js 의 CollectionView.addEventListener (cellInfos 를 붙여 감�
 | <code>click / dblclick</code> | 클릭 / 더블클릭 | - | 셀이면 있음 | 클릭한 행: cellInfos.nodeModel. 헤더면 rowID -1 |
 | <code>contextmenu</code> | 우클릭 | - | 셀이면 있음 | webapps 에서 가장 많이 사용 (15회). 그리드 우클릭 메뉴를 바꾸려면 onContextualEvent 옵션 ([우클릭 메뉴](/datagridview/context-menu)) |
 | <code>keydown / keyup</code> | 키 입력 | - | 셀 편집기 안이면 있음 | 현재 셀 기준 처리는 grid.getActiveCellID() |
-| <code>dragstart / dragend / dragover / drop</code> | 드래그앤드롭 | - | 셀이면 있음 | rowDragEnabledFlag / cellDragEnabledFlag 와 같이 사용 (onDropCell 같은 옵션 콜백도 있음) |
+| <code>dragstart / drag / dragenter / dragover / dragleave / drop / dragend</code> | 드래그앤드롭 | - | 셀이면 있음 | 보통은 리스너 대신 onDropCell 같은 옵션 콜백을 씀 (콜백의 cellInfos 에만 draggedNodes, dropPosition, droppedNodes 가 붙음). [드래그앤드롭](/datagridview/drag-and-drop) |
 | <code>copy / paste</code> | Ctrl+C / Ctrl+V | - | - | 그리드 기본 복사/붙여넣기 전후 처리 |
 
 ## 데이터(TreeDocument) 쪽 알림 — 행 선택, 값 변경은 여기서 받는 것이 정확
@@ -62,7 +62,7 @@ CollectionView.js 의 CollectionView.addEventListener (cellInfos 를 붙여 감�
 | <code>treeDocument.getXSO().onPostAdd(fn) / onPostRemove(fn)</code> | 행 선택 / 선택 해제 후 | - | webapps 각 50회 사용. 선택 목록은 treeDocument.getSelectedNodes(). 예제: [우클릭 메뉴와 선택](/datagridview/context-menu#선택-변경-받기) |
 | <code>treeDocument.getXSO().onEmpty(fn) / onChange(fn)</code> | 선택 전체 해제 / 선택 변경 | - | onPreAdd, onPreRemove, onPreEmpty (변경 전) 도 있음 |
 | <code>treeDocument.onNodeModelUpdate(fn)</code> | 행 값이 바뀔 때 (편집, updateOptions) | <code>e.data.nodeModel</code>, <code>e.data.attributes</code> | 어떤 경로로 바뀌든 값 변경을 한 곳에서 받기 |
-| <code>treeDocument.onUpdate(fn)</code> | 데이터 갱신 (pushUpdate 등) | <code>e.options.updateType</code> | - |
+| <code>treeDocument.onUpdate(fn)</code> | 데이터 갱신 (pushUpdate 등) | <code>e.options.updateType</code> | 끌어서 행을 옮긴 뒤에도 불림. 이때 updateType 에 이동 표시는 없음 ([순서가 바뀐 것을 알기](/datagridview/drag-and-drop#순서가-바뀐-것을-알기)) |
 | <code>treeDocument.onPreExpand(fn)</code> | 행을 펼치기 직전 | <code>e.target</code> = 펼치는 행 | 하위 행 지연 로딩. 다시 등록하면 이전 콜백을 대체. 예제: [트리 구조](/datagridview/tree#펼칠-때-하위-행-불러오기) |
 | <code>treeDocument.onPostExpand / onPreCollapse / onPostCollapse(fn)</code> | 펼친 뒤 / 접기 전 / 접은 뒤 | <code>e.target</code> = 대상 행 | - |
 

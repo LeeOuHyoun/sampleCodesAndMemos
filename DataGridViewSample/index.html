@@ -24,8 +24,13 @@
     <li><a href="08_contextMenu.html">08. 우클릭 메뉴와 선택</a><span>onContextualEvent 로 만드는 행 메뉴, 메뉴 버튼 컬럼, 선택 변경 받기</span></li>
     <li><a href="09_save.html">09. 편집, 저장, 화면 반영</a><span>셀 단위 즉시 저장과 실패 시 되돌리기, 모아서 저장 (변경 트랜잭션 모드)</span></li>
     <li><a href="10_customCell.html">10. 셀 직접 그리기와 상태바</a><span>onCellRequest + 셀 내용 재사용, buildStatusBar</span></li>
+    <li><a href="11_dragDrop.html">11. 드래그앤드롭</a><span>행 순서 바꾸기, 하위로 옮기기, 놓기 규칙(shouldAcceptDrop), 밖에서 받기, 밖으로 끌어 내기</span></li>
+    <li><a href="12_header.html">12. 헤더와 컬럼</a><span>헤더 높이, 헤더 숨기기, 2단 헤더(컬럼 그룹), 헤더 직접 그리기, grid.layout 으로 컬럼 숨기기 / 너비 / 고정 / 순서</span></li>
+    <li><a href="13_customViews.html">13. 사용자 뷰와 화면 상태 저장</a><span>identifier 로 자동 저장, 꺼내기 / 되살리기, loadCustomViews, 뷰 대화상자, alwaysVisibleFlag</span></li>
+    <li><a href="14_rowGrouping.html">14. 행 그룹핑</a><span>groupRows, 그룹 행 제목 / 합계, 그룹 행 거르기, 다시 묶기, 그룹 영역(createGroupingUI)</span></li>
+    <li><a href="15_serverSide.html">15. 서버 사이드 데이터</a><span>onInfiniteScroll, onDelayedModelDataRequest, dataSource (기본 / virtuallyLoadAllModelItems / 하위 행)</span></li>
   </ol>
-  <p>01 ~ 05 는 ENOVIA 서버에서 동작을 확인했습니다. 06 ~ 10 은 원본 소스 분석으로 작성했고 아직 서버에서 확인하지 않았습니다.</p>
+  <p>01 ~ 05 는 ENOVIA 서버에서 동작을 확인했습니다. 06 ~ 10 은 원본 소스 분석으로 작성했고 아직 서버에서 확인하지 않았습니다. 11 ~ 15 는 원본 webapps 파일을 로컬에서 띄워 동작을 확인했고, ENOVIA 서버에서는 아직 확인하지 않았습니다.</p>
   <p>옵션 전체 설명과 가이드: <a href="https://leeouhyoun.github.io/sampleCodesAndMemos/datagridview/" target="_blank">ENOVIA 분석 사양서 - DataGridView</a></p>
   <p>배치 위치: <code>&lt;3DSpace&gt;/webapps/DataGridViewSample/</code> (형제 폴더의 <code>AmdLoader</code>, <code>Core</code>, <code>DataGridView</code>, <code>Tweakers</code>, <code>TreeModel</code> 등을 상대경로로 사용)</p>
 </body>

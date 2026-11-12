@@ -1,8 +1,7 @@
-import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
-import { dirname, join, relative, sep } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join, relative } from 'node:path'
+import { DOCS, linkOf, plain, slug, splitRow, walk } from './docs-utils.mjs'
 
-const DOCS = join(dirname(fileURLToPath(import.meta.url)), '..', 'docs')
 const OUTPUT = join(DOCS, 'guide', 'verify-list.md')
 const BADGE = /\s*<Badge type="danger" text="검증 필요" \/>/
 const TOPICS = [
@@ -23,25 +22,6 @@ const TOPICS = [
   ['tweakers', 'Tweakers']
 ]
 
-const walk = (dir) =>
-  readdirSync(dir).flatMap((name) => {
-    const path = join(dir, name)
-    if (statSync(path).isDirectory()) return walk(path)
-    return name.endsWith('.md') ? [path] : []
-  })
-
-const plain = (text) => text.replace(/<Badge[^>]*\/>/g, '').replace(/<[^>]+>/g, '').trim()
-
-const slug = (heading) =>
-  plain(heading)
-    .replace(/`/g, '')
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/[\s~`!@#$%^&*()\-_+=[\]{}|\\;:"'“”‘’<>,.?/]+/g, '-')
-    .replace(/-{2,}/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .replace(/^(\d)/, '_$1')
-    .toLowerCase()
-
 const isBalanced = (text) =>
   (text.match(/`/g) ?? []).length % 2 === 0 &&
   (text.match(/<code>/g) ?? []).length === (text.match(/<\/code>/g) ?? []).length
@@ -55,14 +35,14 @@ const lastSentence = (text) => {
 
 const excerpt = (line) => {
   const isRow = line.trim().startsWith('|')
-  const cells = isRow ? line.trim().replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map((cell) => cell.trim()) : [line]
+  const cells = isRow ? splitRow(line) : [line]
   const cell = cells.find((item) => BADGE.test(item))
   const sentence = lastSentence(cell.split(BADGE)[0].replace(/^[-*>\s]+/, '')).replace(/\*\*/g, '')
   return isRow && cell !== cells[0] ? `${cells[0]} : ${sentence}` : sentence
 }
 
 const scan = (file) => {
-  const link = '/' + relative(DOCS, file).split(sep).join('/').replace(/\.md$/, '').replace(/(^|\/)index$/, '$1')
+  const link = linkOf(file)
   const page = { link, title: '', items: [] }
   let anchor = ''
   let section = ''

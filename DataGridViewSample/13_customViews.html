@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>13. 사용자 뷰와 화면 상태 저장</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    .page { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .buttons { margin: 0 0 6px; font-size: 12px; }
+    .buttons button { margin-right: 4px; }
+    .buttons b { display: inline-block; width: 86px; color: #005686; }
+    #grid { position: relative; flex: 1; min-height: 320px; border: 1px solid #d1d4d4; }
+    #log { height: 150px; margin: 8px 0 0; padding: 8px; overflow: auto; font-size: 12px; white-space: pre-wrap; word-break: break-all; background: #f4f5f6; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>13. 사용자 뷰와 화면 상태 저장</h2>
+    <p>
+      컬럼 경계를 끌어 너비를 바꾸거나, 헤더를 끌어 순서를 바꾸거나, 헤더를 눌러 정렬한 뒤 "새로 고침" 을 눌러 보세요. 그리드에 identifier 를 주었기 때문에 바꾼 화면이 그대로 돌아옵니다.
+      컬럼 헤더를 우클릭하면 컬럼 숨기기와 뷰 대화상자 메뉴가 열립니다.
+      <a href="index.html">목록으로</a>
+    </p>
+    <div class="buttons">
+      <b>저장된 상태</b>
+      <button id="btnShowSaved">저장값 보기</button>
+      <button id="btnDelete">저장된 상태 지우기</button>
+      <button id="btnResetView">기본 뷰로 되돌리기</button>
+      <button id="btnReload">새로 고침</button>
+      <button id="btnRestore">서버 보관본 되살리기</button>
+    </div>
+    <div class="buttons">
+      <b>사용자 뷰</b>
+      <button id="btnLoadViews">뷰 2개 넣고 "검토용" 적용</button>
+      <button id="btnDialog">뷰 대화상자 열기</button>
+      <label><input type="checkbox" id="chkLockMenu" /> 헤더 메뉴에서 컬럼 숨기기와 뷰 대화상자 빼기</label>
+    </div>
+    <div class="buttons">
+      <b>코드로 바꾸기</b>
+      <button id="btnWidthCode">품명 너비 300 (화면만)</button>
+      <button id="btnWidthUser">품명 너비 300 (저장까지)</button>
+      <button id="btnHideTree">품번 숨기기 시도</button>
+    </div>
+    <div id="grid"></div>
+    <pre id="log"></pre>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      var SERVER_KEY = 'sample_customViews_server';
+
+      function writeLog(text) {
+        var log = document.getElementById('log');
+        log.textContent = text + '\n' + log.textContent;
+      }
+
+      var treeDocument = new TreeDocument();
+      treeDocument.prepareUpdate();
+      [
+        { label: 'PRT-0001', grid: { name: '브라켓', state: '작업중', qty: 2,  owner: '김철수', note: '도면 개정 예정' } },
+        { label: 'PRT-0002', grid: { name: '샤프트', state: '검토중', qty: 1,  owner: '이영희', note: '' } },
+        { label: 'PRT-0003', grid: { name: '하우징', state: '승인',   qty: 1,  owner: '박민수', note: '주조품' } },
+        { label: 'PRT-0004', grid: { name: '커버',   state: '작업중', qty: 1,  owner: '김철수', note: '' } },
+        { label: 'PRT-0005', grid: { name: '베어링', state: '폐기',   qty: 2,  owner: '최지훈', note: '대체품 PRT-0007' } },
+        { label: 'PRT-0006', grid: { name: '볼트',   state: '승인',   qty: 12, owner: '이영희', note: '표준품' } }
+      ].forEach(function (row) {
+        treeDocument.addRoot(new TreeNodeModel(row));
+      });
+      treeDocument.pushUpdate();
+
+      /*
+       * [1] 컬럼
+       *   visibleFlag: false       처음에 숨겨 두는 컬럼. 사용자가 헤더 메뉴나 뷰 대화상자에서 보이게 할 수 있다.
+       *   alwaysVisibleFlag: true  숨길 수 없는 컬럼. 헤더 메뉴의 체크 항목이 눌리지 않고,
+       *                            setColumnVisibleFlag(컬럼, false) 도 무시된다.
+       */
+      // #region columns
+      var columns = [
+        { text: '품번', dataIndex: 'tree', width: 150, alwaysVisibleFlag: true },
+        { text: '품명', dataIndex: 'name', width: 180 },
+        { text: '상태', dataIndex: 'state', width: 100 },
+        { text: '수량', dataIndex: 'qty', width: 80, typeRepresentation: 'integer' },
+        { text: '담당자', dataIndex: 'owner', width: 120 },
+        { text: '비고', dataIndex: 'note', width: 200, visibleFlag: false }
+      ];
+      // #endregion columns
+
+      /*
+       * [2] 헤더 우클릭 메뉴
+       *   buildDefaultContextualMenu(params, 옵션) 의 옵션으로 기본 메뉴의 묶음을 끈다.
+       *     firstColumnsVisibility : 컬럼 이름 체크 항목 (컬럼 숨기기 / 보이기)
+       *     columnsManagement      : 뷰 대화상자를 여는 항목
+       *   둘 다 끄면 사용자가 메뉴로는 컬럼 구성을 바꿀 수 없다.
+       */
+      // #region headerMenu
+      function buildHeaderMenu(params) {
+        var locked = document.getElementById('chkLockMenu').checked;
+        return params.collectionView.buildDefaultContextualMenu(params, {
+          firstColumnsVisibility: !locked,
+          columnsManagement: !locked
+        });
+      }
+      // #endregion headerMenu
+
+      /*
+       * [3] 그리드
+       *   identifier 하나면 사용자가 바꾼 너비, 순서, 표시, 고정, 정렬이 브라우저 localStorage 에 저장되고,
+       *   같은 identifier 로 그리드를 다시 만들 때 되살아난다.
+       *   저장 이름은 'wux-collectionView-dataGridView' 이고, 그 안에서 identifier 가 키다.
+       */
+      // #region grid
+      var grid = new DataGridView({
+        identifier: 'sample_customViews_partList',
+        treeDocument: treeDocument,
+        onContextualEvent: buildHeaderMenu,
+        columns: columns
+      });
+      grid.inject(document.getElementById('grid'));
+      // #endregion grid
+
+      window.sample = { grid: grid, treeDocument: treeDocument };
+
+      /*
+       * [4] 저장된 상태 보기, 지우기
+       *   grid.layout.exportPreferencesInJson()          이 그리드의 저장값 전체 (JSON 문자열). 없으면 undefined
+       *   grid.layout.deleteDataGridViewPreferences()    이 그리드의 저장값 전체 삭제. 화면은 그대로이고,
+       *                                                  그리드를 다시 만들 때(새로 고침)부터 원래 컬럼 정의로 보인다.
+       *   기본 뷰('DefaultConfiguration')를 적용하면 화면도 바로 원래 컬럼 정의로 돌아간다.
+       */
+      // #region saved
+      document.getElementById('btnShowSaved').addEventListener('click', function () {
+        writeLog('저장값: ' + grid.layout.exportPreferencesInJson());
+      });
+      document.getElementById('btnDelete').addEventListener('click', function () {
+        grid.layout.deleteDataGridViewPreferences();
+        writeLog('저장된 상태를 지웠습니다. 저장값 있음: ' + grid.layout.checkPresenceOfDataGridViewPreferences());
+      });
+      document.getElementById('btnResetView').addEventListener('click', function () {
+        grid.getCustomViewsManager().setCurrentCustomView('DefaultConfiguration');
+      });
+      // #endregion saved
+
+      document.getElementById('btnReload').addEventListener('click', function () {
+        location.reload();
+      });
+
+      /*
+       * [5] 상태를 꺼내 서버에 보관하기
+       *   userPreferencesChange 는 그리드가 상태를 저장할 때마다 난다. 한 번 조작에 여러 번 날 수 있으므로
+       *   타이머로 모아서 한 번만 보낸다. 여기서는 서버 대신 sessionStorage 에 넣는다.
+       *   되살리는 동안(restoring)에도 이 이벤트가 나므로 그때는 건너뛴다.
+       */
+      // #region export
+      var saveTimer = null;
+      var restoring = false;
+
+      function saveGridState(json) {
+        sessionStorage.setItem(SERVER_KEY, json);
+        writeLog('서버에 보관: ' + json);
+      }
+
+      grid.addEventListener('userPreferencesChange', function () {
+        if (restoring) {
+          return;
+        }
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(function () {
+          var json = grid.layout.exportPreferencesInJson();
+          if (json) {
+            saveGridState(json);
+          }
+        }, 500);
+      });
+      // #endregion export
+
+      /*
+       * [6] 보관한 상태 되살리기
+       *   grid.layout.importJsonPreferences(json, 옵션) : JSON 문자열을 저장소에 쓰고 화면에 바로 적용한다.
+       *     importCurrentCustomViewId: true 여야 "지금 적용된 뷰" 도 같이 되살린다.
+       *   눌러 보기: 너비를 바꾼다 → "저장된 상태 지우기" → "새로 고침" (원래대로 보임) → "서버 보관본 되살리기"
+       */
+      // #region restore
+      document.getElementById('btnRestore').addEventListener('click', function () {
+        var savedJson = sessionStorage.getItem(SERVER_KEY);
+        if (!savedJson) {
+          writeLog('보관본이 없습니다. 먼저 컬럼 너비나 순서를 바꿔 보세요.');
+          return;
+        }
+        restoring = true;
+        grid.layout.importJsonPreferences(savedJson, { importCurrentCustomViewId: true });
+        restoring = false;
+        writeLog('보관본을 되살렸습니다.');
+      });
+      // #endregion restore
+
+      /*
+       * [7] 사용자 뷰를 코드로 넣기
+       *   grid.loadCustomViews(뷰 배열, 처음 적용할 뷰) : 뷰 목록을 통째로 바꾸고 그 뷰를 적용한다.
+       *   뷰에는 원래 컬럼 정의와 다른 값만 적는다. 첫 번째에는 기본 뷰를 둔다 (대화상자에서 이름 변경, 삭제가 막힘).
+       *   주의: 이렇게 코드로 layoutDensity 가 있는 뷰를 적용하면 그 밀도가 그리드의 "원래 밀도" 로 기록된다.
+       *         그 뒤 기본 뷰를 적용해도 밀도는 돌아가지 않는다. (DataGridViewLayout._applyLayoutDensity)
+       */
+      // #region views
+      var views = [
+        { identifier: 'DefaultConfiguration', label: '기본' },
+        {
+          identifier: 'review',
+          label: '검토용',
+          columnsVisibleFlag: { note: true, qty: false },
+          columnsWidth: { name: 300 },
+          columnsPinnedState: { tree: 'left' },
+          pinnedColumnsOrder: { tree: 0 },
+          unpinnedColumnsOrder: { state: 0, name: 1 },
+          columnsSortModel: [{ dataIndex: 'name', sort: 'asc' }],
+          layoutDensity: 'comfortable'
+        }
+      ];
+
+      document.getElementById('btnLoadViews').addEventListener('click', function () {
+        grid.loadCustomViews(views, 'review');
+        writeLog('지금 적용된 뷰: ' + grid.getCustomViewsManager().getCurrentCustomViewIdentifier());
+      });
+      // #endregion views
+
+      /*
+       * [8] 뷰 대화상자와 저장 콜백
+       *   grid.showCustomViewsDialog() : 사용자 뷰 대화상자를 연다 (헤더 메뉴의 항목과 같은 대화상자).
+       *   관리 객체의 onCustomViewsSave 에 함수를 넣어 두면, 대화상자에서 저장할 때 뷰 목록 전체가 온다.
+       *   앱은 이것을 서버에 보관했다가 다음에 loadCustomViews 로 다시 넣는다.
+       */
+      // #region dialog
+      var manager = grid.getCustomViewsManager();
+
+      manager.onCustomViewsSave = function (savedViews, currentIdentifier) {
+        writeLog('대화상자 저장: 지금 뷰 = ' + currentIdentifier + ', 뷰 목록 = ' + JSON.stringify(savedViews));
+      };
+
+      document.getElementById('btnDialog').addEventListener('click', function () {
+        grid.showCustomViewsDialog();
+      });
+      // #endregion dialog
+
+      /*
+       * [9] 코드로 컬럼을 바꿀 때
+       *   grid.layout.setColumnWidth(컬럼, 너비)                             화면만 바뀐다. 저장하지 않는다.
+       *   grid.layout.setColumnWidth(컬럼, 너비, { isUserInteraction: true }) 사용자가 바꾼 것처럼 저장까지 한다.
+       *   setColumnVisibleFlag, setColumnPinned, moveColumn 도 같다.
+       */
+      // #region codeChange
+      document.getElementById('btnWidthCode').addEventListener('click', function () {
+        grid.layout.setColumnWidth('name', 300);
+        writeLog('화면만 바꿈. 저장값: ' + grid.layout.exportPreferencesInJson());
+      });
+      document.getElementById('btnWidthUser').addEventListener('click', function () {
+        grid.layout.setColumnWidth('name', 300, { isUserInteraction: true });
+        writeLog('저장까지 함. 저장값: ' + grid.layout.exportPreferencesInJson());
+      });
+      // #endregion codeChange
+
+      /*
+       * [10] 숨길 수 없는 컬럼
+       *   alwaysVisibleFlag: true 인 컬럼은 코드로 숨기려 해도 무시된다.
+       */
+      // #region alwaysVisible
+      document.getElementById('btnHideTree').addEventListener('click', function () {
+        grid.layout.setColumnVisibleFlag('tree', false, { isUserInteraction: true });
+        writeLog('품번 컬럼 보임: ' + grid.layout.getColumnVisibleFlag('tree'));
+      });
+      // #endregion alwaysVisible
+    });
+  </script>
+</body>
+</html>

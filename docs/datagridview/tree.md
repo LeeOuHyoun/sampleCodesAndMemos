@@ -87,5 +87,8 @@ TreeModel.js 의 TreeNodeModel 생성자 (`children` 값에 따른 `_expandState
 ## 같이 보기
 
 - 정렬, 필터 → [정렬과 필터](/datagridview/sort-filter)
+- 같은 값끼리 행 묶기 (트리와 같이 쓸 때의 제약) → [행 그룹핑](/datagridview/row-grouping#트리와-같이-쓸-때)
+- 행을 끌어 다른 행 아래로 옮기기 → [드래그앤드롭](/datagridview/drag-and-drop)
+- 행이 아주 많을 때 나눠 불러오기 → [서버 사이드 데이터](/datagridview/server-side)
 - 하위 행 값을 서버 저장 뒤에 바꾸기 → [저장 후 화면 반영](/datagridview/save-and-reflect)
 - TreeDocument, TreeNodeModel 함수 목록 → [데이터 (TreeDocument)](/datagridview/api/data)

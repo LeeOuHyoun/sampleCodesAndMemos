@@ -13,6 +13,7 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 증상 | 원인과 해결 | 자세히 |
 | --- | --- | --- |
 | 그리드가 보이지 않음 | 그리드 높이 기본값이 `'inherit'` 라 부모 높이를 씀. 부모에 높이를 주거나 `maxVisibleRowCount` 사용 | [기본 그리드](/datagridview/getting-started#_1-화면-준비) |
+| 그리드가 페이지 전체를 덮어 제목, 버튼이 가려짐 | 높이 기본값일 때 그리드는 `position: absolute` 로 놓임. 담는 요소에 `position: relative` 를 줌 | [기본 그리드](/datagridview/getting-started#_1-화면-준비) |
 | `require` 콜백이 아예 불리지 않음 | `css!` 로 부른 CSS 가 404 면 그 `require` 전체가 실패. 네트워크 탭에서 `.css` 요청 확인 | [css!](/amd/plugins#css) |
 | 불러온 모듈 값이 `undefined` | 파일 안 `define` 이름이 틀려도 오류 없이 `undefined` 가 들어옴 | [define / require](/amd/#define-require-쓰는-법) |
 | 처음 열 때 AMD timeout | `waitSeconds` 는 끝나지 않은 요청 전체에 걸림. `dsRequireWaitSeconds` 를 늘려 확인 | [오류 메시지](/amd/#오류-메시지) |
@@ -30,6 +31,16 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 증상 | 원인과 해결 | 자세히 |
 | --- | --- | --- |
 | 행 높이(`cellHeight`)가 안 바뀜 | 그리드 최상위가 아니라 `layoutOptions: { ... }` 안에 넣어야 함 | [행 높이](/datagridview/row-height#주의) |
+| 그리드 헤더 높이(`columnHeaderHeight`)가 안 바뀜 | `layoutOptions: { ... }` 안에 넣어야 함. 27 보다 작은 값은 27 로 되돌아감. `layoutDensity`, `cellHeight` 는 헤더 높이를 바꾸지 않음 | [헤더 높이](/datagridview/header#헤더-높이) |
+| 그리드 컬럼이 `visibleFlag: false` 인데도 보임 | `alwaysVisibleFlag: true` 인 컬럼은 숨길 수 없음 | [컬럼 보이기와 숨기기](/datagridview/api/layout-methods#컬럼-보이기와-숨기기) |
+| 컬럼 정의 객체를 고쳤는데 그리드가 그대로 | `grid.layout.setColumnOrGroupProperties(...)` 를 쓰거나, 고친 뒤 `grid.layout.applyColumns()` 를 부름 | [컬럼 설정 바꾸기](/datagridview/api/layout-methods#컬럼-설정-바꾸기) |
+| 그리드 컬럼 너비, 순서가 새로 고침하면 원래대로 돌아감 | 그리드 옵션 `identifier` 가 없으면 화면 상태를 저장하지 않음. `useWidgetPreferencesFlag` 는 저장 위치만 바꿈 | [사용자 뷰와 화면 상태 저장](/datagridview/custom-views#주의) |
+| 그리드 `columns` 의 `width`, `visibleFlag` 를 고쳐도 화면이 그대로 | 예전에 저장된 화면 상태가 컬럼 정의보다 우선. `grid.layout.deleteDataGridViewPreferences()` 나 localStorage 의 `wux-collectionView-dataGridView` 삭제 | [사용자 뷰와 화면 상태 저장](/datagridview/custom-views#주의) |
+| 코드로 컬럼을 숨기거나 너비를 바꾼 것이 기억되지 않음 | `grid.layout.setColumn...` 은 화면만 바꿈. 마지막 인자에 `{ isUserInteraction: true }` | [언제 저장하고 언제 되살리나](/datagridview/custom-views#언제-저장하고-언제-되살리나) |
+| `rowGroupingOptions` 를 넣었는데 행이 안 묶임 | 옵션은 묶는 방법만 정함. `grid.groupRows({ dataIndexesToGroup: ['status'] })` 를 불러야 묶임. 인자는 배열이 아니라 객체 | [행 그룹핑](/datagridview/row-grouping#주의) |
+| `rowGroupingEnabledFlag: false` 인데 묶임 | 이 값은 화면 조작만 끔. 코드의 `groupRows` 는 그대로 동작 | [행 그룹핑](/datagridview/row-grouping#주의) |
+| `rowReorderEnabledFlag: true` 인데 행 순서가 안 바뀜 | 기본값이 이미 true. `rowDragEnabledFlag: true` 를 켜야 함 | [옵션 네 개와 잡는 곳](/datagridview/drag-and-drop#옵션-네-개와-잡는-곳) |
+| 그리드 행을 밖으로 끌게만 했는데 순서도 바뀜 | `rowDragEnabledFlag` 를 켜면 순서 바꾸기도 켜짐. `rowReorderEnabledFlag: false` 추가 | [드래그앤드롭 주의](/datagridview/drag-and-drop#주의) |
 | 트리 컬럼 필터가 안 생김 | `setFilterModel` 의 키는 `tree` 가 아니라 `label` | [필터](/datagridview/api/filter) |
 | 그리드 컬럼의 `getCellTooltip` 이 안 불림 | 그리드 옵션 `getCellTooltip` 을 넣으면 컬럼 쪽은 무시됨 | [조건부 모양과 툴팁](/datagridview/cell-functions#조건부-모양과-툴팁) |
 | WebUX 컨트롤 옵션이 안 먹음 | `publishedProperties` 에 있는 키만 반영. 대소문자까지 맞아야 함 (`visibleflag` ✕). UIKIT 은 오타도 저장만 됨 | [두 계열의 차이](/controls/#두-계열의-차이) |
@@ -80,6 +91,13 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 그리드 리스너가 해제되지 않음 | `removeEventListener` 에는 `addEventListener` 의 **반환값**을 넘김 | [등록 / 해제](/datagridview/api/events#등록-해제) |
 | 트리 행이 "펼치는 중" 에서 멈춤 | `useAsyncPreExpand` 일 때 `onPreExpand` 콜백이 모든 경우에 `node.preExpandDone()` 을 불러야 함 | [펼칠 때 하위 행 불러오기](/datagridview/tree#펼칠-때-하위-행-불러오기) |
 | 그리드 `onPreExpand` 콜백이 하나만 동작 | 다시 등록하면 이전 콜백을 대체함 | [펼칠 때 하위 행 불러오기](/datagridview/tree#펼칠-때-하위-행-불러오기) |
+| 그리드 `onInfiniteScroll` 콜백이 한 번만 옴 | 처리 끝에 `grid.infiniteScrollProcessDone()` 을 안 부름. 실패했을 때와 더 없을 때도 부름 | [스크롤이 끝에 닿으면 행 더하기](/datagridview/server-side#예제-5-대안-스크롤이-끝에-닿으면-행-더하기) |
+| 행이 적으면 그리드 `onInfiniteScroll` 이 안 옴 | 첫 묶음이 화면을 못 채우면 스크롤 막대가 없어 불리지 않음. 첫 묶음을 늘리거나 `onEndResizeOrOnReadyModelRequest` 사용 | [서버 사이드 데이터 주의](/datagridview/server-side#주의) |
+| 그리드 드래그 콜백을 넣었더니 행 이동(컬럼 순서 바꾸기)이 안 됨 | 콜백이 `true` 를 돌려줘야 그리드 기본 동작이 이어짐. `return` 이 없으면 건너뜀 | [반환값](/datagridview/drag-and-drop#반환값) |
+| 그리드에 밖에서 끌어 온 것을 놓을 수 없음 | `onDragOverCell` (빈 곳은 `onDragOverBlank`) 에서 `event.preventDefault()` 를 불러야 함 | [밖에서 끌어 온 객체 받기](/datagridview/drag-and-drop#예제-5-밖에서-끌어-온-객체-받기) |
+| 그리드 `onDropCell` 에서 읽은 순서가 옮기기 전 순서 | 콜백이 기본 이동보다 먼저 불림. `onDragEndCell` / `onDragEndRowHeader` 에서 읽음 | [순서가 바뀐 것을 알기](/datagridview/drag-and-drop#순서가-바뀐-것을-알기) |
+| 그리드 `userPreferencesChange` 가 한 번 조작에 여러 번 옴 | 저장 키마다 발생. 타이머로 모아서 한 번만 처리 | [상태를 꺼내 서버에 저장하고 되살리기](/datagridview/custom-views#예제-4-상태를-꺼내-서버에-저장하고-되살리기) |
+| 그리드 `onCustomViewsSave` 가 불리지 않음 | 사용자 뷰 대화상자의 저장 버튼을 누를 때만 불림. 코드로 뷰를 바꾼 것은 대상 아님 | [이벤트와 콜백](/datagridview/custom-views#이벤트와-콜백) |
 | WAFData 를 감싼 Promise 가 끝나지 않음 | 세션 만료, 라이선스 오류는 `onFailure` 가 안 불림. `onPassportError` 를 꼭 넣음 | [Promise 로 감싸기](/uwa/request#promise-로-감싸기) |
 | `getServiceUrl` 응답이 오지 않음 | 대시보드 밖에서는 `onComplete`, `onFailure` 둘 다 안 불림. 시간 제한과 대체값을 둠 | [서버 주소](/widget/space-url#서버-주소-3dspace) |
 | 콜백에서 `this._parent()` 가 엉뚱하게 동작 | 메서드 실행 중에만 유효. 먼저 변수에 담음 | [상속과 _parent](/uwa/class#상속과-parent) |
@@ -105,6 +123,15 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 그리드 컬럼 함수에서 `nodeModel` 이 undefined | 컬럼 헤더 셀(rowID -1)에도 호출됨. `cellInfos.nodeModel` 을 먼저 확인 | [nodeModel 이 있는지 확인하기](/datagridview/cell-functions#먼저-nodemodel-이-있는지-확인하기) |
 | 직접 그린 그리드 셀에 다른 행의 모양이 섞임 | 꺼낸 셀 내용에 이전 행 값이 남아 있음. 글자, 속성, 스타일을 매번 모두 다시 넣음 | [onCellRequest](/datagridview/custom-cell#oncellrequest) |
 | 그리드에서 `node.remove()` 해도 행이 남음 | 변경 트랜잭션 모드에서는 삭제 표시만 함. `acceptChanges()` 때 제거 | [행의 변경 상태](/datagridview/save-and-reflect#행의-변경-상태) |
+| 행을 묶은 그리드에서 선택된 행, CSV 에 빈 행이 섞임 | 그룹 행(품번 칸에 `상태: 승인 (3)` 같은 제목만 있는 행)이 TreeDocument 에 실제로 들어감. 헤더 전체 선택 체크박스로도 선택됨. `getNodeSource()` 로 걸러냄. `getRoots()` 도 그룹 행을 돌려줌 | [그룹 행은 어떤 행인가](/datagridview/row-grouping#그룹-행은-어떤-행인가) |
+| 행을 묶은 뒤 추가한 행이 그룹 밖에 나옴 | 자동으로 다시 묶지 않음. `grid.reapplyRowGrouping()` 호출 | [행을 추가한 뒤 다시 묶기](/datagridview/row-grouping#예제-9-행을-추가한-뒤-다시-묶기) |
+| `dataSource` 그리드에 행이 안 들어옴 (2025) | `successCallback` 을 객체 한 개로 넘김. 인자를 나눠 `(rows, lastRow)` 로 넘김 (세 번째 전체 행 수는 `virtuallyLoadAllModelItems: true` 일 때만). `dataSource` 는 일반 객체가 아니라 `new DataSourceBase()` | [서버 사이드 데이터 주의](/datagridview/server-side#주의) |
+| `dataSource` 그리드에서 가운데로 건너뛰면 빈 행만 보임 | 기본 방식에서 `successCallback` 세 번째 인자(전체 행 수)를 넘김. 빼거나 `virtuallyLoadAllModelItems: true` 를 씀 | [서버 사이드 데이터 주의](/datagridview/server-side#주의) |
+| `virtuallyLoadAllModelItems: true` 를 줘도 행을 다 넣어야 함 | `dataSource` 없이는 효과 없음 (상태바 행 수 계산만 바뀜) | [서버 사이드 데이터 주의](/datagridview/server-side#주의) |
+| 그리드 CSV 에 일부 행만 나옴 | 나눠 불러오는 그리드의 `getAsCSV()` 는 그 순간 불러온 행만 담음. 전체 내보내기는 서버에서 | [정렬, 필터, 찾기](/datagridview/server-side#정렬-필터-찾기는-어떻게-되나) |
+| 그리드 행을 끌어 옮겼더니 정렬이 풀림 | 기본 이동이 `sortModel` 을 `[]` 로 비움. 그룹핑 중에는 순서 바꾸기가 꺼짐 | [정렬, 그룹핑, 필터와 같이 쓸 때](/datagridview/drag-and-drop#정렬-그룹핑-필터와-같이-쓸-때) |
+| 목록 그리드에서 끌어 놓은 행이 다른 행의 하위로 들어감 | 행 가운데에 놓으면 하위로 넣는 것이 기본. `shouldAcceptDrop` 에서 `dropPosition === 'middle'` 을 거절 | [행 순서 바꾸기](/datagridview/drag-and-drop#예제-1-행-순서-바꾸기) |
+| 그리드 `cellInfos.droppedNodes` 가 undefined | 같은 그리드 안에서 옮길 때만 들어 있음. 다른 곳에서 온 것은 `event.dataTransfer` 로 읽음 | [콜백이 받는 인자](/datagridview/drag-and-drop#콜백이-받는-인자) |
 | select 결과가 String 이었다 StringList 였다 함 | 값이 하나면 String, 여럿이면 StringList | [여러 값 select](/jpo/domain-object#여러-값-select) |
 | attribute 값이 계속 비어 있음 | 이름 오타도 예외 없이 빈 값. MQL `print bus ... select ... dump` 로 확인 | [관계](/jpo/domain-object#관계) |
 | 저장 함수에서 이전 값이 `null` | 이전 값 (`Old value`) 은 편집 폼만 넘김. 표 셀 저장과 생성 폼은 저장 전에 직접 읽음 | [저장](/jpo/args#저장-update-function) |

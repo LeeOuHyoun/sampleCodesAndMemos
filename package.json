@@ -7,7 +7,9 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:verify-list": "node scripts/verify-list.mjs",
-    "docs:coverage": "node scripts/coverage.mjs"
+    "docs:coverage": "node scripts/coverage.mjs",
+    "docs:dgv-index": "node scripts/datagridview-index.mjs",
+    "samples": "node scripts/samples-server.mjs"
   },
   "devDependencies": {
     "vitepress": "^1.6.3"

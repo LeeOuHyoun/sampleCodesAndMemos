@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>14. 행 그룹핑</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    .page { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .buttons { margin: 0 0 6px; font-size: 12px; }
+    .buttons button { margin-right: 4px; }
+    #grouping { margin: 0 0 8px; min-height: 34px; border: 1px dashed #b4b6ba; }
+    #grid { position: relative; flex: 1; min-height: 320px; border: 1px solid #d1d4d4; }
+    #log { height: 130px; margin: 8px 0 0; padding: 8px; overflow: auto; font-size: 12px; background: #f4f5f6; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>14. 행 그룹핑 (묶기, 그룹 행 제목과 합계, 그룹 행 걸러내기, 다시 묶기)</h2>
+    <p>
+      버튼으로 묶거나, 컬럼 헤더를 점선 영역에 끌어다 놓거나, 컬럼 헤더를 우클릭해 묶습니다. PRT-0007 은 상태와 등록일이 비어 있습니다.
+      <a href="index.html">목록으로</a>
+    </p>
+    <div class="buttons">
+      <button id="btnGroupStatus">상태로 묶기</button>
+      <button id="btnGroupTwo">상태 &gt; 담당자로 묶기</button>
+      <button id="btnGroupMonth">등록월로 묶기</button>
+      <button id="btnUngroup">묶기 풀기</button>
+      <label><input type="checkbox" id="chkTitle" />그룹 행 제목과 아이콘 바꾸기</label>
+    </div>
+    <div class="buttons">
+      <button id="btnSelected">선택된 행 보기</button>
+      <button id="btnCsv">CSV 보기</button>
+      <button id="btnAdd">행 추가</button>
+      <button id="btnReapply">다시 묶기</button>
+      <button id="btnAfter">담당자로 묶고 끝나면 세기</button>
+      <button id="btnState">지금 상태 보기</button>
+    </div>
+    <div id="grouping"></div>
+    <div id="grid"></div>
+    <pre id="log"></pre>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      function writeLog(text) {
+        var log = document.getElementById('log');
+        log.textContent = text + '\n' + log.textContent;
+      }
+
+      var treeDocument = new TreeDocument();
+      treeDocument.prepareUpdate();
+      [
+        { label: 'PRT-0001', grid: { title: '브라켓', status: '작업중', owner: '김철수', qty: 4, created: new Date(2026, 0, 12) } },
+        { label: 'PRT-0002', grid: { title: '샤프트', status: '승인', owner: '이영희', qty: 2, created: new Date(2026, 0, 28) } },
+        { label: 'PRT-0003', grid: { title: '하우징', status: '승인', owner: '김철수', qty: 10, created: new Date(2026, 1, 3) } },
+        { label: 'PRT-0004', grid: { title: '커버', status: '작업중', owner: '이영희', qty: 1, created: new Date(2026, 1, 17) } },
+        { label: 'PRT-0005', grid: { title: '베어링', status: '검토중', owner: '박민수', qty: 6, created: new Date(2026, 2, 5) } },
+        { label: 'PRT-0006', grid: { title: '볼트', status: '승인', owner: '박민수', qty: 24, created: new Date(2026, 2, 9) } },
+        { label: 'PRT-0007', grid: { title: '너트', status: '', owner: '김철수', qty: 24 } },
+        { label: 'PRT-0008', grid: { title: '와셔', status: '검토중', owner: '이영희', qty: 48, created: new Date(2026, 0, 30) } }
+      ].forEach(function (row) {
+        treeDocument.addRoot(new TreeNodeModel(row));
+      });
+      treeDocument.pushUpdate();
+
+      /*
+       * [1] 그룹 키를 직접 정하는 컬럼
+       *   getCellGroupingKey(cellInfos, dataIndex) : 이 컬럼으로 묶을 때 그 행이 들어갈 그룹의 키를 돌려준다. this = 그리드
+       *   돌려준 값이 같은 행끼리 한 그룹이 된다. 빈 문자열이나 undefined 를 돌려주면 'NA' 그룹으로 간다.
+       *   없으면 셀 값 그대로가 키다. 날짜 값은 행마다 달라서 그대로 묶으면 행마다 그룹이 하나씩 생긴다.
+       */
+      // #region monthKey
+      var createdColumn = {
+        text: '등록일',
+        dataIndex: 'created',
+        width: 120,
+        typeRepresentation: 'date',
+        getCellGroupingKey: function (cellInfos) {
+          var date = cellInfos.nodeModel.options.grid.created;
+          if (!date) {
+            return '';
+          }
+          var month = date.getMonth() + 1;
+          return date.getFullYear() + '-' + (month < 10 ? '0' : '') + month;
+        }
+      };
+      // #endregion monthKey
+
+      /*
+       * [2] 그룹 행에 계산한 값을 넣는 컬럼
+       *   getGroupingNodeOptions : 그룹 행의 이 컬럼 칸에 넣을 값
+       *     'sum' / 'avg' / 'min' / 'max' / 'first' / 'last'  그리드가 계산한다
+       *     function (values)                                  values = 그 그룹에 묶인 행들의 이 컬럼 값 배열. this = 그리드
+       */
+      // #region summary
+      var qtyColumn = {
+        text: '수량',
+        dataIndex: 'qty',
+        width: 80,
+        typeRepresentation: 'integer',
+        getGroupingNodeOptions: 'sum'
+      };
+
+      var ownerColumn = {
+        text: '담당자',
+        dataIndex: 'owner',
+        width: 110,
+        getGroupingNodeOptions: function (values) {
+          var owners = values.filter(function (value, index) {
+            return values.indexOf(value) === index;
+          });
+          return owners.length + '명';
+        }
+      };
+      // #endregion summary
+
+      /*
+       * [3] 헤더 우클릭 메뉴에 묶기 항목 넣기
+       *   그리드 기본 메뉴에는 "이 컬럼으로 묶기" 가 없어서 직접 넣는다.
+       *   컬럼 헤더 셀은 cellInfos.rowID 가 -1 이다. columnID 로 그 컬럼의 dataIndex 를 찾는다.
+       */
+      // #region headerMenu
+      function buildMenu(params) {
+        var view = params.collectionView;
+        var menu = view.buildDefaultContextualMenu(params);
+        var cellInfos = params.cellInfos;
+        if (!cellInfos || cellInfos.rowID !== -1 || cellInfos.columnID < 0) {
+          return menu;
+        }
+        var dataIndex = view.layout.getDataIndexFromColumnIndex(cellInfos.columnID);
+        menu.push({
+          type: 'PushItem',
+          title: '이 컬럼으로 묶기',
+          action: {
+            callback: function () {
+              view.groupRows({ dataIndexesToGroup: [dataIndex] });
+            }
+          }
+        });
+        menu.push({
+          type: 'PushItem',
+          title: '묶기 풀기',
+          action: {
+            callback: function () {
+              view.groupRows({ dataIndexesToGroup: [] });
+            }
+          }
+        });
+        return menu;
+      }
+      // #endregion headerMenu
+
+      /*
+       * [4] 그리드
+       *   rowGroupingOptions      : 묶는 방법. 이것만으로는 묶이지 않는다. groupRows 를 불러야 묶인다.
+       *     hideGroupedColumns    : 묶은 기준 컬럼을 숨길지 (기본 true). 여기서는 값이 보이도록 false
+       *   rowGroupingEnabledFlag  : 사용자가 화면에서 묶는 기능 (기본 true). 코드의 groupRows 는 막지 않는다.
+       *   컬럼 groupableFlag: false : 이 컬럼으로는 묶을 수 없다. groupRows 에 넘겨도 조용히 빠진다.
+       *   rowDragEnabledFlag: true : 행을 끌어 순서를 바꾸는 기능. 묶여 있는 동안은 그리드가 꺼 둔다.
+       */
+      // #region grid
+      var grid = new DataGridView({
+        treeDocument: treeDocument,
+        rowSelection: 'multiple',
+        showSelectionCheckBoxesFlag: true,
+        rowDragEnabledFlag: true,
+        rowGroupingEnabledFlag: true,
+        rowGroupingOptions: {
+          hideGroupedColumns: false
+        },
+        onContextualEvent: buildMenu,
+        columns: [
+          { text: '품번', dataIndex: 'tree', width: 240 },
+          { text: '품명', dataIndex: 'title', width: 140 },
+          { text: '상태', dataIndex: 'status', width: 100 },
+          ownerColumn,
+          qtyColumn,
+          createdColumn,
+          { text: '비고', dataIndex: 'note', width: 120, groupableFlag: false }
+        ]
+      });
+      grid.inject(document.getElementById('grid'));
+      // #endregion grid
+
+      /*
+       * [5] 한 컬럼으로 묶기
+       *   grid.groupRows({ dataIndexesToGroup: [dataIndex] })
+       *     인자는 배열이 아니라 dataIndexesToGroup 키를 가진 객체다. 배열, 문자열, null 을 넘기면 오류 없이 아무 일도 없다.
+       *   그룹 행 기본 제목 : '컬럼 text: 값 (보이는 행 수)'. 값이 빈 행은 '상태: 해당 없음 (1)' 그룹으로 모인다.
+       */
+      // #region groupOne
+      document.getElementById('btnGroupStatus').addEventListener('click', function () {
+        grid.groupRows({ dataIndexesToGroup: ['status'] });
+      });
+      document.getElementById('btnGroupMonth').addEventListener('click', function () {
+        grid.groupRows({ dataIndexesToGroup: ['created'] });
+      });
+      // #endregion groupOne
+
+      /*
+       * [6] 두 단계로 묶기
+       *   배열 순서대로 묶는다. 상태 그룹 아래에 담당자 그룹이 생긴다.
+       */
+      // #region groupTwo
+      document.getElementById('btnGroupTwo').addEventListener('click', function () {
+        grid.groupRows({ dataIndexesToGroup: ['status', 'owner'] });
+      });
+      // #endregion groupTwo
+
+      /*
+       * [7] 묶기 풀기
+       *   빈 배열을 넘긴다. 그룹 행이 지워지고 원래 행이 처음 순서대로 돌아온다.
+       */
+      // #region ungroup
+      document.getElementById('btnUngroup').addEventListener('click', function () {
+        grid.groupRows({ dataIndexesToGroup: [] });
+      });
+      // #endregion ungroup
+
+      /*
+       * [8] 그룹 행 제목과 아이콘 바꾸기
+       *   rowGroupingOptions.getGroupingNodeLabel(groupingNode) : 그룹 행 제목. 넣으면 기본 제목 대신 쓴다. this = 그리드
+       *   rowGroupingOptions.getGroupingNodeIcons(groupingNode) : 그룹 행 아이콘 배열
+       *     groupingNode.getProperty()    묶은 기준 컬럼의 dataIndex
+       *     groupingNode.getIdentifier()  그룹 키 (값이 빈 그룹은 'NA')
+       *     groupingNode.getOriginalChildrenInformation().notHiddenNotFilteredChildrenCount  그룹 안의 보이는 행 수
+       *   보통은 그리드를 만들 때 넣는다. 여기서는 기본 제목과 비교하려고 만든 뒤에 바꾸고 다시 묶는다.
+       */
+      // #region label
+      var titleOptions = {
+        hideGroupedColumns: false,
+        getGroupingNodeLabel: function (groupingNode) {
+          var count = groupingNode.getOriginalChildrenInformation().notHiddenNotFilteredChildrenCount;
+          return groupingNode.getIdentifier() + ' - ' + count + '건';
+        },
+        getGroupingNodeIcons: function () {
+          return [{ iconName: 'folder', fontIconFamily: 1 }];
+        }
+      };
+
+      document.getElementById('chkTitle').addEventListener('change', function (event) {
+        grid.rowGroupingOptions = event.target.checked ? titleOptions : { hideGroupedColumns: false };
+        grid.reapplyRowGrouping();
+      });
+      // #endregion label
+
+      /*
+       * [9] 선택된 행에서 그룹 행 빼기
+       *   그룹 행도 TreeDocument 안의 행이라서 getSelectedNodes(), getAllDescendants(), getRoots() 에 섞여 나온다.
+       *   헤더의 전체 선택 체크박스를 누르면 그룹 행도 같이 선택된다.
+       *   node.getNodeSource() : 그룹 행은 TreeNodeModel.NODE_SOURCE.GROUPING (1), 일반 행은 MODEL (0)
+       */
+      // #region excludeSelected
+      function isDataRow(node) {
+        return node.getNodeSource() !== TreeNodeModel.NODE_SOURCE.GROUPING;
+      }
+
+      document.getElementById('btnSelected').addEventListener('click', function () {
+        var selectedNodes = treeDocument.getSelectedNodes();
+        var selectedRows = selectedNodes.filter(isDataRow);
+        writeLog('선택 ' + selectedNodes.length + '개 중 그룹 행을 뺀 ' + selectedRows.length + '개: '
+          + selectedRows.map(function (node) { return node.getLabel(); }).join(', '));
+      });
+      // #endregion excludeSelected
+
+      /*
+       * [10] CSV 에서 그룹 행 빼기
+       *   getAsCSV() 는 그룹 행도 한 줄로 내보낸다 (품번 칸에 그룹 제목, 합계 칸에 합계).
+       *   canNodeModelBeExported(node) 가 false 를 돌려준 행은 내보내지 않는다.
+       */
+      // #region excludeCsv
+      document.getElementById('btnCsv').addEventListener('click', function () {
+        var csv = grid.getAsCSV({
+          canNodeModelBeExported: function (node) {
+            return node.getNodeSource() !== TreeNodeModel.NODE_SOURCE.GROUPING;
+          }
+        });
+        document.getElementById('log').textContent = csv;
+      });
+      // #endregion excludeCsv
+
+      /*
+       * [11] 행을 추가한 뒤 다시 묶기
+       *   묶은 뒤에 추가한 행은 그룹에 자동으로 들어가지 않고 그룹 행과 같은 높이에 놓인다.
+       *   grid.reapplyRowGrouping() : 지금 설정(getGroupingOptions())으로 다시 묶는다.
+       */
+      // #region reapply
+      var addedCount = 0;
+
+      document.getElementById('btnAdd').addEventListener('click', function () {
+        addedCount++;
+        treeDocument.addRoot(new TreeNodeModel({
+          label: 'NEW-' + addedCount,
+          grid: { title: '신규 부품 ' + addedCount, status: '작업중', owner: '박민수', qty: 1, created: new Date(2026, 2, 20) }
+        }));
+      });
+      document.getElementById('btnReapply').addEventListener('click', function () {
+        grid.reapplyRowGrouping();
+      });
+      // #endregion reapply
+
+      /*
+       * [12] 묶기가 끝난 뒤에 실행하기
+       *   groupRows 는 바로 끝나지 않는다. 부른 직후에는 TreeDocument 가 아직 묶이기 전 그대로다.
+       *   묶기가 끝나면 TreeDocument 에 'groupNodes' 이벤트가 난다. (풀 때, reapplyRowGrouping 때도 같은 이벤트)
+       */
+      // #region afterGroup
+      document.getElementById('btnAfter').addEventListener('click', function () {
+        var token = treeDocument.addEventListener('groupNodes', function () {
+          treeDocument.removeEventListener(token);
+          writeLog('묶기 끝남: 최상위 행 ' + treeDocument.getRoots().length + '개');
+        });
+        grid.groupRows({ dataIndexesToGroup: ['owner'] });
+        writeLog('groupRows 직후: 최상위 행 ' + treeDocument.getRoots().length + '개');
+      });
+      // #endregion afterGroup
+
+      /*
+       * [13] 끌어 놓는 그룹 영역
+       *   grid.createGroupingUI() : 컬럼 헤더를 끌어다 놓아 묶는 영역(칩 컨트롤)을 만들어 돌려준다. 화면에 붙이는 것은 직접 한다.
+       *   칩의 X 를 누르면 그 단계가 풀린다. 코드로 groupRows 를 불러도 이 영역의 칩이 따라 바뀐다.
+       */
+      // #region groupingUI
+      var groupingUI = grid.createGroupingUI();
+      groupingUI.inject(document.getElementById('grouping'));
+      // #endregion groupingUI
+
+      document.getElementById('btnState').addEventListener('click', function () {
+        var all = treeDocument.getAllDescendants();
+        var options = grid.getGroupingOptions();
+        writeLog('getGroupingOptions(): ' + JSON.stringify(options)
+          + ' / getRoots() ' + treeDocument.getRoots().length + '개'
+          + ' / getAllDescendants() ' + all.length + '개 (그룹 행 ' + (all.length - all.filter(isDataRow).length) + '개)'
+          + ' / 행 순서 바꾸기 ' + (grid.getRowReorderEnabledState() ? '켜짐' : '꺼짐'));
+      });
+
+      window.sample = { grid: grid, treeDocument: treeDocument, TreeNodeModel: TreeNodeModel, DataGridView: DataGridView, TreeDocument: TreeDocument };
+    });
+  </script>
+</body>
+</html>

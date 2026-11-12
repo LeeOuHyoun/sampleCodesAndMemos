@@ -32,9 +32,13 @@ DataGridView.js, CollectionView.js, Controls.js 의 publishedProperties 와 실�
 | <code>columns</code> | - | <code>array</code> | <code>[]</code> | 컬럼 정의 배열 | [컬럼 옵션](/datagridview/api/column-options) 참고 |
 | <code>defaultColumnDef</code> | 72 | <code>object</code> | [컬럼 옵션](/datagridview/api/column-options)의 기본값 | 컬럼 옵션 객체 | 모든 컬럼 공통 기본값. 빠진 키는 원래 기본값으로 채워짐 |
 | <code>layoutOptions</code> | 36 | <code>object (readOnly)</code> | <code>null</code> | [layoutOptions](/datagridview/api/layout-options) 참고 | 레이아웃 옵션. 생성할 때만 지정 가능 |
-| <code>dataSource</code> | - | <code>object</code> | <code>null</code> | 서버 데이터 소스 | 서버 사이드 페이징용 (RowModelServerSide) |
-| <code>virtuallyLoadAllModelItems</code> | 5 | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | 서버 사이드 모드에서 모든 행을 가상으로 로드 |
-| <code>syncClientModelOnDemand</code> | 0 | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | 서버 사이드 모드 클라이언트 모델 동기화 |
+| <code>dataSource</code> | 1 | <code>object</code> | <code>null</code> | <code>new DataSourceBase()</code> | 행을 필요한 만큼만 서버에서 불러오는 방식. <code>treeDocument</code> 대신 넣는다. 사용 수는 그리드 옵션으로 쓴 파일만 센 값 ([서버 사이드 데이터](/datagridview/server-side)) |
+| <code>virtuallyLoadAllModelItems</code> | 5 | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | <code>dataSource</code> 와 같이 쓸 때, 스크롤 막대를 처음부터 전체 길이로 잡고 보이는 위치의 행만 불러온다. <code>treeDocument</code> 그리드에서는 상태바 행 수 계산만 바뀐다 ([불러오는 방식 두 가지](/datagridview/server-side#불러오는-방식-두-가지)) |
+| <code>syncClientModelOnDemand</code> | 0 | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | <code>dataSource.pushUpdatesNotifications</code> 로 받은 변경을 바로 반영하지 않고 모아 둔다. <code>grid.executePendingNotifications()</code> 를 부를 때 반영 ([서버가 먼저 알려 주는 변경](/datagridview/server-side#서버가-먼저-알려-주는-변경)) |
+| <code>documentClassForServerSide</code> | 1 | <code>function</code> | TreeDocument | 클래스 | <code>dataSource</code> 그리드가 안에서 만드는 TreeDocument 의 클래스 |
+| <code>onDelayedModelDataRequest</code> | 14 | <code>function</code> | <code>null</code> | <code>function (info)</code> | 화면에 보이는 행 범위(<code>startNodeIndex</code>, <code>endNodeIndex</code>)를 알려 주는 콜백. 느린 컬럼 값을 보이는 행만 채울 때 ([보이는 행의 값만 나중에 채우기](/datagridview/server-side#예제-6-대안-보이는-행의-값만-나중에-채우기)) |
+| <code>pageScrollValueTriggeringInfiniteScroll</code> | 2 | <code>number&#124;object</code> | <code>undefined</code> | 0 과 1 사이 숫자 &#124; <code>{ x, y }</code> | <code>onInfiniteScroll</code> 콜백을 바닥보다 일찍 부른다. 0.5 면 스크롤할 수 있는 거리의 절반 지점 ([스크롤이 끝에 닿으면 행 더하기](/datagridview/server-side#예제-5-대안-스크롤이-끝에-닿으면-행-더하기)) |
+| <code>paginationManager</code> | 2 | <code>object</code> | <code>undefined</code> | <code>new DataGridViewPaginationManager({ pageSize, currentPage, nodeDepth })</code> | 행을 페이지로 나눠 표시. pageSize 기본 100, currentPage 기본 1, nodeDepth 기본 0 (-1 이면 모든 깊이의 행을 셈). 모듈 <code>DS/DataGridView/DataGridViewPaginationManager</code> |
 | <code>maxVisibleRowCount</code> | 8 | <code>number</code> | <code>undefined</code> | 숫자 | 그리드 높이를 행 N개 높이로 자동 계산 |
 | <code>height</code> | - | <code>integer&#124;string</code> | <code>'inherit'</code> | 'inherit' &#124; 숫자 | 그리드 높이 |
 | <code>placeholder</code> | - | <code>string</code> | 'No objects found' (번역) | 문자열 | 행이 없을 때 표시할 문구 |
@@ -92,26 +96,26 @@ DataGridView.js, CollectionView.js, Controls.js 의 publishedProperties 와 실�
 | <code>sortOptions</code> | 2 | <code>object</code> | <code>undefined</code> | <code>{ maxSortedColumnsCount, onOutOfBoundSortRequest }</code> | 다중 정렬 제한 |
 | <code>filterViewOptions</code> | 5 | <code>object</code> | <code>undefined</code> | <code>{ maxAppliedFilterCount, ignoreGroupingNodes }</code> | 필터 팝업 옵션 (필터 자체는 [필터](/datagridview/api/filter)) |
 | <code>findNavigationMode</code> | 2 | <code>string</code> | <code>'substring'</code> | <code>'substring' &#124; 'cell' &#124; 'row'</code> | 찾기(setFindStr) 결과 이동 단위 |
-| <code>customViewsOptions</code> | 0 | <code>object</code> | <code>undefined</code> | <code>{ dialogMaximizedFlag, ... }</code> | 사용자 뷰(컬럼 구성 저장) 대화상자 옵션 |
-| <code>useWidgetPreferencesFlag</code> | 13 | <code>boolean (readOnly)</code> | <code>false</code> | <code>true &#124; false</code> | 위젯 환경설정에 컬럼 상태 저장 |
+| <code>customViewsOptions</code> | 0 | <code>object</code> | <code>undefined</code> | <code>{ dialogMaximizedFlag }</code> | 사용자 뷰 대화상자 옵션. 키는 하나뿐 ([사용자 뷰와 화면 상태 저장](/datagridview/custom-views)) |
+| <code>useWidgetPreferencesFlag</code> | 13 | <code>boolean (readOnly)</code> | <code>false</code> | <code>true &#124; false</code> | 화면 상태를 저장하는 곳. false = 브라우저 localStorage, true = 위젯 설정. 저장 자체는 `identifier` 가 있어야 동작 ([저장 위치](/datagridview/custom-views#저장-위치)) |
 
 ## 드래그 / 그룹
 
 | 키 | 사용 | 타입 | 기본값 | 값 | 설명 |
 | --- | --- | --- | --- | --- | --- |
 | <code>columnDragEnabledFlag</code> | 14 | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 컬럼 헤더 드래그로 순서 변경 |
-| <code>rowReorderEnabledFlag</code> | 9 | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 행 머리 드래그로 행 순서 변경 |
-| <code>rowDragEnabledFlag</code> | 30 | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | 행을 그리드 밖으로 드래그 (onDragStartRowHeader 등과 사용) |
-| <code>cellDragEnabledFlag</code> | 42 | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | 셀 드래그 |
-| <code>onDragStart/End/Enter/Leave/Over + ColumnHeader &#124; RowHeader &#124; Cell &#124; Blank, onDrop...</code> | - | <code>function</code> | <code>undefined</code> | <code>function (event, cellInfos)</code> | 드래그앤드롭 콜백. 예: onDropCell, onDragOverRowHeader, onDropBlank. 이름 전체는 아래 "드래그앤드롭 콜백 이름" 표 |
-| <code>rowGroupingEnabledFlag</code> | 14 | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 컬럼 기준 행 그룹핑 허용 |
-| <code>rowGroupingOptions</code> | 10 | <code>object</code> | [하위 옵션 객체](/datagridview/api/sub-options) 참고 | <code>{ depth, maxDepth, hideGroupedColumns, ... }</code> | 행 그룹핑 세부 설정 |
+| <code>rowReorderEnabledFlag</code> | 9 | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 끌어 온 행을 그리드가 옮겨 주는 기본 동작 허용. rowDragEnabledFlag 도 true 여야 동작 ([드래그앤드롭](/datagridview/drag-and-drop#옵션-네-개와-잡는-곳)) |
+| <code>rowDragEnabledFlag</code> | 30 | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | 행 머리에 손잡이를 보이고 행을 끌 수 있게 함. 켜면 행 순서 바꾸기도 같이 켜짐 (막으려면 rowReorderEnabledFlag: false) |
+| <code>cellDragEnabledFlag</code> | 42 | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | 데이터 셀을 잡고 끌 수 있게 함 (편집 중인 셀 제외). 넘길 데이터는 onDragStartCell 에서 넣음. 만들 때 정함: 만든 뒤 false 로 바꿔도 이미 그려진 셀은 계속 끌림 |
+| <code>onDragStart/Drag/DragEnter/DragOver/DragLeave/Drop/DragEnd + ColumnHeader &#124; RowHeader &#124; Cell &#124; Blank</code> | - | <code>function</code> | <code>undefined</code> | <code>function (event, cellInfos) → boolean</code> | 드래그앤드롭 콜백 28개. 예: onDropCell, onDragOverRowHeader, onDropBlank. true 를 돌려줘야 그리드 기본 동작이 이어서 실행됨. 이름 전체는 아래 "드래그앤드롭 콜백 이름" 표, 인자와 기본 동작은 [드래그앤드롭](/datagridview/drag-and-drop#콜백) |
+| <code>rowGroupingEnabledFlag</code> | 14 | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 사용자가 화면에서 행을 묶는 기능 허용. 코드로 부르는 groupRows 는 막지 않음 ([행 그룹핑](/datagridview/row-grouping)) |
+| <code>rowGroupingOptions</code> | 10 | <code>object</code> | [하위 옵션 객체](/datagridview/api/sub-options#rowgroupingoptions) 참고 | <code>{ depth, maxDepth, hideGroupedColumns, ... }</code> | 행을 묶는 방법. 이것만으로는 묶이지 않고 groupRows 를 불러야 함 ([행 그룹핑](/datagridview/row-grouping)) |
 | <code>onContextualEvent</code> | 78 | <code>function</code> | 기본 메뉴 | <code>function (params) → 메뉴 항목 배열</code> | 우클릭 메뉴 직접 구성. params.cellInfos = 우클릭한 셀, params.collectionView = 그리드 ([우클릭 메뉴](/datagridview/context-menu)) |
 | <code>useAsyncPreExpand</code> | 45 | <code>boolean</code> | <code>undefined</code> | <code>true &#124; false</code> | 트리 펼치기 비동기 처리 ([트리 구조](/datagridview/tree#펼칠-때-하위-행-불러오기)) |
 
 ### 드래그앤드롭 콜백 이름
 
-콜백 이름은 `on` + 단계 + 대상입니다. 모두 `function (event, cellInfos)` 형태이고, 괄호 안은 사용 파일 수입니다.
+콜백 이름은 `on` + 단계 + 대상입니다. 모두 `function (event, cellInfos)` 형태이고, 괄호 안은 사용 파일 수입니다. 콜백이 `true` 를 돌려주지 않으면 그리드의 기본 동작(행 이동, 컬럼 순서 바꾸기, 위치 표시)이 실행되지 않습니다.
 
 | 대상 | 콜백 |
 | --- | --- |
@@ -120,13 +124,13 @@ DataGridView.js, CollectionView.js, Controls.js 의 publishedProperties 와 실�
 | 컬럼 헤더 | <code>onDragOverColumnHeader</code> (7), <code>onDragStartColumnHeader</code> (6), <code>onDropColumnHeader</code> (6), <code>onDragEndColumnHeader</code> (5), <code>onDragEnterColumnHeader</code> (4), <code>onDragLeaveColumnHeader</code> (4), <code>onDragColumnHeader</code> (0) |
 | 빈 영역 | <code>onDragEnterBlank</code> (15), <code>onDropBlank</code> (14), <code>onDragOverBlank</code> (10), <code>onDragLeaveBlank</code> (6), <code>onDragEndBlank</code> (4), <code>onDragStartBlank</code> (0), <code>onDragBlank</code> (0) |
 
-단계는 브라우저의 드래그 이벤트와 같습니다 (`DragStart` 끌기 시작, `DragEnter` / `DragOver` / `DragLeave` 다른 곳 위를 지날 때, `Drop` 놓을 때, `DragEnd` 끝날 때). 그리드 밖과 주고받는 방법은 [끌어 놓기](/events/drag-and-drop) 를 보세요.
+단계는 브라우저의 드래그 이벤트와 같습니다 (`DragStart` 끌기 시작, `Drag` 끄는 동안, `DragEnter` / `DragOver` / `DragLeave` 다른 곳 위를 지날 때, `Drop` 놓을 때, `DragEnd` 끝날 때). 인자, 반환값, 예제는 [드래그앤드롭](/datagridview/drag-and-drop), 그리드 밖과 주고받는 데이터 형식은 [끌어 놓기](/events/drag-and-drop) 를 보세요.
 
 ## 공통 (Controls/Abstract, CollectionView)
 
 | 키 | 사용 | 타입 | 기본값 | 값 | 설명 |
 | --- | --- | --- | --- | --- | --- |
-| <code>identifier</code> | - | <code>string</code> | <code>undefined</code> | 문자열 | 컴포넌트 식별자 (환경설정 저장 키 등) |
+| <code>identifier</code> | - | <code>string (readOnly)</code> | <code>undefined</code> | 문자열 | 그리드 이름. 화면 상태(너비, 순서, 표시, 정렬)를 이 이름으로 저장하므로 없으면 저장되지 않음. 화면마다 겹치지 않게 ([사용자 뷰와 화면 상태 저장](/datagridview/custom-views)) |
 | <code>domId</code> | - | <code>string</code> | <code>null</code> | 문자열 | 최상위 DOM id |
 | <code>visibleFlag</code> | - | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 표시 여부 |
 | <code>disabled</code> | - | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | 비활성 |

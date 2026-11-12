@@ -42,14 +42,14 @@ var grid = new DataGridView({
 | <code>layoutDensity</code> | <code>'compact'</code> | <code>'compact' &#124; 'comfortable'</code> | <code>grid.layout.layoutDensity = 'comfortable'</code> | compact = 행 기본 26px, comfortable = 40px (터치 모드도 40px). comfortable 에서는 cellHeight 를 40 보다 작게 줘도 40 |
 | <code>rowSpacing</code> | <code>0</code> | 숫자(px) | <code>grid.layout.rowSpacing = 4</code> | 행과 행 사이 간격 |
 | <code>rowMaxHeight</code> | <code>undefined</code> | 26 이상 숫자(px) | <code>grid.layout.rowMaxHeight = 120</code> | 행 최대 높이 (내용 자동 높이일 때 상한) |
-| <code>columnHeaderHeight</code> | <code>27</code> | 숫자(px) | <code>grid.layout.columnHeaderHeight = 32</code> | 컬럼 헤더 줄 높이 |
+| <code>columnHeaderHeight</code> | <code>27</code> | 숫자(px) | <code>grid.layout.columnHeaderHeight = 32</code> | 컬럼 헤더 줄 높이. 27 보다 작게 주면 27 로 되돌린다. 행 높이 설정과 따로 움직인다 ([헤더 높이](/datagridview/header#헤더-높이)) |
 | <code>getRowHeightFunction</code> | <code>null</code> | <code>function (rowID) → 높이 &#124; undefined</code> | <code>grid.layout.getRowHeightFunction = fn;</code><br><code>grid.layout.resetRowHeights();</code> | 행마다 다른 높이. undefined 를 돌려주면 기본 높이. 행 데이터는 grid.model[rowID] (TreeNodeModel). 실제 ENOVIA 앱은 만든 뒤에 넣는 경우가 많다 (예제 4, 5) |
 
 ### ② 컬럼 옵션 (columns 의 각 컬럼)
 
 | 키 | 기본값 | 값 | 만든 뒤에 바꾸기 | 설명 |
 | --- | --- | --- | --- | --- |
-| <code>autoRowHeightFlag</code> | <code>false</code> | <code>true &#124; false</code> | <code>grid.layout.setColumnAutoRowHeightFlag(컬럼, true)</code> | 이 컬럼 내용 길이에 맞춰 행 높이 자동 계산 (여러 줄 텍스트 등). getRowHeightFunction 을 직접 넣으면 그쪽이 우선. 서버 사이드(virtuallyLoadAllModelItems)에서는 지원 안 됨 (예제 6) |
+| <code>autoRowHeightFlag</code> | <code>false</code> | <code>true &#124; false</code> | <code>grid.layout.setColumnAutoRowHeightFlag(컬럼, true)</code> | 이 컬럼 내용 길이에 맞춰 행 높이 자동 계산 (여러 줄 텍스트 등). getRowHeightFunction 을 직접 넣으면 그쪽이 우선. <code>dataSource</code> 와 <code>virtuallyLoadAllModelItems: true</code> 를 같이 쓰면 지원 안 됨 (예제 6) |
 | <code>allowWrapFlag</code> <Badge type="warning" text="2026" /> | <code>false</code> | <code>true &#124; false</code> | - | 셀 글자 줄바꿈 허용. autoRowHeightFlag 와 같이 쓰면 줄 수만큼 행이 커진다 |
 
 ### ③ 그리드 옵션 (그리드 전체 높이)
@@ -160,5 +160,5 @@ new DataGridView({
 :::
 
 - `autoRowHeightFlag` 컬럼이 있어도 `getRowHeightFunction` 을 직접 넣으면 **직접 넣은 함수가 우선**이고 자동 계산은 쓰이지 않습니다.
-- 서버 사이드(`virtuallyLoadAllModelItems`) 모드에서는 `autoRowHeightFlag` 가 지원되지 않습니다 (콘솔 경고 후 무시). 이때는 `getRowHeightFunction` 을 직접 구현합니다.
+- `dataSource` 와 `virtuallyLoadAllModelItems: true` 를 같이 쓰면 `autoRowHeightFlag` 가 지원되지 않습니다 (콘솔 경고 후 무시). 이때는 `getRowHeightFunction` 을 직접 구현합니다. `treeDocument` 그리드와 `dataSource` 기본 방식에서는 동작합니다 ([서버 사이드 데이터](/datagridview/server-side)).
 - [실시간 설정 샘플](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/DataGridViewSample/05_options.html) 의 "행 높이" 묶음에서 값을 바꿔 보며 바로 확인할 수 있습니다.

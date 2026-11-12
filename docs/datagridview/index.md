@@ -58,6 +58,60 @@ require([
 
 필터, 툴바, 상태바는 예외로 생성자 옵션이 없습니다. 필터는 `treeDocument.setFilterModel(...)`, 툴바는 `grid.setToolbar(...)`, 상태바는 `grid.buildStatusBar(...)` 로 만듭니다.
 
+만든 뒤에 컬럼을 숨기거나 너비, 고정, 순서를 바꾸는 함수는 `grid.layout` 에 있습니다 ([레이아웃 메서드](/datagridview/api/layout-methods)).
+
+## 하고 싶은 일로 찾기
+
+키 이름을 모를 때는 아래 표에서 찾습니다. 이름을 알면 [이름 색인 (A-Z)](/datagridview/api/key-index) 이나 상단 검색(<kbd>Ctrl</kbd> + <kbd>K</kbd>)을 씁니다. 검색은 `HeaderHeight` 처럼 이름의 일부만 넣어도 됩니다.
+
+### 모양
+
+| 하고 싶은 일 | 키 / 함수 | 넣는 자리 | 문서 |
+| --- | --- | --- | --- |
+| 헤더 높이 바꾸기 | `columnHeaderHeight` | `layoutOptions` | [헤더 높이](/datagridview/header#헤더-높이) |
+| 헤더 줄, 행 머리(번호 칸) 숨기기 | `columnsHeader`, `rowsHeader`, `showRowIndexFlag` | `layoutOptions`, 그리드 옵션 | [헤더 숨기기](/datagridview/header#헤더-숨기기) |
+| 헤더를 2단으로 묶기 | `children` | 컬럼 옵션 | [컬럼 그룹](/datagridview/header#헤더를-2단으로-묶기-컬럼-그룹) |
+| 헤더 글자, 아이콘, 툴팁 | `text`, `icon`, `description` | 컬럼 옵션 | [헤더 글자](/datagridview/header#헤더-글자-아이콘-툴팁) |
+| 행 높이 바꾸기 | `cellHeight`, `layoutDensity` | `layoutOptions` | [행 높이](/datagridview/row-height) |
+| 긴 글에 맞춰 행 높이 자동 | `autoRowHeightFlag` | 컬럼 옵션 | [행 높이](/datagridview/row-height#예제-6-긴-글에-맞춰-자동으로) |
+| 그리드 전체 높이 | `height`, `maxVisibleRowCount` | 그리드 옵션 | [행 높이](/datagridview/row-height#예제-7-그리드-전체-높이-행-높이-아님) |
+| 줄무늬, 구분선, 외곽선 | `showAlternateBackgroundFlag`, `showRowBorderFlag`, `showColumnBorderFlag`, `showOutlineFlag` | 그리드 옵션 | [표시](/datagridview/api/grid-options#표시) |
+| 컬럼 너비, 좌우 고정, 정렬 방향 | `width`, `minWidth`, `pinned`, `alignment` | 컬럼 옵션 | [크기 / 위치](/datagridview/api/column-options#크기-위치) |
+| 컬럼 너비를 내용에 맞추기 | `grid.sizeAllColumnsToFit()` | 그리드 메서드 | [컬럼](/datagridview/api/grid-methods#컬럼) |
+| 만든 뒤에 컬럼 숨기기, 너비 / 고정 / 순서 바꾸기 | `grid.layout.setColumnVisibleFlag(...)` 등 | `grid.layout` | [레이아웃 메서드](/datagridview/api/layout-methods) |
+| 셀을 콤보, 날짜, 체크박스로 | `typeRepresentation`, `semantics` | 컬럼 옵션 | [셀 타입](/datagridview/cell-types) |
+| 행마다 셀 색, 툴팁, 아이콘 다르게 | `getCellClassName`, `getCellTooltip`, `getCellIcons` | 컬럼 함수 | [컬럼 함수](/datagridview/cell-functions) |
+| 셀에 버튼이나 직접 만든 DOM 넣기 | `onCellRequest` | 컬럼 함수 | [셀 직접 그리기](/datagridview/custom-cell) |
+| 행이 없을 때 문구 | `placeholder` | 그리드 옵션 | [데이터](/datagridview/api/grid-options#데이터) |
+
+### 데이터와 편집
+
+| 하고 싶은 일 | 키 / 함수 | 넣는 자리 | 문서 |
+| --- | --- | --- | --- |
+| 셀 편집 켜기, 한 번 클릭으로 편집 | `editableFlag`, `editionPolicy` | 컬럼 옵션 | [편집](/datagridview/editing) |
+| 행마다 편집 가능 여부 다르게 | `getCellEditableState` | 컬럼 함수 | [컬럼 함수](/datagridview/cell-functions) |
+| 편집한 값을 서버에 저장 | `change` 이벤트, `updateOptions` | 이벤트, 행 | [저장 후 화면 반영](/datagridview/save-and-reflect) |
+| 하위 행 달기, 펼칠 때 불러오기 | `addChild`, `onPreExpand` | 행, TreeDocument | [트리 구조](/datagridview/tree) |
+| 행 추가, 삭제, 값 읽기 | `addRoot`, `remove`, `getAttributeValue` | TreeDocument, 행 | [데이터](/datagridview/api/data) |
+| 행이 아주 많을 때 나눠 불러오기 | `grid.onInfiniteScroll(...)`, `dataSource` | 그리드 메서드, 그리드 옵션 | [서버 사이드 데이터](/datagridview/server-side) |
+| 로딩 표시 | `grid.displayModalLoader()` | 그리드 메서드 | [로딩 표시](/datagridview/api/grid-methods#로딩-표시) |
+| CSV 로 내보내기, 인쇄 | `grid.getAsCSV()`, `grid.openPrintableViewWindow()` | 그리드 메서드 | [그리드 메서드](/datagridview/api/grid-methods#툴바-그룹-내보내기) |
+
+### 기능
+
+| 하고 싶은 일 | 키 / 함수 | 넣는 자리 | 문서 |
+| --- | --- | --- | --- |
+| 한 행만 선택, 체크박스 보이기 | `rowSelection`, `showSelectionCheckBoxesFlag` | 그리드 옵션 | [선택](/datagridview/api/grid-options#선택) |
+| 선택된 행 읽기, 선택이 바뀔 때 알기 | `getSelectedNodes()`, `getXSO().onPostAdd` | TreeDocument | [선택 변경 받기](/datagridview/context-menu#선택-변경-받기) |
+| 정렬, 필터 | `sortModel`, `setFilterModel` | 그리드 옵션, TreeDocument | [정렬과 필터](/datagridview/sort-filter) |
+| 같은 값끼리 행 묶기 | `rowGroupingOptions`, `grid.groupRows(...)` | 그리드 옵션, 그리드 메서드 | [행 그룹핑](/datagridview/row-grouping) |
+| 우클릭 메뉴 | `onContextualEvent` | 그리드 옵션 | [우클릭 메뉴와 선택](/datagridview/context-menu) |
+| 행을 끌어 순서 바꾸기, 끌어 놓기 | `rowDragEnabledFlag`, `onDropCell` | 그리드 옵션 | [드래그앤드롭](/datagridview/drag-and-drop) |
+| 검색창, 버튼이 있는 툴바 | `grid.setToolbar(...)` | 그리드 메서드 | [툴바](/datagridview/toolbar) |
+| 아래에 행 수, 선택 수 표시 | `grid.buildStatusBar(...)` | 그리드 메서드 | [상태바](/datagridview/status-bar) |
+| 사용자가 바꾼 컬럼 너비, 순서 기억 | `identifier`, `useWidgetPreferencesFlag` | 그리드 옵션 | [사용자 뷰와 화면 상태 저장](/datagridview/custom-views) |
+| 특정 행으로 스크롤 | `grid.ensureNodeModelVisible(...)` | 그리드 메서드 | [스크롤과 강조](/datagridview/api/grid-methods#스크롤과-강조) |
+
 ## 실제 앱에서 많이 쓰는 기능
 
 enovia2025 webapps 에서 DataGridView 를 쓰는 앱 파일 119개를 기준으로, 기능별로 그 이름이 나오는 파일 수를 센 것입니다. 무엇부터 익힐지 정할 때 참고합니다.
@@ -72,7 +126,11 @@ enovia2025 webapps 에서 DataGridView 를 쓰는 앱 파일 119개를 기준으
 | 컬럼 함수 | `getCellSemantics` (57), `getCellTooltip` (52), `getCellValue` (47) | [컬럼 함수](/datagridview/cell-functions) |
 | 셀 직접 그리기 | `onCellRequest` (41), `registerReusableCellContent` (31) | [셀 직접 그리기](/datagridview/custom-cell) |
 | 필터 | `setFilterModel` (36) | [정렬과 필터](/datagridview/sort-filter) |
-| 드래그앤드롭 | `rowDragEnabledFlag` (30), `onDropCell` (22) | [그리드 옵션](/datagridview/api/grid-options#드래그-그룹) |
+| 드래그앤드롭 | `cellDragEnabledFlag` (42), `onDragStartCell` (38), `rowDragEnabledFlag` (30), `onDropCell` (22) | [드래그앤드롭](/datagridview/drag-and-drop) |
+| 만든 뒤에 컬럼 다루기 | `getDataIndexFromColumnIndex` (36), `setColumnVisibleFlag` (26) | [레이아웃 메서드](/datagridview/api/layout-methods) |
+| 사용자 뷰, 화면 상태 | `getCustomViewsManager` (17), `useWidgetPreferencesFlag` (13) | [사용자 뷰와 화면 상태 저장](/datagridview/custom-views) |
+| 행 그룹핑 | `groupableFlag` (16), `rowGroupingEnabledFlag` (14), `groupRows` (10) | [행 그룹핑](/datagridview/row-grouping) |
+| 행을 나눠 불러오기 | `onDelayedModelDataRequest` (14), `onInfiniteScroll` (7), `dataSource` (1) | [서버 사이드 데이터](/datagridview/server-side) |
 | 툴바 | `setToolbar` (27) | [툴바](/datagridview/toolbar) |
 | 상태바 | `buildStatusBar` (21) | [상태바](/datagridview/status-bar) |
 
@@ -84,15 +142,21 @@ enovia2025 webapps 에서 DataGridView 를 쓰는 앱 파일 119개를 기준으
 | [셀 타입](/datagridview/cell-types) | `typeRepresentation` 별 셀 모양과 편집기 |
 | [편집](/datagridview/editing) | `editableFlag`, `editionPolicy`, 편집 이벤트 |
 | [저장 후 화면 반영](/datagridview/save-and-reflect) | 서버 저장 뒤 행 값 갱신, 실패 시 되돌리기 |
+| [헤더](/datagridview/header) | 헤더 높이, 헤더 숨기기, 헤더 글자와 아이콘, 2단 헤더, 헤더 직접 그리기 |
 | [행 높이](/datagridview/row-height) | 행 높이 설정을 넣는 세 자리 |
 | [정렬과 필터](/datagridview/sort-filter) | `sortModel`, `setFilterModel` |
+| [서버 사이드 데이터](/datagridview/server-side) | 행을 필요한 만큼만 불러오기. `dataSource`, `onInfiniteScroll`, `onDelayedModelDataRequest` |
+| [행 그룹핑](/datagridview/row-grouping) | `rowGroupingOptions`, `groupRows`, 그룹 행 다루기 |
+| [드래그앤드롭](/datagridview/drag-and-drop) | 행 순서 바꾸기, 드래그 콜백, 밖에서 끌어 온 것 받기 |
+| [사용자 뷰와 화면 상태 저장](/datagridview/custom-views) | 컬럼 너비, 순서, 표시, 정렬을 저장하고 되살리기 |
 | [툴바](/datagridview/toolbar) | `grid.setToolbar(JSON)` 으로 검색창, 콤보, 버튼 놓기 |
 | [트리 구조](/datagridview/tree) | 하위 행, 펼치기, 펼칠 때 하위 행 불러오기, 행 아이콘 |
 | [컬럼 함수](/datagridview/cell-functions) | 행마다 다른 값, 셀 타입, 콤보 목록, 편집 가능 여부, 모양 |
 | [우클릭 메뉴와 선택](/datagridview/context-menu) | `onContextualEvent`, 메뉴 버튼 컬럼, 선택 변경 받기 |
 | [셀 직접 그리기](/datagridview/custom-cell) | `onCellRequest` 와 셀 내용 재사용 |
 | [상태바](/datagridview/status-bar) | `grid.buildStatusBar([...])` 로 행 수, 선택 수 표시 |
-| [그리드 옵션](/datagridview/api/grid-options) · [그리드 메서드](/datagridview/api/grid-methods) · [layoutOptions](/datagridview/api/layout-options) | 그리드 레퍼런스 |
+| [이름 색인 (A-Z)](/datagridview/api/key-index) | 옵션, 함수, 이벤트 이름을 알파벳 순으로 찾기 |
+| [그리드 옵션](/datagridview/api/grid-options) · [그리드 메서드](/datagridview/api/grid-methods) · [layoutOptions](/datagridview/api/layout-options) · [레이아웃 메서드](/datagridview/api/layout-methods) | 그리드 레퍼런스 |
 | [컬럼 옵션](/datagridview/api/column-options) · [컬럼 함수](/datagridview/api/column-functions) · [typeRepresentation](/datagridview/api/type-representation) · [하위 옵션 객체](/datagridview/api/sub-options) | 컬럼 레퍼런스 |
 | [필터 (filterId)](/datagridview/api/filter) · [툴바 (setToolbar)](/datagridview/api/toolbar) · [데이터 (TreeDocument)](/datagridview/api/data) · [이벤트](/datagridview/api/events) | 필터, 툴바, 데이터, 이벤트 레퍼런스 |
 

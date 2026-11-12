@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>15. 서버 사이드 데이터</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    .page { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .buttons { margin: 0 0 8px; font-size: 12px; }
+    .buttons label { margin-right: 10px; }
+    .buttons button, .buttons input[type="text"] { margin-right: 4px; }
+    #grid { position: relative; flex: 1; min-height: 320px; border: 1px solid #d1d4d4; }
+    #log { height: 130px; margin: 8px 0 0; padding: 8px; overflow: auto; font-size: 12px; background: #f4f5f6; border: 1px solid #d1d4d4; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>15. 서버 사이드 데이터 (행을 나눠 불러오기)</h2>
+    <p>
+      가짜 서버(메모리에 만든 5,000행, 0.3초 뒤 응답)에서 행을 나눠 불러옵니다. 방식을 고르면 그리드를 다시 만듭니다. 스크롤하면서 아래 로그의 요청 범위를 봅니다.
+      <a href="index.html">목록으로</a>
+    </p>
+    <div class="buttons">
+      <label><input type="radio" name="mode" value="infinite" checked /> A. 스크롤 끝에서 행 더하기</label>
+      <label><input type="radio" name="mode" value="delayed" /> B. 보이는 행의 값만 나중에</label>
+      <label><input type="radio" name="mode" value="dataSource" /> C. dataSource</label>
+      <label><input type="radio" name="mode" value="virtual" /> D. dataSource + 전체 길이 스크롤</label>
+      <label><input type="radio" name="mode" value="children" /> E. dataSource + 하위 행</label>
+    </div>
+    <div class="buttons">
+      <input type="text" id="keyword" placeholder="품명 검색어 (C, D)" />
+      <button id="btnSearch">검색 (C, D)</button>
+      <button id="btnDelayed">보이는 행 값 다시 요청 (B)</button>
+      <button id="btnCount">행 수 보기</button>
+    </div>
+    <div id="grid"></div>
+    <pre id="log"></pre>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/DataSourceBase',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (DataGridView, DataSourceBase, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      var container = document.getElementById('grid');
+      var grid = null;
+      var keyword = '';
+
+      function writeLog(text) {
+        var log = document.getElementById('log');
+        log.textContent = text + '\n' + log.textContent;
+      }
+
+      var COLUMNS = [
+        { text: '품번', dataIndex: 'tree', width: 180 },
+        { text: '품명', dataIndex: 'title', width: 200 },
+        { text: '상태', dataIndex: 'status', width: 100 },
+        { text: '재고', dataIndex: 'stock', width: 100 }
+      ];
+
+      /*
+       * [가짜 서버]
+       *   serverRows : 서버 DB 역할. 5,000행
+       *   loadRows(start, count, sort, filter) : start 번째 행부터 count 개를 0.3초 뒤에 돌려준다.
+       *     sort   : 그리드가 보낸 sortModel 그대로. [{ dataIndex: 'title', sort: 'asc' }]
+       *     filter : 품명 검색어
+       *     응답   : { items: [행 객체, ...], total: 조건에 맞는 전체 행 수 }
+       *   loadStock(partNumbers) : 품번 목록의 재고를 0.3초 뒤에 돌려준다. { 'PRT-0001': 7, ... }
+       *   실제 화면에서는 이 자리에 WAFData 호출이 들어간다.
+       */
+      // #region server
+      var NAMES = ['브라켓', '샤프트', '하우징', '커버', '베어링', '볼트', '너트', '와셔'];
+      var STATUSES = ['작업중', '검토중', '승인'];
+      var serverRows = [];
+      for (var i = 1; i <= 5000; i++) {
+        serverRows.push({
+          tree: 'PRT-' + ('000' + i).slice(-4),
+          title: NAMES[i % NAMES.length] + ' ' + i,
+          status: STATUSES[i % STATUSES.length],
+          stock: (i * 7) % 100
+        });
+      }
+
+      function loadRows(start, count, sort, filter) {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            var rows = serverRows.filter(function (row) {
+              return !filter || row.title.indexOf(filter) !== -1;
+            });
+            if (sort && sort.length) {
+              var key = sort[0].dataIndex;
+              var direction = sort[0].sort === 'desc' ? -1 : 1;
+              rows.sort(function (a, b) {
+                return (a[key] > b[key] ? 1 : a[key] < b[key] ? -1 : 0) * direction;
+              });
+            }
+            var items = rows.slice(start, start + count).map(function (row) {
+              return { tree: row.tree, title: row.title, status: row.status, stock: row.stock };
+            });
+            writeLog('서버: ' + start + ' ~ ' + (start + count - 1) + ' 요청, ' + items.length + '행 응답 (전체 ' + rows.length + '행)');
+            resolve({ items: items, total: rows.length });
+          }, 300);
+        });
+      }
+
+      function loadStock(partNumbers) {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            var stockByPart = {};
+            serverRows.forEach(function (row) {
+              if (partNumbers.indexOf(row.tree) !== -1) {
+                stockByPart[row.tree] = row.stock;
+              }
+            });
+            resolve(stockByPart);
+          }, 300);
+        });
+      }
+      // #endregion server
+
+      /*
+       * [방식 A] 스크롤이 끝에 닿으면 행 더하기 (실제 앱에서 가장 흔한 방식)
+       *   내가 만든 TreeDocument 에 100행씩 이어 붙인다. dataSource 는 쓰지 않는다.
+       *   grid.onInfiniteScroll(fn)        : 스크롤이 아래쪽 끝(또는 오른쪽 끝)에 닿으면 fn 을 부른다.
+       *   grid.infiniteScrollProcessDone() : 처리가 끝났다고 알린다. 부르기 전에는 fn 이 다시 불리지 않는다.
+       *   첫 묶음은 직접 불러온다. 첫 묶음이 화면을 다 채워야 스크롤 막대가 생기고 콜백이 온다.
+       */
+      // #region infinite
+      function createInfiniteGrid() {
+        var treeDocument = new TreeDocument();
+        var finished = false;
+
+        function appendRows() {
+          var start = treeDocument.getRoots().length;
+          return loadRows(start, 100).then(function (result) {
+            treeDocument.prepareUpdate();
+            result.items.forEach(function (row) {
+              treeDocument.addRoot(new TreeNodeModel({ label: row.tree, grid: row }));
+            });
+            treeDocument.pushUpdate();
+            finished = start + result.items.length >= result.total;
+          });
+        }
+
+        var infiniteGrid = new DataGridView({ treeDocument: treeDocument, columns: COLUMNS });
+
+        infiniteGrid.onInfiniteScroll(function (info) {
+          if (!info.reachBottom || finished) {
+            infiniteGrid.infiniteScrollProcessDone();
+            return;
+          }
+          appendRows().then(function () {
+            infiniteGrid.infiniteScrollProcessDone();
+          }, function () {
+            infiniteGrid.infiniteScrollProcessDone();
+          });
+        });
+
+        appendRows();
+        return infiniteGrid;
+      }
+      // #endregion infinite
+
+      /*
+       * [방식 B] 보이는 행의 값만 나중에 채우기
+       *   행은 한 번에 다 넣고, 조회가 느린 "재고" 컬럼만 화면에 보이는 행에 대해 채운다.
+       *   그리드 옵션 onDelayedModelDataRequest(info) : 그리드가 준비됐을 때, 스크롤이 멈췄을 때 등에 불린다.
+       *     info.startNodeIndex ~ info.endNodeIndex : 지금 화면에 보이는 행 범위 (끝 행 포함)
+       *     info.collectionView.model              : 지금 표시되는 행(TreeNodeModel) 배열
+       *     info.context                           : 불린 이유. 'OnReady', 'OnScrollEnd' 등
+       *   같은 행을 두 번 요청하지 않게, 요청한 행에는 바로 '...' 을 넣어 둔다.
+       */
+      // #region delayed
+      function createDelayedGrid() {
+        var treeDocument = new TreeDocument();
+        treeDocument.prepareUpdate();
+        serverRows.forEach(function (row) {
+          treeDocument.addRoot(new TreeNodeModel({ label: row.tree, grid: { title: row.title, status: row.status } }));
+        });
+        treeDocument.pushUpdate();
+
+        return new DataGridView({
+          treeDocument: treeDocument,
+          columns: COLUMNS,
+          onDelayedModelDataRequest: function (info) {
+            var nodes = info.collectionView.model
+              .slice(info.startNodeIndex, info.endNodeIndex + 1)
+              .filter(function (node) { return node.options.grid.stock === undefined; });
+            writeLog('보이는 행 ' + info.startNodeIndex + ' ~ ' + info.endNodeIndex + ' (' + info.context + '), 재고 요청 ' + nodes.length + '행');
+            if (!nodes.length) {
+              return;
+            }
+            nodes.forEach(function (node) {
+              node.updateOptions({ grid: { stock: '...' } });
+            });
+            loadStock(nodes.map(function (node) { return node.getLabel(); })).then(function (stockByPart) {
+              nodes.forEach(function (node) {
+                node.updateOptions({ grid: { stock: stockByPart[node.getLabel()] } });
+              });
+            });
+          }
+        });
+      }
+      // #endregion delayed
+
+      /*
+       * [응답 넘기기] dataSource 방식(C, D, E)이 같이 쓰는 함수
+       *   params.successCallback(rows, lastRow, numberOfChildren) : 객체 한 개가 아니라 인자 여러 개로 넘긴다.
+       *     rows             : 요청 범위의 행 객체 배열. { dataIndex: 값 } 모양. tree 가 트리 컬럼 값
+       *     lastRow          : -1 = 뒤에 행이 더 있음. 1 이상 = 이번이 마지막 묶음
+       *     numberOfChildren : 전체 행 수. virtuallyLoadAllModelItems: true 에서만 넘긴다 (없으면 예외).
+       *                        기본 방식에서 넘기면 스크롤 막대가 전체 길이가 되지만, 멀리 건너뛴 자리는 빈 행으로 남고 요청이 나가지 않는다.
+       *   params.failCallback() : 실패했거나 행이 0건일 때
+       */
+      // #region answer
+      function answer(params, result, sendTotal) {
+        if (!result.items.length) {
+          params.failCallback();
+          return;
+        }
+        var lastRow = result.total <= params.request.endRow + 1 ? result.total : -1;
+        if (sendTotal) {
+          params.successCallback(result.items, lastRow, result.total);
+        } else {
+          params.successCallback(result.items, lastRow);
+        }
+      }
+      // #endregion answer
+
+      /*
+       * [방식 C] dataSource 기본 방식
+       *   DataSourceBase 객체를 만들어 getModelItems 를 덮어쓰고 그리드 옵션 dataSource 에 넣는다. treeDocument 는 넣지 않는다.
+       *   그리드가 행이 필요할 때 getModelItems(params) 를 부른다.
+       *     params.request.startRow ~ endRow : 요청 범위 (endRow 행까지 포함)
+       *     params.request.sortModel         : 지금 정렬 조건. 헤더를 눌러 정렬하면 행을 비우고 0행부터 다시 요청한다.
+       *   그리드는 받은 행을 정렬하지 않는다. sortModel 대로 서버가 정렬해서 돌려준다.
+       */
+      // #region dataSource
+      function createDataSource(sendTotal) {
+        var dataSource = new DataSourceBase();
+        dataSource.numberOfRowsPerRequest = 200;
+        dataSource.getModelItems = function (params) {
+          var request = params.request;
+          loadRows(request.startRow, request.endRow - request.startRow + 1, request.sortModel, keyword).then(function (result) {
+            answer(params, result, sendTotal);
+          }, function () {
+            params.failCallback();
+          });
+        };
+        return dataSource;
+      }
+
+      function createDataSourceGrid() {
+        return new DataGridView({
+          dataSource: createDataSource(false),
+          columns: COLUMNS
+        });
+      }
+      // #endregion dataSource
+
+      /*
+       * [방식 D] 스크롤 막대를 처음부터 전체 길이로
+       *   virtuallyLoadAllModelItems: true 를 같이 주면 스크롤 막대가 전체 행 수에 맞춰지고,
+       *   멀리 건너뛰면 그 위치의 묶음만 요청한다. successCallback 의 세 번째 인자(전체 행 수)가 꼭 있어야 한다.
+       */
+      // #region virtual
+      function createVirtualGrid() {
+        return new DataGridView({
+          dataSource: createDataSource(true),
+          virtuallyLoadAllModelItems: true,
+          columns: COLUMNS
+        });
+      }
+      // #endregion virtual
+
+      /*
+       * [방식 E] 하위 행이 있는 행
+       *   행 객체에 wux_group: true 를 주면 펼침 아이콘이 생기고, 펼칠 때 getModelItems 가 다시 불린다.
+       *   그때 params.request.groupKeys 에 최상위부터 그 행까지의 식별자(stringIdentifier)가 들어온다.
+       *     []           최상위 행 요청
+       *     ['ASM-0003'] ASM-0003 의 하위 행 요청
+       *   가짜 서버 : 최상위는 어셈블리 300개, 어셈블리마다 하위 부품 5개
+       */
+      // #region children
+      function loadChildRows(parentId, start, count) {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            var total = parentId ? 5 : 300;
+            var items = [];
+            for (var index = start; index < Math.min(start + count, total); index++) {
+              var id = parentId ? parentId + '-' + (index + 1) : 'ASM-' + ('000' + (index + 1)).slice(-4);
+              items.push({ tree: id, title: parentId ? '부품 ' + (index + 1) : '어셈블리 ' + (index + 1), status: STATUSES[index % 3], hasChildren: !parentId });
+            }
+            writeLog('서버: ' + (parentId || '최상위') + ' 의 ' + start + ' ~ ' + (start + count - 1) + ' 요청, ' + items.length + '행 응답');
+            resolve({ items: items, total: total });
+          }, 300);
+        });
+      }
+
+      function createChildrenGrid() {
+        var dataSource = new DataSourceBase();
+        dataSource.getModelItems = function (params) {
+          var request = params.request;
+          var keys = request.groupKeys;
+          var parentId = keys.length ? keys[keys.length - 1] : null;
+          loadChildRows(parentId, request.startRow, request.endRow - request.startRow + 1).then(function (result) {
+            result.items.forEach(function (row) {
+              row.stringIdentifier = row.tree;
+              row.wux_group = row.hasChildren;
+            });
+            answer(params, result);
+          }, function () {
+            params.failCallback();
+          });
+        };
+        return new DataGridView({ dataSource: dataSource, columns: COLUMNS });
+      }
+      // #endregion children
+
+      /*
+       * [조건을 바꿔 처음부터 다시 불러오기] 방식 C, D
+       *   검색어 같은 조건은 변수(keyword)에 두고, 바뀌면 grid.resetTreeDocument() 를 부른다.
+       *   불러온 행과 선택이 모두 비워지고 0행부터 다시 요청한다. dataSource 그리드에서만 동작한다.
+       */
+      // #region reload
+      function search(text) {
+        keyword = text;
+        grid.resetTreeDocument();
+      }
+      // #endregion reload
+
+      var builders = {
+        infinite: createInfiniteGrid,
+        delayed: createDelayedGrid,
+        dataSource: createDataSourceGrid,
+        virtual: createVirtualGrid,
+        children: createChildrenGrid
+      };
+
+      function rebuild(mode) {
+        if (grid) {
+          grid.destroy();
+        }
+        container.innerHTML = '';
+        keyword = '';
+        document.getElementById('keyword').value = '';
+        document.getElementById('log').textContent = '';
+        grid = builders[mode]();
+        grid.inject(container);
+        window.sample = { grid: grid, mode: mode };
+      }
+
+      Array.prototype.forEach.call(document.querySelectorAll('input[name="mode"]'), function (radio) {
+        radio.addEventListener('change', function () {
+          rebuild(radio.value);
+        });
+      });
+
+      document.getElementById('btnSearch').addEventListener('click', function () {
+        if (!grid.dataSource) {
+          writeLog('검색은 dataSource 방식(C, D)에서 동작합니다.');
+          return;
+        }
+        search(document.getElementById('keyword').value);
+      });
+
+      /*
+       * [코드에서 다시 요청하기] 방식 B
+       *   grid.requestDelayedModelData(context) : onDelayedModelDataRequest 를 지금 부르게 한다. context 는 info.context 로 그대로 온다.
+       */
+      // #region requestDelayed
+      document.getElementById('btnDelayed').addEventListener('click', function () {
+        grid.requestDelayedModelData('Manual');
+      });
+      // #endregion requestDelayed
+
+      /*
+       * [행 수 읽기]
+       *   grid.getModelLength()    : 그리드가 지금 행으로 갖고 있는 수
+       *   grid.getRowModelLength() : 행 모델이 아는 행 수 (dataSource 방식에서는 서버가 알려 준 전체 행 수)
+       *   grid.getTreeDocument()   : dataSource 방식에서 그리드가 안에서 만든 TreeDocument. 불러온 행만 들어 있다.
+       */
+      // #region count
+      document.getElementById('btnCount').addEventListener('click', function () {
+        var treeDocument = grid.getTreeDocument();
+        writeLog('getModelLength() = ' + grid.getModelLength()
+          + ', getRowModelLength() = ' + grid.getRowModelLength()
+          + ', TreeDocument 의 행 = ' + treeDocument.getAllDescendants().length
+          + ', 선택 행 = ' + treeDocument.getSelectedNodes().length);
+      });
+      // #endregion count
+
+      rebuild('infinite');
+    });
+  </script>
+</body>
+</html>

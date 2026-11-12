@@ -33,7 +33,18 @@ DataGridView.js 의 ColumnModel (`_defaultColumnDef` 기본값과 컬럼 정의 
 | <code>semantics</code> | <code>object</code> | - | [semantics](/tweakers/api/semantics) 목록 | 편집기 세부 옵션 (콤보 목록, 최소/최대값 등) |
 | <code>description</code> | <code>string</code> | <code>''</code> | 문자열 | 헤더 설명(툴팁) |
 | <code>icon</code> | <code>string&#124;object</code> | - | '아이콘명' &#124; { iconName, fontIconFamily } | 헤더 아이콘 |
+| <code>customHeader</code> | <code>object</code> | - | <code>{ buildContent, updateContent, ... }</code> | 헤더 칸을 직접 만든 DOM 으로 그림 ([헤더를 직접 그리기](/datagridview/header#헤더를-직접-그리기-customheader)) |
+
+## 컬럼 그룹 (2단 헤더)
+
+예제는 [헤더를 2단으로 묶기](/datagridview/header#헤더를-2단으로-묶기-컬럼-그룹) 에 있습니다.
+
+| 키 | 타입 | 기본값 | 값 | 설명 |
+| --- | --- | --- | --- | --- |
 | <code>children</code> | <code>array</code> | - | 컬럼 배열 | 컬럼 그룹. { text: '그룹명', dataIndex: '그룹키', children: [컬럼, 컬럼] } 형태로 헤더를 2단으로 묶음 (CATFLCockpitWidget 사용 예) |
+| <code>expandedFlag</code> | <code>boolean</code> | - | <code>true &#124; false</code> | 그룹에 넣음. 처음에 펼쳐 둘지. 넣으면 그룹 헤더에 펼침 버튼이 생김 |
+| <code>columnGroupShow</code> | <code>string</code> | - | <code>'open' &#124; 'closed'</code> | 그룹의 하위 컬럼에 넣음. 'open' = 그룹을 펼쳤을 때만 보임, 'closed' = 접었을 때만 보임. 넣지 않으면 항상 보임 |
+| <code>splittableFlag</code> | <code>boolean</code> | - | <code>true &#124; false</code> | 그룹에 넣음. false 면 헤더를 끌어 컬럼 순서를 바꿀 때 그룹 밖의 컬럼이 그룹 사이로 끼어들거나 하위 컬럼이 그룹 밖으로 나갈 수 없음 |
 
 ## 크기 / 위치
 
@@ -52,11 +63,11 @@ DataGridView.js 의 ColumnModel (`_defaultColumnDef` 기본값과 컬럼 정의 
 | 키 | 타입 | 기본값 | 값 | 설명 |
 | --- | --- | --- | --- | --- |
 | <code>visibleFlag</code> | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 컬럼 표시 |
-| <code>alwaysVisibleFlag</code> <Badge type="warning" text="2026" /> | <code>boolean</code> | <code>false</code> | <code>true &#124; false</code> | 컬럼 관리에서 숨길 수 없음 |
+| <code>alwaysVisibleFlag</code> | <code>boolean</code> | - (2026: <code>false</code>) | <code>true &#124; false</code> | 숨길 수 없는 컬럼. true 면 `visibleFlag: false` 나 `setColumnVisibleFlag(…, false)` 로도 숨겨지지 않음. `visibleFlag: false` 와 같이 쓰면 컬럼은 보이고 `getColumnVisibleFlag` 는 false, `getColumnVisibleState` 는 true |
 | <code>showTextFlag</code> | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 셀 글자 표시 (false 면 아이콘만) |
 | <code>resizableFlag</code> | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 너비 조절 |
 | <code>sortableFlag</code> | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 정렬 가능 |
-| <code>groupableFlag</code> | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 행 그룹핑 기준으로 사용 가능 |
+| <code>groupableFlag</code> | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 행 그룹핑 기준으로 사용 가능. false 인 컬럼은 groupRows 에 넘겨도 조용히 빠지고, 그룹 영역에 끌어 놓아도 받지 않음 ([행 그룹핑](/datagridview/row-grouping)) |
 | <code>selectableFlag</code> | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 셀 선택 가능 |
 | <code>printableFlag</code> | <code>boolean</code> | <code>true</code> | <code>true &#124; false</code> | 인쇄/내보내기 포함 |
 | <code>findableFlag</code> | <code>boolean</code> | - | <code>true &#124; false</code> | 찾기 대상 포함 |

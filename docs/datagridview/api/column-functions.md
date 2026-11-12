@@ -66,7 +66,8 @@ DataGridView.js 의 DataGridViewLayout (`getColumnOptionValue(columnID, "함수�
 
 | 키 | 사용 | 호출 형태 (this) | 반환값 | 예 | 설명 |
 | --- | --- | --- | --- | --- | --- |
-| <code>getCellGroupingKey</code> | 11 | fn(cellInfos, dataIndex)  this=그리드 | 그룹 키 | <code>return g.dueDate.getFullYear() + '-' + (g.dueDate.getMonth() + 1);</code> | 행 그룹핑 시 묶을 기준 값 (예: 날짜를 월 단위로) |
+| <code>getCellGroupingKey</code> | 11 | fn(cellInfos, dataIndex)  this=그리드 | 그룹 키 | <code>return g.dueDate.getFullYear() + '-' + (g.dueDate.getMonth() + 1);</code> | 행 그룹핑 시 묶을 기준 값 (예: 날짜를 월 단위로) ([행 그룹핑](/datagridview/row-grouping#예제-5-날짜를-월-단위로-묶기)) |
+| <code>getGroupingNodeOptions</code> | 2 | <code>'sum' &#124; 'avg' &#124; 'min' &#124; 'max' &#124; 'first' &#124; 'last'</code> 또는 fn(values)  this=그리드 | 그룹 행 칸의 값 | <code>return values.length + '명';</code> | 그룹 행의 이 컬럼 칸에 넣을 값 (합계 등). rowGroupingOptions.getGroupingNodeOptions 가 있으면 쓰이지 않음 |
 | <code>isCellMatchingFind</code> | 0 | fn(셀 값, 찾을 문자열) | boolean | - | 찾기(setFindStr) 일치 여부 직접 판단 |
 | <code>getFindPositionsInCellString</code> | 0 | fn(셀 문자열, 찾을 문자열, 결과배열) | - | 결과배열.push({ start, end }) | 찾기 결과 강조 위치 직접 지정 |
 
@@ -80,5 +81,5 @@ DataGridView.js 의 DataGridViewLayout (`getColumnOptionValue(columnID, "함수�
 | <code>cellInfos.cellView</code> | 셀 뷰 | onCellRequest, 이벤트 리스너에서 제공 |
 
 ::: warning nodeModel 이 없을 수 있습니다
-함수에 따라 컬럼 헤더 셀(rowID -1)에도 호출되고, 그때는 `nodeModel` 이 없습니다. 예를 들어 그리드는 rowID 를 가리지 않고 `getCellClassName` 을 부릅니다 (DataGridView.getCellCssClassesAt). 실제 ENOVIA 앱의 컬럼 함수도 대부분 `cellInfos && cellInfos.nodeModel` 을 먼저 확인하고 값을 읽습니다. 위 표의 "예" 칸은 짧게 쓰느라 이 확인을 뺐습니다.
+함수에 따라 컬럼 헤더 셀(rowID -1)에도 호출되고, 그때는 `nodeModel` 이 없습니다. 예를 들어 그리드는 rowID 를 가리지 않고 `getCellClassName` 을 부릅니다 (DataGridView.getCellCssClassesAt). 실제 ENOVIA 앱의 컬럼 함수도 대부분 `cellInfos && cellInfos.nodeModel` 을 먼저 확인하고 값을 읽습니다. 위 표의 "예" 칸은 짧게 쓰느라 이 확인을 뺐습니다. 행을 묶은 그리드에서는 그룹 행의 셀에도 컬럼 함수가 호출되고, 그때 `nodeModel.options.grid` 에는 원래 행의 값이 없습니다 ([행 그룹핑](/datagridview/row-grouping#그룹-행은-어떤-행인가)).
 :::

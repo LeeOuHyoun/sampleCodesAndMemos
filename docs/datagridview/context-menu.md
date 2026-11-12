@@ -67,9 +67,9 @@ onContextualEvent: function (params) {
 | --- | --- | --- |
 | `filter` | `true` | 컬럼 필터 열기 (필터가 지정된 컬럼의 헤더에서만) |
 | `pin` | `true` | 컬럼 고정 (왼쪽 / 오른쪽 / 해제) |
-| `sizeColumnToFit` | `true` | 컬럼 너비를 내용에 맞춤 |
-| `firstColumnsVisibility` | `true` | 앞쪽 컬럼 8개의 표시 / 숨김 체크 항목 (헤더에서만) |
-| `columnsManagement` | `true` | 사용자 뷰(Custom Views) 대화상자 열기 (헤더에서만) |
+| `sizeColumnToFit` | `true` | "크기에 맞게 열 조정" 과 "크기에 맞게 모든 열 조정" 두 항목 (헤더에서만) |
+| `firstColumnsVisibility` | `true` | 화면 순서로 앞쪽 컬럼 8개의 표시 / 숨김 체크 항목 (헤더에서만). 숨긴 컬럼도 체크가 꺼진 채 나옴. `alwaysVisibleFlag` 컬럼은 비활성 |
+| `columnsManagement` | `true` | "테이블 보기 구성..." = 사용자 뷰 대화상자 열기 (헤더에서만) ([사용자 뷰](/datagridview/custom-views#사용자가-헤더에서-할-수-있는-일)) |
 | `expandCollapse` | `false` | 펼치기 / 접기 |
 | `insertRow` | `false` | 행 삽입 (앞 / 뒤) |
 | `deleteSelectedRows` | 꺼짐 | 선택 행 삭제 |

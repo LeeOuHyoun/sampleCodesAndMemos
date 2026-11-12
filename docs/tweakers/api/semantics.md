@@ -29,11 +29,11 @@ Tweakers.js 의 TweakerBase / TweakerString / TweakerNumber / TweakerDate / Twea
 | 키 | 타입 | 기본값 | 대상 타입 | 설명 |
 | --- | --- | --- | --- | --- |
 | <code>possibleValues</code> | <code>array</code> | - | 콤보, 버튼그룹, 토글아이콘 | 선택 목록. ['A','B'] 또는 [{ label, value, icon }] |
-| <code>allowMultipleValuesFlag</code> | <code>boolean</code> | <code>false</code> | 콤보 | 멀티 선택 (값은 배열) |
+| <code>allowMultipleValuesFlag</code> | <code>boolean</code> | <code>false</code> | <code>string</code> + possibleValues (자동완성) | 여러 개 선택 (값은 배열, 칩으로 쌓임). <code>customEnumMember</code> 콤보에 주면 표시만 되고 편집하면 값이 문자열 하나로 바뀜 ([편집기 종류별 사용법](/tweakers/editors)) |
 | <code>viewOptions</code> | <code>object</code> | - | 전체 | 편집기 화면(view) 옵션. 편집기별로 허용 키가 다름 ([viewOptions](#viewoptions) 참고) |
-| <code>allowFreeInputFlag</code> | <code>boolean</code> | <code>false</code> | 콤보 | 목록에 없는 값 직접 입력 허용 |
-| <code>minValue / maxValue</code> | <code>number&#124;Date</code> | - | 숫자, 날짜 | 최소 / 최대 |
-| <code>placeholder</code> | <code>string</code> | - | 문자열 | 빈 칸 안내 문구 |
+| <code>allowFreeInputFlag</code> | <code>boolean</code> | <code>false</code> | <code>string</code> + possibleValues (자동완성) | 목록에 없는 값 직접 입력 허용. <code>customEnumMember</code> 콤보에서는 화면에 첫 항목이 보임 |
+| <code>minValue / maxValue</code> | <code>number&#124;Date</code> | - | 숫자, 날짜 | 최소 / 최대. 넘는 값은 경계값으로 바뀌고 validState 는 true 그대로. 경계가 0 이면 코드로 넣는 값은 검사하지 않음 |
+| <code>placeholder</code> | <code>string</code> | - | 문자열, 숫자, 콤보 | 빈 칸 안내 문구 |
 | <code>readOnly</code> | <code>boolean</code> | <code>false</code> | 전체 | 읽기 전용 |
 | <code>displayStyle</code> | <code>string</code> | 타입별 | 전체 | 편집기 모양을 직접 지정 ([typeRepresentation](/datagridview/api/type-representation) displayStyle 값) |
 | <code>valueType</code> | <code>string</code> | - | 전체 | 값 형식 (예: 'integer', 'enumCustom') |
@@ -67,7 +67,7 @@ semantics: {
 | <code>onDrop</code> <Badge type="warning" text="2026" /> | <code>function</code> | - | 문자열 (한 줄, 여러 줄) | 드롭 처리 |
 | <code>showWeekNumbers</code> | <code>boolean</code> | - | 날짜 | 달력에 주차 표시 |
 | <code>hideTodayOrNowButton</code> <Badge type="warning" text="2026" /> | <code>boolean</code> | <code>false</code> | 날짜 | 오늘/현재 버튼 숨김 |
-| <code>enableSearchFlag</code> | <code>boolean</code> | <code>true</code> | 콤보 | 목록 검색 |
+| <code>enableSearchFlag</code> | <code>boolean</code> | <code>false</code> | TweakerEnum 콤보 | 목록 검색 입력칸. <code>displayStyle: 'searchableCombo'</code> 로도 켜짐. <code>customEnumMember</code> (TweakerString 콤보)는 viewOptions 를 무시함. 아래 <code>mainElementVisibleFlag</code>, <code>expanderIcon</code> 도 같음 |
 | <code>mainElementVisibleFlag</code> | <code>boolean</code> | <code>true</code> | 콤보 | 메인 요소 표시 |
 | <code>expanderIcon</code> | <code>string</code> | <code>'expand-down'</code> | 콤보 | 펼침 아이콘 |
 | <code>customValidator</code> | <code>function</code> | - | 숫자 | 입력값 검증 함수 |
@@ -95,7 +95,7 @@ semantics: {
 | 키 | 타입 | 기본값 | 대상 타입 | 설명 |
 | --- | --- | --- | --- | --- |
 | <code>stepValue</code> | <code>number</code> | <code>0.1</code> | 숫자 | 증감 단위 |
-| <code>decimals</code> | <code>number</code> | <code>5</code> | 숫자 | 소수 자릿수 |
+| <code>decimals</code> | <code>number</code> | <code>5</code> | 숫자 | 화면에 보이는 소수 자릿수. 값은 깎지 않음 (2.7 을 넣으면 decimals 0 이라도 값은 2.7). 정수로 저장하려면 <code>valueType: 'integer'</code> |
 | <code>units</code> | <code>string</code> | <code>''</code> | 숫자 | 단위 표시 (예: 'kg', '%') |
 | <code>colorFrom / colorTo</code> | <code>string</code> | <code>'#000' / '#fff'</code> | <code>colorSlider</code> | 슬라이더 색 범위 |
 

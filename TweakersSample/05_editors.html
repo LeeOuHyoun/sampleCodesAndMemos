@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>05. 편집기 종류별 사용법</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page h3 { margin: 16px 0 8px; font-size: 14px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .form { display: grid; grid-template-columns: 170px 280px 1fr; gap: 6px 12px; align-items: center; font-size: 13px; }
+    .form .value { font: 12px monospace; color: #333; word-break: break-all; }
+    .form .wux-tweakers { width: 260px; }
+    .buttons { margin: 12px 0; }
+    .buttons button { margin-right: 6px; }
+    #grid { position: relative; height: 230px; border: 1px solid #d1d4d4; }
+    #log { height: 160px; overflow: auto; margin-top: 8px; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; white-space: pre; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>05. 편집기 종류별 사용법</h2>
+    <p>
+      왼쪽은 라벨, 가운데는 편집기, 오른쪽은 지금 <code>value</code> 와 그 타입입니다. 값을 바꾸면 아래 로그에 이벤트가 남습니다.
+      <a href="index.html">목록으로</a>
+    </p>
+    <div class="form" id="form"></div>
+
+    <div class="buttons">
+      <button id="btnOutOfRange">범위 밖 값 넣기</button>
+      <button id="btnClear">값 비우기</button>
+      <button id="btnGridValues">그리드 값 읽기</button>
+    </div>
+
+    <h3>같은 타입을 쓰는 그리드 (typeRepresentation)</h3>
+    <div id="grid"></div>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    require([
+      'DS/Tweakers/TweakerString',
+      'DS/Tweakers/TweakerNumber',
+      'DS/Tweakers/TweakerDate',
+      'DS/Tweakers/TweakerBoolean',
+      'DS/Tweakers/TypeRepresentationFactory',
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (TweakerString, TweakerNumber, TweakerDate, TweakerBoolean, TypeRepresentationFactory,
+      DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      var formEl = document.getElementById('form');
+      var logEl = document.getElementById('log');
+      var factory = new TypeRepresentationFactory();
+
+      function log(text) {
+        logEl.textContent = new Date().toLocaleTimeString() + '  ' + text + '\n' + logEl.textContent;
+      }
+
+      function describe(value) {
+        if (value instanceof Date) {
+          return 'Date ' + value.toISOString();
+        }
+        if (typeof value === 'function') {
+          return 'function';
+        }
+        if (value === undefined) {
+          return 'undefined';
+        }
+        var type = Array.isArray(value) ? 'array' : value === null ? 'null' : typeof value;
+        return JSON.stringify(value) + '  (' + type + ')';
+      }
+
+      function row(label) {
+        var labelEl = document.createElement('label');
+        var holder = document.createElement('div');
+        var valueEl = document.createElement('div');
+        labelEl.textContent = label;
+        holder.className = 'holder';
+        holder.setAttribute('data-label', label);
+        valueEl.className = 'value';
+        formEl.appendChild(labelEl);
+        formEl.appendChild(holder);
+        formEl.appendChild(valueEl);
+        return holder;
+      }
+
+      function place(label) {
+        var holder = row(label);
+        return function (tweaker) {
+          tweaker.inject(holder);
+        };
+      }
+
+      function tweakerOf(holder) {
+        var content = holder.querySelector('.wux-tweakers');
+        return content && content.dsModel;
+      }
+
+      function refreshValues() {
+        Array.prototype.forEach.call(formEl.querySelectorAll('.holder'), function (holder) {
+          var tweaker = tweakerOf(holder);
+          holder.nextElementSibling.textContent = tweaker ? describe(tweaker.value) +
+            (tweaker.validState === false ? '  validState=false' : '') : '';
+        });
+      }
+
+      ['change', 'liveChange', 'validStateChange'].forEach(function (name) {
+        formEl.addEventListener(name, function (e) {
+          var holder = e.target.closest && e.target.closest('.holder');
+          if (!e.dsModel || !holder || tweakerOf(holder) !== e.dsModel) {
+            return;
+          }
+          log(name + '  ' + holder.getAttribute('data-label') + ' = ' + describe(e.dsModel.value) +
+            (name === 'validStateChange' ? ' validState=' + e.dsModel.validState : ''));
+          refreshValues();
+        });
+      });
+
+      /*
+       * [1] 문자열: new TweakerString
+       *   한 줄이 기본(displayStyle 'lineEditor'). 여러 줄은 displayStyle 'editor'.
+       *   pattern 은 앞뒤에 ^, $ 가 붙어 전체 일치로 검사하고, requiredFlag 와 함께 validState 만 바꾼다 (입력은 막지 않음).
+       *   최대 길이는 viewOptions.maxLength.
+       */
+      // #region string
+      new TweakerString({
+        value: '',
+        placeholder: 'PRT-0001',
+        requiredFlag: true,
+        pattern: 'PRT-[0-9]{4}',
+        viewOptions: { maxLength: 8 }
+      }).inject(row('품번 (한 줄)'));
+
+      new TweakerString({ value: '첫 줄\n둘째 줄', displayStyle: 'editor' }).inject(row('비고 (여러 줄)'));
+      // #endregion string
+
+      /*
+       * [2] 콤보: 타입 이름 customEnumMember (TweakerString + displayStyle 'combo')
+       *   possibleValues 는 문자열 배열 또는 { label, value, icon } 배열.
+       *   { label, value } 일 때 화면에는 label, value 에는 value 가 들어간다.
+       *   목록에 없는 값을 넣으면 첫 항목의 value 로 바뀐다. label('승인')을 넣어도 마찬가지다.
+       */
+      // #region combo
+      factory.generateView('검토중', {
+        typePath: 'customEnumMember',
+        semantics: { possibleValues: ['작업중', '검토중', '승인'] }
+      }).then(place('상태 (문자열 목록)'));
+
+      factory.generateView('REVIEW', {
+        typePath: 'customEnumMember',
+        semantics: {
+          possibleValues: [
+            { label: '작업중', value: 'WIP', icon: 'pencil' },
+            { label: '검토중', value: 'REVIEW', icon: 'eye' },
+            { label: '승인', value: 'RELEASED', icon: 'check' }
+          ]
+        }
+      }).then(place('상태 ({ label, value })'));
+      // #endregion combo
+
+      /*
+       * [3] 입력하며 고르기: 타입 이름 string + possibleValues (자동완성)
+       *   글자를 치면 목록이 걸러진다 (검색). customEnumMember 콤보는 검색 칸을 켤 수 없다.
+       *   allowMultipleValuesFlag : 여러 개 선택 (칩). value 는 배열
+       *   allowFreeInputFlag      : 목록에 없는 글자도 값으로 둔다
+       */
+      // #region autocomplete
+      factory.generateView('M6', {
+        typePath: 'string',
+        semantics: { possibleValues: ['M3', 'M4', 'M5', 'M6', 'M8', 'M10', 'M12', 'M16'] }
+      }).then(place('규격 (검색)'));
+
+      factory.generateView(['김철수'], {
+        typePath: 'string',
+        semantics: { possibleValues: ['김철수', '이영희', '박민수'], allowMultipleValuesFlag: true }
+      }).then(place('담당자 (멀티)'));
+
+      factory.generateView('SUS304', {
+        typePath: 'string',
+        semantics: { possibleValues: ['SS400', 'AL6061'], allowFreeInputFlag: true }
+      }).then(place('재질 (자유 입력)'));
+      // #endregion autocomplete
+
+      /*
+       * [4] 버튼 그룹과 토글 아이콘
+       *   customSmallEnumMember : 버튼 그룹 (하나 선택). possibleValues 는 콤보와 같다.
+       *   customBoolean         : 아이콘 하나가 true / false 를 오간다. 값마다 아이콘을 준다.
+       */
+      // #region choice
+      factory.generateView('보통', {
+        typePath: 'customSmallEnumMember',
+        semantics: { possibleValues: ['높음', '보통', '낮음'] }
+      }).then(place('우선순위 (버튼 그룹)'));
+
+      factory.generateView(false, {
+        typePath: 'customBoolean',
+        semantics: {
+          possibleValues: [{ value: true, icon: 'lock' }, { value: false, icon: 'lock-open' }]
+        }
+      }).then(place('잠금 (토글 아이콘)'));
+      // #endregion choice
+
+      /*
+       * [5] 숫자: new TweakerNumber
+       *   기본 모양은 스핀박스. decimals 는 보이는 자릿수일 뿐이라 정수만 받으려면 valueType 'integer' 를 준다.
+       *   units 는 숫자 뒤에 붙는 단위. 옵션을 안 주면 stepValue 0.1, decimals 5.
+       */
+      // #region number
+      var qty = new TweakerNumber({ value: 10, minValue: 1, maxValue: 999, stepValue: 1, decimals: 0, valueType: 'integer' })
+        .inject(row('수량 (정수 1~999)'));
+
+      var weight = new TweakerNumber({ value: 12.5, minValue: 0, stepValue: 0.5, decimals: 2, units: 'kg' })
+        .inject(row('중량 (실수, kg)'));
+
+      new TweakerNumber({ value: 1.23456789 }).inject(row('기본값 그대로'));
+      // #endregion number
+
+      /*
+       * [6] 숫자 모양: 타입 이름 percentage (슬라이더), progress (프로그레스)
+       *   둘 다 0~100, units '%' 가 미리 들어 있다. progress 는 편집 가능하면 슬라이더, 읽기 전용이면 막대.
+       */
+      // #region number-styles
+      factory.generateView(30, { typePath: 'percentage' }).then(place('진척 (percentage)'));
+
+      factory.generateView(70, { typePath: 'progress', readOnly: true }).then(place('진행률 (progress 읽기 전용)'));
+      // #endregion number-styles
+
+      /*
+       * [7] 날짜와 시간: new TweakerDate
+       *   value 는 Date. 문자열이나 숫자를 넣으면 new Date(값) 으로 바뀌어 저장된다.
+       *   timePickerFlag 로 시간까지. allowResetToUndefinedByUIFlag 를 주면 화면에서 비울 수 있다.
+       */
+      // #region date
+      var dueDate = new TweakerDate({
+        value: new Date(2026, 10, 20),
+        minValue: new Date(2026, 10, 1),
+        maxValue: new Date(2026, 11, 31),
+        allowResetToUndefinedByUIFlag: true
+      }).inject(row('납기 (11/1 ~ 12/31)'));
+
+      new TweakerDate({ value: '2026-12-01T09:30:00', timePickerFlag: true }).inject(row('회의 (날짜+시간)'));
+      // #endregion date
+
+      /*
+       * [8] 체크박스: new TweakerBoolean. label 은 체크박스 옆 글자.
+       */
+      // #region boolean
+      new TweakerBoolean({ value: false, label: '승인함' }).inject(row('승인 (체크박스)'));
+      // #endregion boolean
+
+      /*
+       * [9] 버튼, 링크, 색상: 타입 이름 function, url, color
+       *   function : value 에 함수를 넣으면 클릭할 때 { context, dsModel } 를 인자로 불린다. 버튼 글자는 semantics.label.
+       *   url      : value 는 { label, url } 객체. 읽기 전용일 때 링크로 보인다.
+       *   color    : value 는 '#' 없는 16진수 문자열. '#368ec4' 를 넣어도 '368ec4' 로 바뀐다.
+       */
+      // #region button-link-color
+      factory.generateView(function (e) {
+        log('function 버튼 클릭  dsModel.label = ' + e.dsModel.label);
+      }, {
+        typePath: 'function',
+        semantics: { label: '실행' }
+      }).then(place('실행 (function)'));
+
+      factory.generateView({ label: '3DEXPERIENCE', url: 'https://www.3ds.com' }, {
+        typePath: 'url',
+        readOnly: true
+      }).then(place('링크 (url)'));
+
+      factory.generateView('#368ec4', { typePath: 'color' }).then(place('색상 (color)'));
+      // #endregion button-link-color
+
+      setInterval(refreshValues, 500);
+
+      /*
+       * [10] 코드로 범위 밖 값 넣기
+       *   minValue / maxValue 를 벗어난 값은 넣는 순간 경계값으로 바뀐다 (validState 는 그대로 true).
+       *   단 경계값이 0 이면 검사를 건너뛴다. 중량(minValue 0)에 -3 을 넣으면 value 는 -3, 화면은 0 kg.
+       */
+      // #region out-of-range
+      document.getElementById('btnOutOfRange').addEventListener('click', function () {
+        qty.value = 5000;
+        weight.value = -3;
+        dueDate.value = new Date(2026, 0, 1);
+        log('넣은 값 5000 / -3 / 2026-01-01  →  읽은 값 ' + qty.value + ' / ' + weight.value + ' / ' + describe(dueDate.value));
+      });
+      // #endregion out-of-range
+
+      document.getElementById('btnClear').addEventListener('click', function () {
+        qty.value = undefined;
+        dueDate.value = undefined;
+        log('비운 뒤  수량 = ' + describe(qty.value) + ', 납기 = ' + describe(dueDate.value));
+      });
+
+      /*
+       * [11] 그리드: 같은 타입을 컬럼 typeRepresentation 으로
+       *   셀 값의 형태는 폼의 value 와 같다 (상태는 value 쪽 문자열, 담당자는 배열, 납기는 Date).
+       *   상태 컬럼은 { label, value } 목록이라 셀에는 label 이 보이고 nodeModel 에는 value 가 저장된다.
+       *   functionIcon 셀은 값이 있는 행에만 버튼이 그려진다. 아이콘은 semantics.icon.
+       */
+      // #region grid
+      var treeDocument = new TreeDocument();
+      treeDocument.prepareUpdate();
+      [
+        { label: 'PRT-0001', grid: { status: 'WIP', owners: ['김철수'], qty: 10, dueDate: new Date(2026, 10, 20), approved: false, progress: 20, open: true } },
+        { label: 'PRT-0002', grid: { status: 'REVIEW', owners: ['이영희', '박민수'], qty: 4, dueDate: new Date(2026, 11, 5), approved: true, progress: 60, open: true } },
+        { label: 'PRT-0003', grid: { status: 'RELEASED', owners: [], qty: 1, dueDate: new Date(2026, 11, 24), approved: true, progress: 100 } }
+      ].forEach(function (item) {
+        treeDocument.addRoot(new TreeNodeModel(item));
+      });
+      treeDocument.pushUpdate();
+
+      var grid = new DataGridView({
+        treeDocument: treeDocument,
+        columns: [
+          { text: '품번', dataIndex: 'tree', width: 110 },
+          {
+            text: '상태', dataIndex: 'status', width: 110, typeRepresentation: 'customEnumMember',
+            editableFlag: true, editionPolicy: 'EditionOnClick',
+            semantics: {
+              possibleValues: [
+                { label: '작업중', value: 'WIP' },
+                { label: '검토중', value: 'REVIEW' },
+                { label: '승인', value: 'RELEASED' }
+              ]
+            }
+          },
+          {
+            text: '담당자', dataIndex: 'owners', width: 150, typeRepresentation: 'string',
+            editableFlag: true, editionPolicy: 'EditionOnClick',
+            semantics: { possibleValues: ['김철수', '이영희', '박민수'], allowMultipleValuesFlag: true }
+          },
+          { text: '수량', dataIndex: 'qty', width: 90, typeRepresentation: 'integer', editableFlag: true, semantics: { minValue: 1, maxValue: 999 } },
+          { text: '납기', dataIndex: 'dueDate', width: 120, typeRepresentation: 'date', editableFlag: true },
+          { text: '승인', dataIndex: 'approved', width: 60, typeRepresentation: 'boolean', editableFlag: true, editionPolicy: 'EditionOnOver' },
+          { text: '진행률', dataIndex: 'progress', width: 120, typeRepresentation: 'progress', editableFlag: true },
+          {
+            text: '열기', dataIndex: 'open', width: 60, typeRepresentation: 'functionIcon',
+            semantics: { icon: { iconName: 'export', fontIconFamily: WUXManagedFontIcons.Font3DS } }
+          }
+        ]
+      }).inject(document.getElementById('grid'));
+      // #endregion grid
+
+      /*
+       * [12] 그리드 이벤트: 두 번째 인자가 그 셀의 cellInfos
+       *   change      : 그리드가 nodeModel 에 먼저 반영한 뒤 온다. columnID 는 컬럼 순번.
+       *   buttonclick : 셀 안 버튼 클릭. 담당자 칸의 "..." 버튼도 여기로 오므로 컬럼을 확인한다.
+       */
+      // #region grid-events
+      grid.addEventListener('change', function (e, cellInfos) {
+        var dataIndex = grid.columns[cellInfos.columnID].dataIndex;
+        log('grid change  ' + cellInfos.nodeModel.options.label + '.' + dataIndex + ' = ' +
+          describe(cellInfos.nodeModel.getAttributeValue(dataIndex)));
+      });
+
+      grid.addEventListener('buttonclick', function (e, cellInfos) {
+        if (grid.columns[cellInfos.columnID].dataIndex !== 'open') {
+          return;
+        }
+        log('grid buttonclick  ' + cellInfos.nodeModel.options.label);
+      });
+      // #endregion grid-events
+
+      document.getElementById('btnGridValues').addEventListener('click', function () {
+        treeDocument.getRoots().forEach(function (node) {
+          log(node.options.label + '  status=' + describe(node.getAttributeValue('status')) +
+            ', owners=' + describe(node.getAttributeValue('owners')) + ', qty=' + describe(node.getAttributeValue('qty')) +
+            ', dueDate=' + describe(node.getAttributeValue('dueDate')));
+        });
+      });
+
+      window.sample = { factory: factory, grid: grid, treeDocument: treeDocument, tweakerOf: tweakerOf };
+    });
+  </script>
+</body>
+</html>

@@ -27,7 +27,7 @@ sampleCodesAndMemos/
 ├─ DataGridViewSample/ ...   주제별 샘플 (주제이름Sample)
 ├─ scripts/verify-list.mjs   검증 대기 목록 생성
 ├─ scripts/coverage.mjs      원본과 문서를 비교해 빠진 이름 찾기
-├─ scripts/datagridview-index.mjs   DataGridView 이름 색인 (A-Z) 생성
+├─ scripts/key-index.mjs     DataGridView, Tweakers 이름 색인 (A-Z) 생성
 ├─ scripts/docs-utils.mjs    위 스크립트들이 같이 쓰는 함수
 ├─ scripts/samples-server.mjs   샘플을 ENOVIA 서버 없이 로컬에서 띄우는 서버
 └─ package.json
@@ -44,7 +44,7 @@ sampleCodesAndMemos/
 
 3. 자주 찾을 페이지면 홈(`docs/index.md`)의 분야별 표나 "하고 싶은 일로 찾기" 표에도 링크를 넣습니다.
 4. 새 webapps 모듈(`DS/폴더/모듈`)을 다루면 [모듈 경로 색인](/guide/module-index) 에 한 줄을 추가합니다.
-   - DataGridView 레퍼런스(`docs/datagridview/api/`)의 표를 고쳤으면 `npm run docs:dgv-index` 로 [이름 색인 (A-Z)](/datagridview/api/key-index) 을 다시 만듭니다. 그 페이지는 직접 고치지 않습니다.
+   - DataGridView, Tweakers 레퍼런스(`docs/주제/api/`)의 표를 고쳤으면 `npm run docs:key-index` 로 이름 색인(`api/key-index.md`)을 다시 만듭니다. 그 페이지는 직접 고치지 않습니다.
    - DataGridView 가이드를 추가했으면 [개요의 "하고 싶은 일로 찾기"](/datagridview/#하고-싶은-일로-찾기) 표에도 한 줄을 넣습니다.
 5. 처음 나오는 용어는 [용어집](/guide/glossary) 에 한 줄을 추가합니다.
 

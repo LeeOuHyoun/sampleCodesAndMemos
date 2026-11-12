@@ -36,12 +36,12 @@ CollectionView.js 의 CollectionView.addEventListener (cellInfos 를 붙여 감�
 
 | 이벤트 | 발생 시점 | event.options | 2번째 인자 cellInfos | 설명 / 사용 팁 |
 | --- | --- | --- | --- | --- |
-| <code>change</code> | 셀 편집 확정 (Enter, 포커스 이동, 콤보 선택, 체크 클릭) | - | 있음 | 그리드가 먼저 데이터에 반영하므로 리스너에서는 cellInfos.nodeModel 에 이미 새 값이 들어 있다 |
+| <code>change</code> | 셀 편집 확정 (Enter, 포커스 이동, 콤보 선택, 체크 클릭). `event.dsModel` 은 편집기가 아니라 그리드 | - | 있음 | 그리드가 먼저 데이터에 반영하므로 리스너에서는 cellInfos.nodeModel 에 이미 새 값이 들어 있다 |
 | <code>liveChange</code> | 입력 중 실시간 (글자 입력, 슬라이더 이동) | - | 있음 | 데이터 반영은 컬럼 liveUpdateFlag:true 일 때만 |
 | <code>preEdit</code> | 편집 중 처음으로 값이 바뀔 때 (편집 시작) | - | 있음 | Tweakers.js setTweakerValue |
 | <code>postEdit</code> | 값이 바뀐 편집이 끝날 때 | - | 있음 | Tweakers.js onPostEdit. preEdit 와 짝 |
 | <code>uncommittedChange</code> | 확정 전 입력 변화 (일부 편집기) | - | 있음 | - |
-| <code>buttonclick</code> | function / functionIcon 타입 셀의 버튼 클릭 | - | 있음 | 셀 안 버튼 동작 처리 |
+| <code>buttonclick</code> | function / functionIcon 타입 셀의 버튼 클릭 | - | 있음 | 셀 안 버튼 동작 처리. 여러 개 선택 칸의 `...` 버튼 같은 셀 안 모든 버튼에서 발생하므로 `cellInfos.columnID` 로 컬럼을 확인 |
 
 ## 일반 DOM 이벤트 (그리드 영역)
 

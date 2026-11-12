@@ -40,8 +40,9 @@ Tweakers.js 의 TweakerBase publishedProperties / prototype, Controls.js 의 Abs
 | 편집기 | 키 (기본값) |
 | --- | --- |
 | `TweakerString` | `value` (`''`), `displayStyle` (`'lineEditor'`), `pattern`, `requiredFlag`, `autoCorrectFlag`, `minLengthBeforeSearch`, `typeDelayBeforeSearch`, `keepSearchResultsFlag` |
-| `TweakerNumber` | `value` (`0`), `displayStyle` (`'spinBox'`), `valueType` (`'number'`), `stepValue` (`0.1`), `decimals` (`5`), `units`, `colorFrom`, `colorTo`, `highExponentProperty`, `lowExponentProperty` |
+| `TweakerNumber` | `value` (`0`), `displayStyle` (`'spinBox'`), `valueType` (`'number'`, `'integer'` 면 반올림해 저장), `stepValue` (`0.1`), `decimals` (`5`, 화면 자릿수), `units`, `colorFrom`, `colorTo`, `highExponentProperty`, `lowExponentProperty` |
 | `TweakerBoolean` | `value` (`false`), `displayStyle` (`'checkbox'`), `label` |
+| `TweakerColor` | `value` (`'ffffff'`, 앞에 `#` 없는 16진수. `'#368ec4'` 를 넣으면 `'368ec4'` 로 저장), `showAlphaFlag` |
 | `TweakerDate` | `value` (Date), `displayStyle` (`'date'`), `timePickerFlag`, `timePickerPrecision` (`'min'`) |
 | `TweakerEnum` | `displayStyle` (`'combo'`), `valueType` (`'enumString'`), `possibleValues` |
 
@@ -57,6 +58,9 @@ Tweakers.js 의 TweakerBase publishedProperties / prototype, Controls.js 의 Abs
 | <code>addEventListener(name, fn) / removeEventListener</code> | 이벤트 등록 / 해제 (<code>getContent()</code> 에 위임) |
 | <code>disableEvents() / enableEvents()</code> | 이벤트 일시 정지 / 재개. 횟수를 세므로 짝을 맞춤 |
 | <code>getEventsAllowedState()</code> | 이벤트가 켜져 있는지 |
+| <code>getStringFromValue(value)</code> | 값을 화면 글자로 바꿈 (읽기 표시, 툴팁). 직접 만든 편집기에서 덮어씀 |
+| <code>onPreEdit() / onPostEdit() / onCancelEdit()</code> | 편집 시작 / 확정(<code>change</code>, <code>postEdit</code>) / 취소(값 복원, <code>cancelEdit</code>). 직접 만든 편집기의 화면 모듈에서 부름 ([편집기 직접 만들기](/tweakers/custom-tweaker)) |
+| <code>computeContentSize()</code> | 내용 너비(px). 그리드 컬럼 너비 맞춤에 쓰임 |
 | <code>setValueAsReference() / resetToReferenceValue()</code> | 현재 값을 기준값으로 저장 / 기준값으로 되돌림 (<code>referenceValue</code>) |
 
 `getValue()`, `setValue()` 는 없습니다. `value` 속성을 씁니다.
@@ -67,11 +71,11 @@ Tweakers.js 의 TweakerBase publishedProperties / prototype, Controls.js 의 Abs
 
 | 이벤트 | 시점 | e.options |
 | --- | --- | --- |
-| <code>change</code> | 값 확정. 코드로 값을 바꿔도 발생 | 대개 <code>{}</code> |
+| <code>change</code> | 값 확정. 코드로 값을 바꿔도 발생. 편집기마다 오는 때가 다름 ([편집기 종류별 사용법](/tweakers/editors)) | 대개 <code>{}</code> |
 | <code>liveChange</code> | 타이핑 중 | <code>{ value }</code> |
-| <code>preEdit</code> | 편집 시작 (첫 입력) | - |
-| <code>postEdit</code> | 편집 끝 | - |
-| <code>cancelEdit</code> | Esc 로 취소 | - |
+| <code>preEdit</code> | 편집 시작. 입력칸이 포커스를 받을 때 | - |
+| <code>postEdit</code> | 편집 끝. 포커스를 잃을 때 (Enter 로는 오지 않음) | - |
+| <code>cancelEdit</code> | Esc 로 취소. 값을 되돌리면서 되돌린 값으로 <code>liveChange</code> 가 한 번 먼저 옴 | - |
 | <code>validStateChange</code> | validState 변경 | - |
 | <code>show / hide</code> | 팝업 열림 / 닫힘 | <code>hide</code>: <code>{ cancelFlag }</code> |
 | <code>viewBuilt</code> | 비동기 화면 모듈 준비 완료 | - |

@@ -8,7 +8,7 @@
     "docs:preview": "vitepress preview docs",
     "docs:verify-list": "node scripts/verify-list.mjs",
     "docs:coverage": "node scripts/coverage.mjs",
-    "docs:dgv-index": "node scripts/datagridview-index.mjs",
+    "docs:key-index": "node scripts/key-index.mjs",
     "samples": "node scripts/samples-server.mjs"
   },
   "devDependencies": {

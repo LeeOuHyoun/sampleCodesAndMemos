@@ -1,5 +1,9 @@
 # 셀 타입 <Badge type="tip" text="서버 확인" />
 
+::: warning 2026-11-12 수정
+로컬 실행으로 다시 확인하다가 두 가지를 고쳤습니다. 여러 개 선택은 `customEnumMember` 가 아니라 `string` 타입으로 만들어야 하고, 링크(`url`) 값은 문자열이 아니라 `{ label, url }` 객체여야 보입니다. 샘플 `02_cellTypes.html` 도 같이 고쳤습니다.
+:::
+
 컬럼의 `typeRepresentation` 으로 셀 모양과 편집기를 정합니다. 편집하려면 `editableFlag: true` 를 같이 넣습니다.
 
 샘플: [02_cellTypes.html](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/DataGridViewSample/02_cellTypes.html)
@@ -11,15 +15,15 @@
 | 텍스트 | `string` (기본) | 문자열 | - |
 | 여러 줄 텍스트 | `multilineString` | 문자열 | - |
 | 콤보박스 (하나 선택) | `customEnumMember` | 문자열 | `semantics.possibleValues` |
-| 콤보박스 (여러 개 선택) | `customEnumMember` | 문자열 배열 | `semantics.allowMultipleValuesFlag: true` |
+| 여러 개 선택 (칩) | `string` | 문자열 배열 | `semantics.possibleValues`, `semantics.allowMultipleValuesFlag: true` |
 | 버튼 그룹 | `customSmallEnumMember` | 문자열 | `semantics.possibleValues` |
-| 프로그레스 바 | `progress` | 0~100 숫자 | `semantics.minValue / maxValue / stepValue` |
+| 프로그레스 바 (편집 가능하면 슬라이더) | `progress` | 0~100 숫자 | `semantics.minValue / maxValue / stepValue` |
 | 체크박스 | `boolean` | true / false | `editionPolicy: 'EditionOnOver'` 권장 |
 | 날짜 | `date` (시간까지는 `datetime`) | Date 객체 | - |
 | 정수 | `integer` | 숫자 | `semantics.minValue / maxValue` |
 | 실수 | `float` (또는 `double`) | 숫자 | `semantics.units` 로 단위 표시 |
-| 색상 | `color` | `'#rrggbb'` | - |
-| 링크 | `url` | URL 문자열 | - |
+| 색상 | `color` | `'#rrggbb'` 를 넣으면 보이고, 편집 뒤 값은 `#` 없는 `'rrggbb'` | - |
+| 링크 | `url` | `{ label: '표시 글자', url: '주소' }` 객체 (문자열은 빈 칸) | - |
 
 전체 목록은 [typeRepresentation](/datagridview/api/type-representation), 세부 설정은 [semantics](/tweakers/api/semantics) 에 있습니다.
 
@@ -39,12 +43,12 @@
 
 `possibleValues` 는 문자열 배열 또는 `{ label: '표시값', value: '저장값' }` 배열 모두 됩니다.
 
-## 콤보박스 (여러 개 선택)
+## 여러 개 선택 (칩)
 
 ```js
 {
   text: '담당자', dataIndex: 'owners',
-  typeRepresentation: 'customEnumMember',
+  typeRepresentation: 'string',
   editableFlag: true,
   editionPolicy: 'EditionOnClick',
   semantics: {
@@ -56,6 +60,8 @@
 ```
 
 - 셀 값은 배열로 저장됩니다 (예: `['이영희', '박민수']`).
+- 셀을 누르면 오른쪽에 `...` 버튼이 생기고, 그 버튼을 누르면 고른 값이 칩으로 보이는 편집기와 목록이 열립니다.
+- `customEnumMember` (하나 선택 콤보)에 `allowMultipleValuesFlag` 를 주면 화면 표시는 되지만, 편집기가 하나만 고르는 콤보라서 편집하면 값이 배열이 아니라 문자열 하나로 바뀝니다 (로컬 실행 확인). 자세한 차이는 [편집기 종류별 사용법](/tweakers/editors).
 - 화면에 보이는 구분자는 `viewOptions.multipleValuesSeparator` 로 바꿉니다. 기본은 `|` 입니다.
 
 ::: info 근거

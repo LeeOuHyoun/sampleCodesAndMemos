@@ -44,11 +44,11 @@
       var treeDocument = new TreeDocument();
       treeDocument.prepareUpdate();
       [
-        { label: 'PRT-0001', grid: { title: '브라켓', status: '작업중', owners: ['김철수'],          priority: '높음', progress: 20,  approved: false, dueDate: new Date(2026, 10, 10), qty: 10, weight: 1.25, color: '#368ec4', url: 'https://www.3ds.com', note: '1차 설계' } },
-        { label: 'PRT-0002', grid: { title: '샤프트', status: '검토중', owners: ['이영희', '박민수'], priority: '보통', progress: 55,  approved: false, dueDate: new Date(2026, 10, 20), qty: 4,  weight: 3.5,  color: '#57b847', url: 'https://www.3ds.com', note: '' } },
-        { label: 'PRT-0003', grid: { title: '하우징', status: '승인',   owners: ['박민수'],          priority: '낮음', progress: 100, approved: true,  dueDate: new Date(2026, 9, 31),  qty: 1,  weight: 12.0, color: '#e87b00', url: 'https://www.3ds.com', note: '양산 적용' } },
-        { label: 'PRT-0004', grid: { title: '커버',   status: '작업중', owners: [],                  priority: '보통', progress: 0,   approved: false, dueDate: new Date(2026, 11, 5),  qty: 2,  weight: 0.8,  color: '#ea4f37', url: 'https://www.3ds.com', note: '' } },
-        { label: 'PRT-0005', grid: { title: '베어링', status: '폐기',   owners: ['최지훈', '김철수'], priority: '높음', progress: 80,  approved: true,  dueDate: new Date(2026, 11, 15), qty: 8,  weight: 0.3,  color: '#77797c', url: 'https://www.3ds.com', note: '대체품 검토' } }
+        { label: 'PRT-0001', grid: { title: '브라켓', status: '작업중', owners: ['김철수'],          priority: '높음', progress: 20,  approved: false, dueDate: new Date(2026, 10, 10), qty: 10, weight: 1.25, color: '#368ec4', url: { label: '3ds.com', url: 'https://www.3ds.com' }, note: '1차 설계' } },
+        { label: 'PRT-0002', grid: { title: '샤프트', status: '검토중', owners: ['이영희', '박민수'], priority: '보통', progress: 55,  approved: false, dueDate: new Date(2026, 10, 20), qty: 4,  weight: 3.5,  color: '#57b847', url: { label: '3ds.com', url: 'https://www.3ds.com' }, note: '' } },
+        { label: 'PRT-0003', grid: { title: '하우징', status: '승인',   owners: ['박민수'],          priority: '낮음', progress: 100, approved: true,  dueDate: new Date(2026, 9, 31),  qty: 1,  weight: 12.0, color: '#e87b00', url: { label: '3ds.com', url: 'https://www.3ds.com' }, note: '양산 적용' } },
+        { label: 'PRT-0004', grid: { title: '커버',   status: '작업중', owners: [],                  priority: '보통', progress: 0,   approved: false, dueDate: new Date(2026, 11, 5),  qty: 2,  weight: 0.8,  color: '#ea4f37', url: { label: '3ds.com', url: 'https://www.3ds.com' }, note: '' } },
+        { label: 'PRT-0005', grid: { title: '베어링', status: '폐기',   owners: ['최지훈', '김철수'], priority: '높음', progress: 80,  approved: true,  dueDate: new Date(2026, 11, 15), qty: 8,  weight: 0.3,  color: '#77797c', url: { label: '3ds.com', url: 'https://www.3ds.com' }, note: '대체품 검토' } }
       ].forEach(function (row) {
         treeDocument.addRoot(new TreeNodeModel(row));
       });
@@ -105,9 +105,11 @@
           },
 
           /*
-           * 콤보박스 (멀티 선택)
-           *   싱글 콤보와 같고 semantics.allowMultipleValuesFlag: true 만 추가한다.
-           *   셀 값은 배열로 저장된다.
+           * 여러 개 선택 (자동완성 칩)
+           *   typeRepresentation 은 'string' 이고 semantics 에 possibleValues 와 allowMultipleValuesFlag: true 를 준다.
+           *   셀 값은 배열로 저장된다. 편집할 때는 입력칸에 글자를 쳐서 고르고, 고른 값이 칩으로 쌓인다.
+           *   customEnumMember (싱글 콤보) 에 allowMultipleValuesFlag 를 주면 표시는 되지만,
+           *   편집기는 하나만 고르는 콤보라서 편집하면 값이 배열이 아니라 문자열 하나로 바뀐다. (로컬 실행 확인)
            *
            *   화면 표시 구분자 : semantics.viewOptions.multipleValuesSeparator (기본 '|')
            *     Tweakers.js TweakerBase.getStringFromValue 에서 " " + 구분자 + " " 로 이어 붙인다.
@@ -115,10 +117,10 @@
            *     (CompareWidget2, DELWKOViewBehaviors, ENOXEngineer 등 ENOVIA 앱도 같은 방식으로 사용)
            */
           {
-            text: '담당자 (콤보-멀티)',
+            text: '담당자 (여러 개 선택)',
             dataIndex: 'owners',
             width: 180,
-            typeRepresentation: 'customEnumMember',
+            typeRepresentation: 'string',
             editableFlag: true,
             editionPolicy: 'EditionOnClick',
             semantics: {
@@ -174,7 +176,7 @@
           /* 색상 : typeRepresentation 'color'. 값은 '#rrggbb' 문자열 */
           { text: '색상', dataIndex: 'color', width: 90, typeRepresentation: 'color', editableFlag: true },
 
-          /* 링크 : typeRepresentation 'url'. 셀이 클릭 가능한 링크로 표시 */
+          /* 링크 : typeRepresentation 'url'. 셀이 클릭 가능한 링크로 표시. 값은 { label, url } 객체 (문자열만 넣으면 빈 칸) */
           { text: '링크 (url)', dataIndex: 'url', width: 160, typeRepresentation: 'url' },
 
           /* 여러 줄 문자열 : typeRepresentation 'multilineString' */

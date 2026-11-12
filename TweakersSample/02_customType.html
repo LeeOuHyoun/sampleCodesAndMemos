@@ -11,9 +11,11 @@
     .page h2 { margin: 0 0 8px; font-size: 16px; }
     .page h3 { margin: 12px 0 8px; font-size: 14px; }
     .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
-    #grid { flex: 1; min-height: 240px; border: 1px solid #d1d4d4; }
+    .buttons { margin: 0 0 8px; }
+    .buttons button { margin-right: 6px; }
+    #grid { position: relative; flex: 1; min-height: 240px; border: 1px solid #d1d4d4; }
     .form { display: grid; grid-template-columns: 120px 260px; gap: 8px 12px; align-items: center; font-size: 13px; }
-    #log { height: 80px; overflow: auto; margin-top: 8px; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
+    #log { height: 100px; overflow: auto; margin: 8px 0 0; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
   </style>
 </head>
 <body>
@@ -21,16 +23,21 @@
     <h2>02. 사용자 타입 등록</h2>
     <p>
       partStatusCombo (아이콘 콤보), removeToggle (아이콘 토글), pinSide (enum) 를 등록한 뒤
-      그리드 컬럼과 폼에서 이름만으로 사용합니다. <a href="index.html">목록으로</a>
+      그리드 컬럼과 폼에서 이름만으로 사용합니다. 등급 컬럼의 partGrade 는 그리드를 만든 뒤에 등록합니다. <a href="index.html">목록으로</a>
     </p>
+    <div class="buttons">
+      <button id="btnLateRegister">partGrade 늦게 등록</button>
+      <button id="btnRedraw">행 다시 그리기</button>
+    </div>
     <div id="grid"></div>
 
     <h3>같은 타입을 폼에서 (generateView)</h3>
     <div class="form">
       <label>상태</label><div id="formStatus"></div>
+      <label>삭제</label><div id="formRemove"></div>
       <label>고정</label><div id="formPin"></div>
     </div>
-    <div id="log"></div>
+    <pre id="log"></pre>
   </div>
 
   <script type="text/javascript">
@@ -48,7 +55,13 @@
         logEl.textContent = text + '\n' + logEl.textContent;
       }
 
-      /* [1] 등록: 저장소는 전역 하나. 그리드를 만들기 전에, 이름당 한 번만 (재등록은 무시됨) */
+      /*
+       * [1] 등록
+       *   저장소는 전역 하나. 그리드를 만들기 전에, 이름당 한 번만 등록한다 (같은 이름으로 다시 등록하면 무시됨).
+       *   registerTypeRepresentations : { 이름: { stdTemplate: 템플릿 id, semantics: 기본값 } }
+       *   registerEnum                : 이름 하나와 목록. { 라벨: 값 } 객체면 저장 값과 화면 라벨이 다르다.
+       */
+      // #region register
       var factory = new TypeRepresentationFactory();
 
       if (!factory.getRegisteredTypeRepresentation('partStatusCombo')) {
@@ -80,38 +93,52 @@
       if (!factory.getRegisteredEnum('pinSide')) {
         factory.registerEnum('pinSide', { '고정 안 함': 'none', '왼쪽 고정': 'left', '오른쪽 고정': 'right' });
       }
+      // #endregion register
 
-      /* [2] 그리드: typeRepresentation 에 등록한 이름 */
+      /*
+       * [2] 그리드
+       *   컬럼 typeRepresentation 에 등록한 이름을 넣는다.
+       */
+      // #region grid
       var treeDocument = new TreeDocument();
       treeDocument.prepareUpdate();
       [
-        { label: 'PRT-0001', grid: { title: '브라켓', status: 'WIP', remove: false, pin: 'none' } },
-        { label: 'PRT-0002', grid: { title: '샤프트', status: 'REVIEW', remove: false, pin: 'left' } },
-        { label: 'PRT-0003', grid: { title: '하우징', status: 'RELEASED', remove: true, pin: 'right' } }
+        { label: 'PRT-0001', grid: { title: '브라켓', status: 'WIP', remove: false, pin: 'none', grade: 'A' } },
+        { label: 'PRT-0002', grid: { title: '샤프트', status: 'REVIEW', remove: false, pin: 'left', grade: 'B' } },
+        { label: 'PRT-0003', grid: { title: '하우징', status: 'RELEASED', remove: true, pin: 'right', grade: 'C' } }
       ].forEach(function (row) {
         treeDocument.addRoot(new TreeNodeModel(row));
       });
       treeDocument.pushUpdate();
 
-      new DataGridView({
+      var grid = new DataGridView({
         treeDocument: treeDocument,
         columns: [
           { text: '품번', dataIndex: 'tree', width: 120 },
           { text: '품명', dataIndex: 'title', width: 140 },
           { text: '상태', dataIndex: 'status', width: 140, typeRepresentation: 'partStatusCombo', editableFlag: true, editionPolicy: 'EditionOnClick' },
           { text: '삭제', dataIndex: 'remove', width: 70, typeRepresentation: 'removeToggle', editableFlag: true, editionPolicy: 'EditionOnOver' },
-          { text: '고정', dataIndex: 'pin', width: 140, typeRepresentation: 'pinSide', editableFlag: true, editionPolicy: 'EditionOnClick' }
+          { text: '고정', dataIndex: 'pin', width: 140, typeRepresentation: 'pinSide', editableFlag: true, editionPolicy: 'EditionOnClick' },
+          { text: '등급', dataIndex: 'grade', width: 120, typeRepresentation: 'partGrade', editableFlag: true, editionPolicy: 'EditionOnClick' }
         ]
       }).inject(document.getElementById('grid'));
 
       treeDocument.onNodeModelUpdate(function (e) {
         var node = e.data.nodeModel;
         log(node.options.label + '  status=' + node.getAttributeValue('status') +
-          ', remove=' + node.getAttributeValue('remove') + ', pin=' + node.getAttributeValue('pin'));
+          ', remove=' + node.getAttributeValue('remove') + ', pin=' + node.getAttributeValue('pin') +
+          ', grade=' + node.getAttributeValue('grade'));
       });
+      // #endregion grid
 
-      /* [3] 폼: 같은 이름을 typePath 로 */
-      [['partStatusCombo', 'REVIEW', 'formStatus'], ['pinSide', 'left', 'formPin']].forEach(function (item) {
+      window.sample = { grid: grid, treeDocument: treeDocument, factory: factory };
+
+      /*
+       * [3] 폼
+       *   같은 이름을 generateView 의 typePath 로 넣으면 그리드 셀과 같은 편집기가 만들어진다.
+       */
+      // #region form
+      [['partStatusCombo', 'REVIEW', 'formStatus'], ['removeToggle', false, 'formRemove'], ['pinSide', 'left', 'formPin']].forEach(function (item) {
         factory.generateView(item[1], { typePath: item[0] }).then(function (tweaker) {
           tweaker.inject(document.getElementById(item[2]));
           tweaker.addEventListener('change', function (e) {
@@ -119,6 +146,28 @@
           });
         });
       });
+      // #endregion form
+
+      /*
+       * [4] 그리드를 만든 뒤에 등록
+       *   이미 그려진 셀은 빈 칸으로 남는다. 등록한 뒤 행을 다시 그려야(값 갱신 등) 등록한 모양이 나온다.
+       */
+      // #region late-register
+      document.getElementById('btnLateRegister').addEventListener('click', function () {
+        if (!factory.getRegisteredEnum('partGrade')) {
+          factory.registerEnum('partGrade', { 'A 등급': 'A', 'B 등급': 'B', 'C 등급': 'C' });
+        }
+        log('partGrade 등록');
+      });
+
+      document.getElementById('btnRedraw').addEventListener('click', function () {
+        treeDocument.prepareUpdate();
+        treeDocument.getRoots().forEach(function (node) {
+          node.updateOptions({ grid: { grade: node.getAttributeValue('grade') } });
+        });
+        treeDocument.pushUpdate();
+      });
+      // #endregion late-register
     });
   </script>
 </body>

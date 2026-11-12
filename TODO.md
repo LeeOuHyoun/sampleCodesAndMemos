@@ -23,7 +23,9 @@
   - [ ] `13_customViews.html` → `datagridview/custom-views` : `useWidgetPreferencesFlag: true` (위젯 설정 저장, 2025 의 삭제 문제)
   - [ ] `15_serverSide.html` → `datagridview/server-side` : 그룹핑 응답 모양, 컬럼 필터의 `filterModel`, `pushUpdatesNotifications`
 - [x] 사이트 검색 확인: `HeaderHeight`, `Tooltip`, `VisibleFlag` 처럼 키 이름의 일부로 검색됨 (빌드 결과로 확인)
-- [ ] 확인 안 된 샘플을 서버에서 실행: EventsSample, UWASample, TweakersSample, ControlsSample, WidgetSample. 확인한 샘플을 링크하는 페이지는 배지를 "서버 확인"으로 변경하고 `guide/index.md` 의 "샘플 소스" 설명도 수정
+- [ ] TweakersSample 01 ~ 05 를 ENOVIA 서버에서 실행. 로컬 실행으로는 확인함 (배지 "로컬 실행 확인"). 로컬에서 확인하지 못한 것: 슬라이더 끌기 이벤트, 달력에서 범위 밖 날짜 표시, 툴바 `onViewFocus` / `giveFocusTo` / 넘침 드롭다운, `chevronMenuIcon`, 직접 만든 편집기를 툴바에서 쓰기
+- [ ] DataGridViewSample 02 를 서버에서 다시 확인: 여러 개 선택 컬럼을 `string` 타입으로, 링크 값을 `{ label, url }` 로 바꿈 (2026-11-12, 로컬 실행으로 기존 방식의 오류를 찾음)
+- [ ] 확인 안 된 샘플을 서버에서 실행: EventsSample, UWASample, ControlsSample, WidgetSample. 확인한 샘플을 링크하는 페이지는 배지를 "서버 확인"으로 변경하고 `guide/index.md` 의 "샘플 소스" 설명도 수정
 
 ## 실무 검증: 샘플 작성 후 서버에서 확인
 
@@ -66,9 +68,10 @@
 - [x] 주제 개요 페이지의 "이 섹션의 문서" 표 형식 통일
 - [x] DataGridView 보완: 트리, 컬럼 함수, 우클릭 메뉴와 선택, 셀 직접 그리기, 상태바 가이드와 샘플 06 ~ 10, 레퍼런스 표 정리, 사용 파일 수, `npm run docs:coverage`
 - [x] DataGridView 남은 분석: 헤더와 컬럼 그룹(`header`), 행 그룹핑(`row-grouping`), 드래그앤드롭(`drag-and-drop`), 서버 사이드(`server-side`), 사용자 뷰(`custom-views`), 레이아웃 메서드(`api/layout-methods`)
-- [x] DataGridView 찾아보기: 이름 색인(`api/key-index`, `npm run docs:dgv-index`), 개요의 "하고 싶은 일로 찾기", 사이드바 묶음 나누기, 키 이름 일부로 검색
+- [x] DataGridView 찾아보기: 이름 색인(`api/key-index`, `npm run docs:key-index`), 개요의 "하고 싶은 일로 찾기", 사이드바 묶음 나누기, 키 이름 일부로 검색
 - [x] DataGridView 새 가이드의 샘플 작성: 11 드래그앤드롭, 12 헤더와 컬럼, 13 사용자 뷰, 14 행 그룹핑, 15 서버 사이드. 가이드 예제는 샘플에서 불러옴
 - [x] 모든 샘플의 그리드 담는 요소에 `position: relative` 추가 (없으면 그리드가 페이지 전체를 덮음)
+- [x] Tweakers 보강 (2026-11-12): 가이드 `editors` (편집기 종류별 사용법), `custom-tweaker` (편집기 직접 만들기), 샘플 04 · 05, 기존 샘플 01 ~ 03 실행 확인과 가이드 정리, 개요의 "하고 싶은 일로 찾기", 이름 색인 (`npm run docs:key-index`)
 - [ ] DataGridView 남은 이름 (`npm run docs:coverage`): 페이지 나누기(`paginationManager`) 가이드, 찾기(`setFindStr`) 가이드, 일괄 수정, 인쇄
 - [ ] DataGridView 기존 가이드(기본 그리드, 셀 타입, 툴바, 정렬과 필터)의 예제 코드도 샘플에서 불러오도록 변경. 새 가이드에서 불러오기가 제대로 보이는 것을 확인한 뒤에 진행
 - [ ] server-java 남은 분석: Slack 알림, 독립 실행 이관 프로그램 내부

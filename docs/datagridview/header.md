@@ -39,6 +39,7 @@ DataGridView.js 의 DataGridViewLayout (`_applyColumnHeaderHeight`, `getColumnHe
 | 헤더 글자 | <code>text</code> | 컬럼 옵션 |
 | 헤더 아이콘, 아이콘만 보이기 | <code>icon</code>, <code>showTextFlag: false</code> | 컬럼 옵션 |
 | 헤더 툴팁 | <code>description</code> | 컬럼 옵션 |
+| 헤더 칸에 CSS 클래스 주기 | <code>getCellClassName</code> (`rowID` 가 음수일 때) | 컬럼 함수 ([헤더 칸에 CSS 클래스 주기](#헤더-칸에-css-클래스-주기)) |
 | 헤더를 2단으로 묶기 | <code>children</code> | 컬럼 옵션 |
 | 묶은 컬럼을 접고 펼치기 | <code>expandedFlag</code>, <code>columnGroupShow</code> | 컬럼 옵션 |
 | 헤더를 직접 그리기 | <code>customHeader</code> | 컬럼 옵션 |
@@ -119,6 +120,39 @@ new DataGridView({
 <<< @/../DataGridViewSample/12_header.html#rename{js}
 
 바꿀 수 있는 키는 [레이아웃 메서드](/datagridview/api/layout-methods#컬럼-설정-바꾸기) 에 있습니다.
+
+## 헤더 칸에 CSS 클래스 주기
+
+헤더 전용 설정은 없습니다. 컬럼 함수 `getCellClassName` 을 넣고, 함수 안에서 `cellInfos.rowID` 로 헤더 칸인지 가립니다. 이 함수는 데이터 칸뿐 아니라 헤더 칸(`rowID` -1, 2단 헤더의 위 줄은 -2)에서도 불립니다.
+
+```js
+{
+  text: '수량',
+  dataIndex: 'qty',
+  getCellClassName: function (cellInfos) {
+    return cellInfos.rowID < 0 ? 'qty-header' : 'qty-cell';
+  }
+}
+```
+
+```css
+.qty-header { background-color: #fff4e0; font-weight: bold; }
+```
+
+헤더 칸에는 `wux-layouts-datagridview-column-header-cell qty-header` 처럼 기본 클래스 뒤에 돌려준 클래스가 붙습니다. 빈 문자열이나 `undefined` 를 돌려주면 아무것도 붙지 않습니다 (로컬 실행 확인).
+
+| 방법 | 헤더 칸 | 데이터 칸 |
+| --- | --- | --- |
+| 컬럼 옵션 `className` | 붙지 않음 | 붙음 |
+| 컬럼 함수 `getCellClassName` | 붙음 (`rowID` 가 음수) | 붙음 (`rowID` 가 0 이상) |
+
+::: warning className 과 같이 쓸 수 없습니다
+컬럼 옵션 `className` 은 기본 `getCellClassName` 이 데이터 칸(`rowID` 가 0 이상)에만 붙여 주는 값입니다. 컬럼에 `getCellClassName` 을 직접 넣으면 그 기본 함수가 대체되어 `className` 은 더 이상 쓰이지 않습니다. 데이터 칸에도 클래스가 필요하면 위 예처럼 함수 안에서 둘 다 돌려줍니다.
+:::
+
+- 헤더 칸에서는 `cellInfos.nodeModel` 이 없습니다. 함수 안에서 행 데이터를 읽는다면 `rowID` 를 먼저 확인해야 오류가 나지 않습니다 ([nodeModel 이 있는지 확인하기](/datagridview/cell-functions#먼저-nodemodel-이-있는지-확인하기)).
+- 헤더 칸 안의 내용 모양까지 바꾸려면 [헤더를 직접 그리기](#헤더를-직접-그리기-customheader) 를 씁니다.
+- 만든 뒤에 붙이려면 컬럼 정의에 함수를 넣고 `grid.layout.applyColumns()` 를 부릅니다 ([컬럼 설정 바꾸기](/datagridview/api/layout-methods#컬럼-설정-바꾸기)).
 
 ## 헤더를 2단으로 묶기 (컬럼 그룹)
 

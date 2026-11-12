@@ -25,7 +25,7 @@ Tweakers/assets/defaultTypeRepresentations.json, typeTemplates.json
 | <code>string</code> | <code>TweakerString</code> | <code>lineEditor</code> | - | 한 줄 텍스트 (기본) |
 | <code>multilineString / editor / textBlock</code> | <code>TweakerString</code> | <code>editor</code> | - | 여러 줄 텍스트 |
 | <code>password</code> | <code>TweakerString</code> | <code>password</code> | - | 비밀번호 |
-| <code>customEnumMember</code> | <code>TweakerString</code> | <code>combo</code> | - | 콤보박스. semantics.possibleValues 필수, allowMultipleValuesFlag:true 면 멀티 |
+| <code>customEnumMember</code> | <code>TweakerString</code> | <code>combo</code> | - | 콤보박스 (하나 선택). semantics.possibleValues 필수. 여러 개 선택은 <code>string</code> + possibleValues + allowMultipleValuesFlag ([편집기 종류별 사용법](/tweakers/editors)) |
 | <code>customSmallEnumMember</code> | <code>TweakerString</code> | <code>buttonGroup</code> | - | 버튼 그룹 (라디오처럼) |
 | <code>stringChoice</code> | <code>TweakerString</code> | <code>toggleGroup</code> | - | 토글 버튼 그룹 |
 | <code>enumString / enumInteger / enumCustom / enumDyn</code> | <code>TweakerEnum</code> | <code>combo</code> | - | 등록된 enum 콤보 (registerEnum 필요) |
@@ -47,7 +47,7 @@ Tweakers/assets/defaultTypeRepresentations.json, typeTemplates.json
 | <code>int16 / int32 / int64 / uint / uint16 / uint32 / uint64</code> | <code>TweakerNumber</code> | <code>spinBox</code> | 범위 내장 | 범위가 정해진 정수 |
 | <code>boundedNumber</code> | <code>TweakerNumber</code> | <code>slider</code> | <code>0~100, step 1</code> | 슬라이더 |
 | <code>percentage</code> | <code>TweakerNumber</code> | <code>slider</code> | <code>0~100, units '%'</code> | 퍼센트 슬라이더 |
-| <code>progress</code> | <code>TweakerNumber</code> | <code>progress</code> | <code>0~100, units '%'</code> | 프로그레스 바 |
+| <code>progress</code> | <code>TweakerNumber</code> | <code>progress</code> | <code>0~100, units '%'</code> | 읽기 전용일 때 프로그레스 막대, 편집 가능하면 슬라이더 |
 | <code>progressNoAnim</code> | <code>TweakerNumber</code> | <code>progressNoAnim</code> | <code>0~100, units '%'</code> | 애니메이션 없는 프로그레스 바 |
 | <code>angle</code> | <code>TweakerNumber</code> | <code>spinBox</code> | <code>0~360, units 'deg'</code> | 각도 |
 | <code>opacity</code> | <code>TweakerNumber</code> | <code>colorSlider</code> | <code>0~255</code> | 투명도 슬라이더 |
@@ -79,13 +79,13 @@ Tweakers/assets/defaultTypeRepresentations.json, typeTemplates.json
 
 | typeRepresentation | 편집기(Tweaker) | displayStyle | 기본 semantics | 설명 |
 | --- | --- | --- | --- | --- |
-| <code>url / urlBlock</code> | <code>TweakerURLObject</code> | <code>clickableLabel(Block)</code> | - | 클릭 가능한 링크 |
+| <code>url / urlBlock</code> | <code>TweakerURLObject</code> | <code>clickableLabel(Block)</code> | - | 클릭 가능한 링크. 값은 <code>{ label, url }</code> 객체 (문자열이면 빈 칸) |
 | <code>user / detailedUser</code> | <code>TweakerURLObject</code> | <code>user</code> | - | 사용자 표시 |
 | <code>detailedInfo / card</code> | <code>TweakerURLObject</code> | <code>detailedInfo / card</code> | - | 상세 정보 / 카드 |
-| <code>color / colorAlpha</code> | <code>TweakerColor</code> | <code>colorpicker</code> | - | 색상 선택 ('#rrggbb') |
+| <code>color / colorAlpha</code> | <code>TweakerColor</code> | <code>colorpicker</code> | - | 색상 선택. 값은 앞에 <code>#</code> 없는 16진수 문자열 (<code>'368ec4'</code>) |
 | <code>image</code> | <code>TweakerImage</code> | <code>simple</code> | - | 이미지 |
 | <code>file / blob</code> | <code>TweakerFile / TweakerBlob</code> | - | - | 파일 |
-| <code>function / functionIcon</code> | <code>TweakerFunction</code> | <code>button / buttonIcon</code> | - | 버튼 / 아이콘 버튼 (툴바에서 주로 사용) |
+| <code>function / functionIcon</code> | <code>TweakerFunction</code> | <code>button / buttonIcon</code> | - | 버튼 / 아이콘 버튼 (툴바에서 주로 사용). 그리드 셀에서는 값이 있는 행에만 버튼이 그려짐. 아이콘은 <code>semantics.icon: { iconName, fontIconFamily }</code> (문자열만 주면 Font Awesome 이름으로 찾음) |
 | <code>functionMenu / functionMenuIcon / functionMenuIconCount / chevronMenuIcon / threeDotsMenu</code> | <code>TweakerFunction</code> | menu 계열 | - | 메뉴 버튼 |
 | <code>array / typedarray</code> | <code>TweakerArray</code> | <code>std</code> | - | 배열 |
 | <code>vector2 / vector3 / vector4</code> | <code>TweakerVector</code> | - | - | 벡터 |

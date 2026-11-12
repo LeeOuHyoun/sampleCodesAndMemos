@@ -1,28 +1,23 @@
-# 사용자 타입 등록 <Badge type="info" text="원본 분석" />
+# 사용자 타입 등록 <Badge type="tip" text="로컬 실행 확인" />
 
 자주 쓰는 콤보 목록이나 아이콘 토글을 이름 하나로 등록해 두면 그리드 컬럼, 툴바, 폼에서 `typeRepresentation: '이름'` 만으로 쓸 수 있습니다.
 
 샘플: [02_customType.html](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/TweakersSample/02_customType.html)
 
 ::: info 근거
-Tweakers.js 의 TypeRepresentationFactory, TypeRepresentationDirectory, TweakerEnum, Tweakers/assets/typeTemplates.json. 호출부: DataGridView (pinnedEnum, setToolbar), CfgBaseUX, ControlsEx, ENOXEngineer, ENXSBToolbarClient
+Tweakers.js 의 TypeRepresentationFactory, TypeRepresentationDirectory, TweakerEnum, Tweakers/assets/typeTemplates.json. 호출부: DataGridView (pinnedEnum, setToolbar), CfgBaseUX, ControlsEx, ENOXEngineer, ENXSBToolbarClient. 샘플은 원본 webapps 파일을 로컬에서 띄워 실행 확인 (3DSpace 서버에서는 미확인).
 :::
 
 ## 등록은 전역에 한 번
 
-```js
-require(['DS/Tweakers/TypeRepresentationFactory'], function (TypeRepresentationFactory) {
-  var factory = new TypeRepresentationFactory();
-  factory.registerEnum('partStatus', ['작업중', '검토중', '승인', '폐기']);
-});
-```
+<<< @/../TweakersSample/02_customType.html#register{js}
 
-- `new TypeRepresentationFactory()` 는 몇 개를 만들어도 **같은 전역 저장소** 를 씁니다. 어느 인스턴스로 등록하든 모든 그리드, 툴바, 편집기에서 보입니다.
+- `new TypeRepresentationFactory()` 는 몇 개를 만들어도 **같은 전역 저장소** 를 씁니다. 어느 인스턴스로 등록하든 다른 인스턴스, `grid.getTypeRepresentationFactory()`, 툴바, 편집기에서 모두 보입니다.
 - 그래서 실제 코드는 등록용으로 잠깐 만들어 쓰고 버리거나 (`new Factory().registerTypeRepresentations(...)`), 그리드가 가진 것을 씁니다 (`grid.getTypeRepresentationFactory()`).
-- 등록은 그 이름을 쓰는 그리드나 툴바를 **만들기 전에** 합니다.
+- 등록은 그 이름을 쓰는 그리드나 툴바를 **만들기 전에** 합니다. 아래 "만든 뒤에 등록하면" 을 보세요.
 
 ::: warning 같은 이름으로 다시 등록하면 무시됩니다
-저장소는 기존 키를 덮어쓰지 않는 방식으로 합칩니다. 같은 이름으로 두 번 등록하면 처음 것이 남고 오류도 나지 않습니다. 목록을 바꾸려면 등록된 객체를 직접 고칩니다.
+저장소는 기존 키를 덮어쓰지 않는 방식으로 합칩니다. 같은 이름으로 두 번 등록하면 처음 것이 남고 오류도 나지 않습니다 (`registerEnum`, `registerTypeRepresentations` 모두). 그래서 샘플은 `getRegisteredEnum` / `getRegisteredTypeRepresentation` 으로 먼저 확인합니다. 목록을 바꾸려면 등록된 객체를 직접 고칩니다.
 
 ```js
 var typeRep = factory.getRegisteredTypeRepresentation('partStatusCombo');
@@ -45,9 +40,7 @@ if (typeRep) {
 | `{ '왼쪽 고정': 'left', '오른쪽 고정': 'right' }` | `enumCustom` | 키 = 화면 라벨, 값 = 저장 값 |
 | `function () { return [...]; }` | `enumDyn` | 열 때마다 목록 생성 |
 
-```js
-factory.registerEnum('pinSide', { '고정 안 함': 'none', '왼쪽 고정': 'left', '오른쪽 고정': 'right' });
-```
+네 형태 모두 TweakerEnum 콤보가 만들어지고 `valueType` 이 위 표대로 정해지는 것을 실행으로 확인했습니다. 샘플의 `pinSide` 는 `enumCustom` 이라 셀과 폼에 `왼쪽 고정` 이 보이고 값은 `left` 로 저장됩니다.
 
 ```js
 { text: '고정', dataIndex: 'pin', typeRepresentation: 'pinSide', editableFlag: true }
@@ -58,33 +51,7 @@ factory.registerEnum('pinSide', { '고정 안 함': 'none', '왼쪽 고정': 'le
 
 ## 사용자 타입 등록 (registerTypeRepresentations)
 
-`{ 이름: 정의 }` 객체를 넘깁니다. 정의는 **어떤 템플릿(편집기 + 모양)을 쓸지** 와 **기본 semantics** 입니다.
-
-```js
-factory.registerTypeRepresentations({
-  partStatusCombo: {
-    stdTemplate: 'enumCombo',
-    semantics: {
-      valueType: 'enumString',
-      possibleValues: [
-        { value: 'WIP', label: '작업중', icon: 'pencil' },
-        { value: 'REVIEW', label: '검토중', icon: 'eye' },
-        { value: 'RELEASED', label: '승인', icon: 'check' }
-      ]
-    }
-  },
-  removeToggle: {
-    stdTemplate: 'toggleIcon',
-    semantics: {
-      possibleValues: [
-        { value: 'true', icon: 'trash' },
-        { value: 'false', icon: 'undo' },
-        { value: 'undefined', icon: '' }
-      ]
-    }
-  }
-});
-```
+`{ 이름: 정의 }` 객체를 넘깁니다. 정의는 **어떤 템플릿(편집기 + 모양)을 쓸지** 와 **기본 semantics** 입니다. 샘플의 [1] 이 `partStatusCombo` (아이콘 콤보) 와 `removeToggle` (아이콘 토글) 을 등록하는 예입니다.
 
 | 키 | 설명 |
 | --- | --- |
@@ -92,7 +59,12 @@ factory.registerTypeRepresentations({
 | `inlinedTemplate` | 한 줄 모양(툴바, 폼 셀)에서 쓸 템플릿 id. 없으면 `stdTemplate` |
 | `semantics` | 편집기에 넘길 기본값. 쓰는 쪽(컬럼 `semantics` 등)에서 같은 키를 넣으면 그쪽이 우선 |
 
-`stdTemplate` 자리에 `{ default: '템플릿A', readOnly: '템플릿B' }` 를 넣으면 읽기 전용일 때 다른 모양을 씁니다. 상속(`parentType` 같은 키)은 없습니다.
+- `removeToggle` 의 `possibleValues` 는 값이 `'true'` / `'false'` 문자열이지만 데이터의 `true` / `false` (boolean) 와 맞춰져 아이콘이 나오고, 클릭하면 boolean 으로 저장됩니다.
+- 상속(`parentType` 같은 키)은 없습니다.
+
+::: danger stdTemplate 의 읽기 전용 분기는 콤보에서 오류
+`stdTemplate` 자리에 `{ default: '템플릿A', readOnly: '템플릿B' }` 를 넣으면 읽기 전용일 때 B 를 쓰도록 되어 있습니다. 하지만 2025 에서 `default` 가 `enumCombo` 같은 콤보 템플릿이면 편집기를 만들 때 `TypeError` (`reading 'path'`) 가 납니다 (내부 `getTypePath` 가 `stdTemplate` 을 문자열로만 다룸). `readOnly: true` 로 B 쪽을 만들 때는 정상입니다. 내장 타입과 앱 호출부에도 이 형태를 쓰는 곳은 없으니 쓰지 않는 것이 안전합니다.
+:::
 
 ### 자주 쓰는 템플릿 id
 
@@ -116,6 +88,10 @@ factory.registerTypeTemplates({
 factory.registerTypeRepresentations({ expandInput: { stdTemplate: 'myExpandInput' } });
 ```
 
+- 편집 모드 화면은 `options.displayStyle` 값을 편집기의 `VIEW_MODULES` 키로 찾습니다. 빠뜨리면 편집 모드가 오류 없이 빈 칸이 됩니다.
+- `path` 가 `DS/X/Y` 면 묶음 파일 `DS/X/X` 를 먼저 불러옵니다 (없어도 무시하지만 404 가 남음).
+- 편집기를 만드는 방법은 [편집기 직접 만들기](/tweakers/custom-tweaker) 에 있습니다.
+
 ## 등록한 타입 쓰기
 
 | 쓰는 곳 | 방법 |
@@ -125,6 +101,18 @@ factory.registerTypeRepresentations({ expandInput: { stdTemplate: 'myExpandInput
 | 만든 뒤 바꾸기 | `grid.setColumnTypeRepresentation(dataIndex, 'partStatusCombo')` |
 | 툴바 칸 | `dataElements: { typeRepresentation: 'partStatusCombo' }` |
 | 편집기 단독 | `factory.generateView(value, { typePath: 'partStatusCombo' })` |
+
+그리드 컬럼과 폼에 같은 이름을 쓰면 같은 모양(아이콘, 라벨)과 같은 저장 값으로 동작합니다. 샘플에서 셀의 상태를 `승인` 으로 고르면 `RELEASED` 가, 폼의 상태 콤보에서 고르면 똑같이 `RELEASED` 가 들어옵니다.
+
+<<< @/../TweakersSample/02_customType.html#grid{js}
+
+<<< @/../TweakersSample/02_customType.html#form{js}
+
+### 만든 뒤에 등록하면
+
+그리드를 만든 뒤에 등록하면, 이미 그려진 셀은 **빈 칸** 으로 남고 오류도 나지 않습니다. 등록만으로는 다시 그려지지 않고, 행이 다시 그려질 때(값 갱신 등) 등록한 모양이 나옵니다. 그 뒤로는 편집도 정상입니다.
+
+<<< @/../TweakersSample/02_customType.html#late-register{js}
 
 ### 툴바 JSON 의 enums, typeRepresentations
 
@@ -140,6 +128,8 @@ factory.registerTypeRepresentations({ expandInput: { stdTemplate: 'myExpandInput
 | `'myObject.child'` | 객체 타입의 하위 항목 (`children`) |
 | `'name#partStatus'` | `name` 을 못 찾으면 `#` 뒤 이름으로 대신 |
 | <code>'array&lt;integer&gt;'</code> | 배열 타입. 값 타입이 integer |
+
+`'name#partStatus'` 형식은 없는 이름 앞에 등록한 enum 을 붙여 콤보가 만들어지는 것을 실행으로 확인했습니다.
 
 ## 2026 버전 차이
 

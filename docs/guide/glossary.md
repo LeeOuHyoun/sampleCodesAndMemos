@@ -106,6 +106,9 @@
 | dropPosition | 끌어 온 것이 행의 어디에 있는지. top(앞에 넣기), middle(하위로 넣기), bottom(뒤에 넣기) | [놓을 위치 표시](/datagridview/drag-and-drop#놓을-위치-표시) |
 | typeRepresentation | 컬럼의 타입 이름. 셀 모양과 편집기를 정함 | [typeRepresentation](/datagridview/api/type-representation) |
 | semantics | 편집기에 넘기는 세부 옵션 (`possibleValues`, `minValue` ...) | [semantics](/tweakers/api/semantics) |
+| 자동완성 (string + possibleValues) | 타입 `string` 에 `possibleValues` 를 준 입력칸. 입력하며 고르고, 여러 개 선택과 자유 입력이 되는 방식 | [입력하며 고르기](/tweakers/editors#입력하며-고르기-검색-멀티-자유-입력) |
+| 화면 모듈 (view module) | 편집기 안에서 모드(편집, 읽기)별 화면을 그리는 객체. `VIEW_MODULES` 로 고름 | [편집기 직접 만들기](/tweakers/custom-tweaker#화면-모듈) |
+| setTweakerValue | 화면 모듈이 사용자 입력으로 편집기 값을 바꿀 때 부르는 메서드 | [값과 이벤트](/tweakers/custom-tweaker#값과-이벤트) |
 | Tweaker | 값 하나를 보여 주고 고치는 편집기 컨트롤 | [Tweakers](/tweakers/) |
 | XSO, CSO | 선택 목록 객체. CSO 는 그 창의 "현재 선택" | [선택](/events/selection) |
 | ModelEvents | 화면 부품 사이에서 쓰는 publish / subscribe 객체 | [ModelEvents](/events/pubsub#modelevents) |

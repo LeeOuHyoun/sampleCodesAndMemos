@@ -9,7 +9,7 @@ DataGridView 레퍼런스에 나오는 옵션, 함수, 이벤트 이름 476개�
 - "있는 곳" 은 그 이름이 설명된 페이지와 절입니다. 넣는 자리(그리드 옵션, `layoutOptions`, 컬럼 옵션)도 여기서 알 수 있습니다.
 - 이름의 일부만 기억나면 상단 검색(<kbd>Ctrl</kbd> + <kbd>K</kbd>)에 `HeaderHeight` 처럼 넣습니다.
 - 하고 싶은 일로 찾으려면 [개요의 "하고 싶은 일로 찾기"](/datagridview/#하고-싶은-일로-찾기) 를 봅니다.
-- 이 페이지는 `npm run docs:dgv-index` 로 다시 만듭니다. 직접 고치지 않습니다.
+- 이 페이지는 `npm run docs:key-index` 로 다시 만듭니다. 직접 고치지 않습니다.
 
 ## A
 
@@ -44,7 +44,7 @@ DataGridView 레퍼런스에 나오는 옵션, 함수, 이벤트 이름 476개�
 | <code>buildDefaultContextualMenu</code> | [그리드 메서드 › 우클릭 메뉴, 셀 직접 그리기, 상태바](/datagridview/api/grid-methods#우클릭-메뉴-셀-직접-그리기-상태바) | 그리드 기본 우클릭 메뉴. `onContextualEvent` 안에서 기본 메뉴에 항목을 더할 때 사용 ([우클릭 메뉴](/datagridview/context-menu#그리드-기본-메뉴-쓰기)) |
 | <code>buildLinks</code> | [하위 옵션 객체 › treeNodeCellOptions](/datagridview/api/sub-options#treenodecelloptions) | 트리 연결선 |
 | <code>buildStatusBar</code> | [그리드 메서드 › 우클릭 메뉴, 셀 직접 그리기, 상태바](/datagridview/api/grid-methods#우클릭-메뉴-셀-직접-그리기-상태바) | 그리드 아래 상태바 만들기 (21). 만든 뒤 객체는 `grid.elements.statusBar` ([상태바](/datagridview/status-bar)) |
-| <code>buttonclick</code> | [이벤트 › 셀 편집기(Tweaker)에서 버블링되는 이벤트](/datagridview/api/events#셀-편집기-tweaker-에서-버블링되는-이벤트) | 셀 안 버튼 동작 처리 |
+| <code>buttonclick</code> | [이벤트 › 셀 편집기(Tweaker)에서 버블링되는 이벤트](/datagridview/api/events#셀-편집기-tweaker-에서-버블링되는-이벤트) | 셀 안 버튼 동작 처리. 여러 개 선택 칸의 `...` 버튼 같은 셀 안 모든 버튼에서 발생하므로 `cellInfos.columnID` 로 컬럼을 확인 |
 
 ## C
 
@@ -68,7 +68,7 @@ DataGridView 레퍼런스에 나오는 옵션, 함수, 이벤트 이름 476개�
 | <code>checkPresenceOfDataGridViewPreferences</code> | [레이아웃 메서드 (grid.layout) › 화면 상태 저장 (preferences)](/datagridview/api/layout-methods#화면-상태-저장-preferences) | 저장된 화면 상태가 있는지 |
 | <code>children</code> | [데이터 (TreeDocument / TreeNodeModel) › new TreeNodeModel({ ... }) — 행](/datagridview/api/data#new-treenodemodel-—-행) | 하위 행. 없으면 끝 행(펼침 아이콘 없음), 빈 배열 <code>[]</code> 이면 "하위 행이 있지만 아직 안 불러옴" 으로 펼침 아이콘이 생김 ([트리 구조](/datagridview/tree)) |
 | <code>children</code> | [컬럼 옵션 › 컬럼 그룹 (2단 헤더)](/datagridview/api/column-options#컬럼-그룹-2단-헤더) | 컬럼 그룹. { text: '그룹명', dataIndex: '그룹키', children: [컬럼, 컬럼] } 형태로 헤더를 2단으로 묶음 (CATFLCockpitWidget 사용 예) |
-| <code>children</code> | [툴바 (setToolbar)](/datagridview/api/toolbar) | 하위 메뉴 (메뉴형 버튼) |
+| <code>children</code> | [툴바 (setToolbar)](/datagridview/api/toolbar) | 하위 메뉴 (메뉴형 버튼). `children` 의 `label` 은 `title` 로 바뀜. `dataElements.value: { menu: [{ type: 'PushItem', title, icon, action: { callback } }] }` 도 같은 메뉴이고 앱에서는 이쪽이 더 흔함 ([메뉴형 버튼](/tweakers/generated-toolbar#메뉴형-버튼)) |
 | <code>className</code> | [컬럼 옵션 › 표시 / 기능 on-off](/datagridview/api/column-options#표시-기능-on-off) | 이 컬럼 셀에 붙일 CSS 클래스 |
 | <code>click</code> | [이벤트 › 일반 DOM 이벤트 (그리드 영역)](/datagridview/api/events#일반-dom-이벤트-그리드-영역) | 클릭한 행: cellInfos.nodeModel. 헤더면 rowID -1 |
 | <code>closeFind</code> | [그리드 메서드 › 툴바, 그룹, 내보내기](/datagridview/api/grid-methods#툴바-그룹-내보내기) | 찾기 실행 / 닫기 |
@@ -376,7 +376,7 @@ DataGridView 레퍼런스에 나오는 옵션, 함수, 이벤트 이름 476개�
 | <code>onlySelectedRows</code> | [그리드 메서드 › 툴바, 그룹, 내보내기](/datagridview/api/grid-methods#툴바-그룹-내보내기) | 선택된 행만 |
 | <code>onNodeLiveUpdate</code> | [툴바 (setToolbar)](/datagridview/api/toolbar) | 입력 중 실시간 호출 (module/func 방식은 소스상 버그로 동작 안 함 → function 사용) |
 | <code>onNodeModelUpdate</code> | [이벤트 › 데이터(TreeDocument) 쪽 알림 — 행 선택, 값 변경은 여기서 받는 것이 정확](/datagridview/api/events#데이터-treedocument-쪽-알림-—-행-선택-값-변경은-여기서-받는-것이-정확) | 어떤 경로로 바뀌든 값 변경을 한 곳에서 받기 |
-| <code>onNodeUpdate</code> | [툴바 (setToolbar)](/datagridview/api/toolbar) | 값이 확정되면 호출 (검색창 Enter, 콤보 선택) |
+| <code>onNodeUpdate</code> | [툴바 (setToolbar)](/datagridview/api/toolbar) | 값이 확정되면 호출 (검색창 Enter, 콤보 선택). `updateNodeModel` 로 항목을 바꿀 때도 매번 호출 |
 | <code>onOutOfBoundSortRequest</code> | [하위 옵션 객체 › sortOptions](/datagridview/api/sub-options#sortoptions) | 최대 개수를 넘는 정렬 요청 시 호출 |
 | <code>onPostAdd</code> | [이벤트 › 데이터(TreeDocument) 쪽 알림 — 행 선택, 값 변경은 여기서 받는 것이 정확](/datagridview/api/events#데이터-treedocument-쪽-알림-—-행-선택-값-변경은-여기서-받는-것이-정확) | webapps 각 50회 사용. 선택 목록은 treeDocument.getSelectedNodes(). 예제: [우클릭 메뉴와 선택](/datagridview/context-menu#선택-변경-받기) |
 | <code>onPostCollapse</code> | [이벤트 › 데이터(TreeDocument) 쪽 알림 — 행 선택, 값 변경은 여기서 받는 것이 정확](/datagridview/api/events#데이터-treedocument-쪽-알림-—-행-선택-값-변경은-여기서-받는-것이-정확) | - |

@@ -13,15 +13,15 @@
     #toolbar { border: 1px solid #d1d4d4; }
     .buttons { margin: 12px 0; }
     .buttons button { margin-right: 6px; }
-    #log { height: 220px; overflow: auto; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
+    #log { height: 260px; overflow: auto; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
   </style>
 </head>
 <body>
   <div class="page">
     <h2>03. GeneratedToolbar</h2>
     <p>
-      그리드 없이 만든 툴바입니다. 저장 / 편집 버튼은 함수(value), 확대 / 축소 버튼은 모듈(action, ToolbarActions.js) 로 연결했습니다.
-      <a href="index.html">목록으로</a>
+      그리드 없이 만든 툴바입니다. 편집 / 저장 버튼은 함수(value), 확대 / 축소 버튼은 모듈(action, ToolbarActions.js),
+      내보내기는 메뉴형 버튼, 보기 전환은 layout 타입으로 연결했습니다. <a href="index.html">목록으로</a>
     </p>
     <div id="toolbar"></div>
     <div class="buttons">
@@ -30,14 +30,15 @@
       <button id="btnSetKeyword">검색어 코드로 넣기</button>
       <button id="btnReplace">항목 전체 교체 (updateModel)</button>
     </div>
-    <div id="log"></div>
+    <pre id="log"></pre>
   </div>
 
   <script type="text/javascript">
     require([
       'DS/Tweakers/GeneratedToolbar',
-      'DS/Tweakers/TypeRepresentationFactory'
-    ], function (GeneratedToolbar, TypeRepresentationFactory) {
+      'DS/Tweakers/TypeRepresentationFactory',
+      'DS/Tweakers/TypeEnums'
+    ], function (GeneratedToolbar, TypeRepresentationFactory, TypeEnums) {
       'use strict';
 
       var logEl = document.getElementById('log');
@@ -48,28 +49,35 @@
         }
       };
 
-      /* [1] 툴바 JSON 의 enums 는 직접 만들 때 무시되므로 먼저 등록 */
+      /*
+       * [1] 사용자 enum 등록
+       *   툴바 JSON 최상위의 enums 는 GeneratedToolbar 를 직접 만들 때 무시되므로 Factory 로 먼저 등록한다.
+       *   저장소는 전역 하나라서 같은 이름은 한 번만 등록된다.
+       */
+      // #region register
       var factory = new TypeRepresentationFactory();
       if (!factory.getRegisteredEnum('sampleViewMode')) {
         factory.registerEnum('sampleViewMode', ['목록', '썸네일', '상세']);
       }
+      // #endregion register
 
-      function setDirty(toolbar, dirty) {
-        view.dirty = dirty;
-        toolbar.updateNodeModel('save', { disabled: !dirty });
-        toolbar.updateNodeModel('edit', { label: dirty ? '편집 중' : '편집' });
-      }
-
-      function buildEntries() {
+      /*
+       * [2] 검색창과 콤보
+       *   onNodeLiveUpdate(nodeModel, 입력값) : 타이핑할 때마다
+       *   onNodeUpdate(nodeModel)            : Enter, 콤보 선택. updateNodeModel 로 항목 옵션을 바꿔도 불린다.
+       *   값은 nodeModel.getAttributeValue('data') 로 읽는다.
+       */
+      // #region search
+      function searchEntries() {
         return [
           {
             id: 'keyword',
             dataElements: { typeRepresentation: 'string', placeholder: '검색어 입력 후 Enter', value: '' },
-            onNodeUpdate: function (nodeModel) {
-              view.log('onNodeUpdate keyword = ' + nodeModel.getAttributeValue('data'));
-            },
             onNodeLiveUpdate: function (nodeModel, value) {
               view.log('onNodeLiveUpdate keyword = ' + value);
+            },
+            onNodeUpdate: function (nodeModel) {
+              view.log('onNodeUpdate keyword = ' + nodeModel.getAttributeValue('data'));
             }
           },
           {
@@ -78,7 +86,68 @@
             onNodeUpdate: function (nodeModel) {
               view.log('onNodeUpdate viewMode = ' + nodeModel.getAttributeValue('data'));
             }
+          }
+        ];
+      }
+      // #endregion search
+
+      /*
+       * [3] 함수 버튼과 상태 바꾸기
+       *   버튼 동작은 dataElements.value 에 함수로. e.context.toolbar / executionContext / nodeModel 을 받는다.
+       *   disabled 는 updateNodeModel 만으로 바로 바뀐다.
+       *   displayLabel 로 보이는 라벨 글자는 툴바를 다시 그려야 바뀌므로 prepareUpdateView / pushUpdateView 로 감싼다.
+       */
+      // #region function-buttons
+      function setDirty(toolbar, dirty) {
+        view.dirty = dirty;
+        toolbar.prepareUpdateView();
+        toolbar.updateNodeModel('save', { disabled: !dirty });
+        toolbar.updateNodeModel('edit', { label: dirty ? '편집 중' : '편집' });
+        toolbar.pushUpdateView();
+      }
+
+      function editEntries() {
+        return [
+          {
+            id: 'edit',
+            position: 'far',
+            dataElements: {
+              typeRepresentation: 'functionIcon',
+              label: view.dirty ? '편집 중' : '편집',
+              displayLabel: true,
+              icon: { iconName: 'pencil', fontIconFamily: 1 },
+              value: function (e) {
+                setDirty(e.context.toolbar, !e.context.executionContext.dirty);
+              }
+            }
           },
+          {
+            id: 'save',
+            position: 'far',
+            dataElements: {
+              typeRepresentation: 'functionIcon',
+              label: '저장',
+              displayLabel: true,
+              disabled: !view.dirty,
+              icon: { iconName: 'floppy', fontIconFamily: 1 },
+              value: function (e) {
+                var keyword = e.context.toolbar.getNodeModelByID('keyword');
+                e.context.executionContext.log('저장 클릭 (keyword = ' + (keyword && keyword.getAttributeValue('data')) + ')');
+                setDirty(e.context.toolbar, false);
+              }
+            }
+          }
+        ];
+      }
+      // #endregion function-buttons
+
+      /*
+       * [4] 모듈 버튼
+       *   action: { module, func, argument } 는 클릭할 때 모듈을 불러와 func 를 부른다. 함수는 ToolbarActions.js 에 있다.
+       */
+      // #region action-buttons
+      function zoomEntries() {
+        return [
           {
             id: 'zoomOut',
             position: 'far',
@@ -103,39 +172,71 @@
               icon: { iconName: 'zoom-in', fontIconFamily: 1 },
               action: { module: 'DS/TweakersSample/ToolbarActions', func: 'zoomIn', argument: { step: 10 } }
             }
-          },
+          }
+        ];
+      }
+      // #endregion action-buttons
+
+      /*
+       * [5] 메뉴형 버튼과 보기 전환
+       *   functionMenuIcon : value.menu 의 항목을 누르면 그 항목의 action.callback 이 불린다.
+       *   layout           : 값과 목록이 { value, label, icon } 객체. TypeEnums.Layout 에 미리 만든 객체가 있다.
+       *                      고른 뒤의 값은 2025 는 객체, 2026 은 value 문자열이라서 data.value || data 로 읽는다.
+       */
+      // #region menu
+      function exportItem(title) {
+        return {
+          type: 'PushItem',
+          title: title,
+          icon: { iconName: 'doc', fontIconFamily: 1 },
+          action: {
+            callback: function () {
+              view.log('메뉴 ' + title + ' 클릭');
+            }
+          }
+        };
+      }
+
+      function menuEntries() {
+        return [
           {
-            id: 'edit',
+            id: 'export',
             position: 'far',
             dataElements: {
-              typeRepresentation: 'functionIcon',
-              label: '편집',
-              displayLabel: true,
-              icon: { iconName: 'pencil', fontIconFamily: 1 },
-              value: function (e) {
-                setDirty(e.context.toolbar, !e.context.executionContext.dirty);
-              }
+              typeRepresentation: 'functionMenuIcon',
+              tooltip: '내보내기',
+              icon: { iconName: 'export', fontIconFamily: 1 },
+              value: { menu: [exportItem('CSV'), exportItem('PDF')] }
             }
           },
           {
-            id: 'save',
+            id: 'layout',
             position: 'far',
             dataElements: {
-              typeRepresentation: 'functionIcon',
-              label: '저장',
-              displayLabel: true,
-              icon: { iconName: 'floppy', fontIconFamily: 1 },
-              value: function (e) {
-                e.context.executionContext.log('저장 클릭 (keyword = ' +
-                  e.context.toolbar.getNodeModelByID('keyword').getAttributeValue('data') + ')');
-                setDirty(e.context.toolbar, false);
-              }
+              typeRepresentation: 'layout',
+              value: TypeEnums.Layout.DataGridView,
+              possibleValues: [TypeEnums.Layout.DataGridView, TypeEnums.Layout.SmallTile, TypeEnums.Layout.BigTile]
+            },
+            onNodeUpdate: function (nodeModel) {
+              var data = nodeModel.getAttributeValue('data');
+              view.log('onNodeUpdate layout = ' + (data.value || data));
             }
           }
         ];
       }
+      // #endregion menu
 
-      /* [2] 생성: createTreeDocument 결과를 items 로 */
+      function buildEntries() {
+        return searchEntries().concat(zoomEntries(), menuEntries(), editEntries());
+      }
+
+      /*
+       * [6] 생성과 이벤트
+       *   items 에는 createTreeDocument 결과(TreeDocument)를 넣는다. 넘긴 JSON 객체는 변환되면서 바뀌므로 다시 쓰지 않는다.
+       *   onReady      : 툴바를 그릴 때마다 (처음, pushUpdateView, updateModel)
+       *   modelUpdated : 항목 하나가 바뀔 때마다 (onNodeUpdate 다음)
+       */
+      // #region create
       var toolbar = new GeneratedToolbar({
         items: GeneratedToolbar.prototype.createTreeDocument({ entries: buildEntries() }),
         executionContext: view,
@@ -145,33 +246,51 @@
 
       toolbar.addEventListener('onReady', function () {
         view.log('onReady');
-        setDirty(toolbar, false);
       });
       toolbar.addEventListener('modelUpdated', function () {
         view.log('modelUpdated');
       });
+      // #endregion create
 
-      /* [3] 읽기 / 바꾸기 */
+      window.sample = { toolbar: toolbar, view: view };
+
+      /*
+       * [7] 값 읽기
+       *   getNodeModelByID 는 최상위 항목만 찾고, 없으면 undefined.
+       */
+      // #region read
       document.getElementById('btnRead').addEventListener('click', function () {
-        view.log('읽기  ' + ['keyword', 'viewMode', 'zoomRate'].map(function (id) {
-          return id + '=' + toolbar.getNodeModelByID(id).getAttributeValue('data');
+        view.log('읽기  ' + ['keyword', 'viewMode', 'zoomRate', 'layout'].map(function (id) {
+          var node = toolbar.getNodeModelByID(id);
+          var value = node ? node.getAttributeValue('data') : '(없음)';
+          return id + '=' + (value && value.value ? value.value : value);
         }).join(', '));
       });
+      // #endregion read
 
+      /*
+       * [8] 숨기기와 값 넣기
+       *   visibleFlag, 값({ grid: { data } }) 모두 updateNodeModel 하나로 바로 바뀐다.
+       */
+      // #region update
       var searchVisible = true;
       document.getElementById('btnToggleSearch').addEventListener('click', function () {
         searchVisible = !searchVisible;
-        toolbar.prepareUpdateView();
         toolbar.updateNodeModel('keyword', { visibleFlag: searchVisible });
         toolbar.updateNodeModel('viewMode', { visibleFlag: searchVisible });
-        toolbar.pushUpdateView();
       });
 
       document.getElementById('btnSetKeyword').addEventListener('click', function () {
-        view.log('--- 코드로 값 변경 (onNodeUpdate 도 호출됨)');
+        view.log('--- 코드로 값 변경');
         toolbar.updateNodeModel('keyword', { grid: { data: 'PRT-0001' } });
       });
+      // #endregion update
 
+      /*
+       * [9] 항목 전체 교체
+       *   updateModel 은 새 JSON 으로 모든 항목을 다시 만든다. 만들 때마다 새 엔트리 객체를 넘긴다.
+       */
+      // #region replace
       document.getElementById('btnReplace').addEventListener('click', function () {
         var entries = buildEntries().filter(function (entry) {
           return entry.id !== 'viewMode';
@@ -179,6 +298,7 @@
         toolbar.updateModel({ entries: entries });
         view.log('updateModel: viewMode 항목 제거');
       });
+      // #endregion replace
     });
   </script>
 </body>

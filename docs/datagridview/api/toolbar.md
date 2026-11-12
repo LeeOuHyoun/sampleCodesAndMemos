@@ -39,10 +39,10 @@ Tweakers.js 의 GeneratedToolbar
 | <code>id</code> | 항목 | - | 문자열 | 항목 고유 id |
 | <code>position</code> | 항목 | <code>'near'</code> | <code>'near' &#124; 'center' &#124; 'far'</code> | 왼쪽 / 가운데 / 오른쪽 |
 | <code>category / priority / overflowPriority</code> | 항목 | <code>'other' / - / -</code> | 문자열 / 숫자 | 묶음, 순서, 공간 부족 시 드롭다운으로 넘어가는 우선순위 |
-| <code>onNodeUpdate</code> | 항목 | - | <code>{ module, func, argument } &#124; function</code> | 값이 확정되면 호출 (검색창 Enter, 콤보 선택) |
+| <code>onNodeUpdate</code> | 항목 | - | <code>{ module, func, argument } &#124; function</code> | 값이 확정되면 호출 (검색창 Enter, 콤보 선택). `updateNodeModel` 로 항목을 바꿀 때도 매번 호출 |
 | <code>onNodeLiveUpdate</code> | 항목 | - | <code>function</code> | 입력 중 실시간 호출 (module/func 방식은 소스상 버그로 동작 안 함 → function 사용) |
-| <code>children</code> | 항목 | - | 항목 배열 | 하위 메뉴 (메뉴형 버튼) |
-| <code>dataElements.typeRepresentation</code> | 항목 | 필수 | <code>'functionIcon' &#124; 'string' &#124; 'customEnumMember' &#124; 'boolean' ...</code> | 항목 종류 |
+| <code>children</code> | 항목 | - | 항목 배열 | 하위 메뉴 (메뉴형 버튼). `children` 의 `label` 은 `title` 로 바뀜. `dataElements.value: { menu: [{ type: 'PushItem', title, icon, action: { callback } }] }` 도 같은 메뉴이고 앱에서는 이쪽이 더 흔함 ([메뉴형 버튼](/tweakers/generated-toolbar#메뉴형-버튼)) |
+| <code>dataElements.typeRepresentation</code> | 항목 | 필수 | <code>'functionIcon' &#124; 'functionMenuIcon' &#124; 'string' &#124; 'customEnumMember' &#124; 'boolean' &#124; 'layout' ...</code> | 항목 종류 |
 | <code>dataElements.label / tooltip / displayLabel</code> | 항목 | - | 문자열 / 문자열 / boolean | 글자 / 툴팁 / 라벨 표시 여부 |
 | <code>dataElements.icon</code> | 항목 | - | <code>{ iconName: 'plus', fontIconFamily: 1 }</code> | 아이콘 (1 = 3DS 폰트) |
 | <code>dataElements.value / possibleValues / placeholder</code> (입력칸, 콤보) | 항목 | - | 값 / 배열 / 문자열 | 초기값, 콤보 목록, 안내 문구 |

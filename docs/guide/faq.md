@@ -41,6 +41,13 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | `rowGroupingEnabledFlag: false` 인데 묶임 | 이 값은 화면 조작만 끔. 코드의 `groupRows` 는 그대로 동작 | [행 그룹핑](/datagridview/row-grouping#주의) |
 | `rowReorderEnabledFlag: true` 인데 행 순서가 안 바뀜 | 기본값이 이미 true. `rowDragEnabledFlag: true` 를 켜야 함 | [옵션 네 개와 잡는 곳](/datagridview/drag-and-drop#옵션-네-개와-잡는-곳) |
 | 그리드 행을 밖으로 끌게만 했는데 순서도 바뀜 | `rowDragEnabledFlag` 를 켜면 순서 바꾸기도 켜짐. `rowReorderEnabledFlag: false` 추가 | [드래그앤드롭 주의](/datagridview/drag-and-drop#주의) |
+| 그리드에서 여러 개 선택 콤보를 편집하면 값이 문자열 하나가 됨 | `customEnumMember` 는 하나만 고르는 콤보. 여러 개 선택은 `typeRepresentation: 'string'` + `possibleValues` + `allowMultipleValuesFlag` | [여러 개 선택](/datagridview/cell-types#여러-개-선택-칩) |
+| 링크(`url`) 셀이 비어 있음 | 값은 문자열이 아니라 `{ label, url }` 객체 | [셀 타입](/datagridview/cell-types#한눈에-보기) |
+| `functionIcon` 셀 아이콘이 안 보임 | `semantics.icon` 에 문자열만 주면 Font Awesome 이름으로 찾음. `{ iconName, fontIconFamily }` 로 줌 | [버튼, 링크, 색상](/tweakers/editors#버튼-링크-색상) |
+| 숫자 편집기 `minValue: 0` 인데 음수가 들어감 | 경계값이 0 이면 코드로 넣는 값은 검사하지 않음 | [범위를 벗어난 값](/tweakers/editors#범위를-벗어난-값) |
+| 콤보에 값을 넣었더니 첫 항목이 됨 | `possibleValues` 의 `value` 가 아닌 값(`label` 포함)을 넣으면 첫 항목으로 바뀜 | [콤보](/tweakers/editors#콤보) |
+| 툴바 라벨을 `updateNodeModel` 로 바꿔도 그대로 | 툴바를 다시 그려야 반영됨. `prepareUpdateView` / `pushUpdateView` 로 감쌈 | [prepareUpdateView / pushUpdateView](/tweakers/generated-toolbar#prepareupdateview-pushupdateview) |
+| 직접 만든 편집기가 그리드 편집 모드에서 비어 있음 | 템플릿 `options.displayStyle` 이 화면 모듈(`VIEW_MODULES`) 키와 맞아야 함 | [편집기 직접 만들기](/tweakers/custom-tweaker#view-modules-키) |
 | 트리 컬럼 필터가 안 생김 | `setFilterModel` 의 키는 `tree` 가 아니라 `label` | [필터](/datagridview/api/filter) |
 | 그리드 컬럼의 `getCellTooltip` 이 안 불림 | 그리드 옵션 `getCellTooltip` 을 넣으면 컬럼 쪽은 무시됨 | [조건부 모양과 툴팁](/datagridview/cell-functions#조건부-모양과-툴팁) |
 | WebUX 컨트롤 옵션이 안 먹음 | `publishedProperties` 에 있는 키만 반영. 대소문자까지 맞아야 함 (`visibleflag` ✕). UIKIT 은 오타도 저장만 됨 | [두 계열의 차이](/controls/#두-계열의-차이) |
@@ -90,6 +97,8 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 그리드 값 변경 알림이 끝없이 반복 | `onNodeModelUpdate` 안에서 저장 후 `updateOptions` 하면 다시 알림. `setCellValue` 방식 사용 | [이벤트 안에서 저장하지 않기](/datagridview/save-and-reflect#주의-이벤트-안에서-저장하지-않기) |
 | 그리드 리스너가 해제되지 않음 | `removeEventListener` 에는 `addEventListener` 의 **반환값**을 넘김 | [등록 / 해제](/datagridview/api/events#등록-해제) |
 | 트리 행이 "펼치는 중" 에서 멈춤 | `useAsyncPreExpand` 일 때 `onPreExpand` 콜백이 모든 경우에 `node.preExpandDone()` 을 불러야 함 | [펼칠 때 하위 행 불러오기](/datagridview/tree#펼칠-때-하위-행-불러오기) |
+| 툴바 `onReady` 에서 상태를 바꾸면 끝없이 돎 | `onReady` 는 툴바를 다시 그릴 때마다 옴. 첫 상태는 JSON 에 넣음 | [툴바 이벤트](/tweakers/generated-toolbar#툴바-이벤트) |
+| 직접 만든 편집기에서 값을 바꿨는데 그리드 데이터에 안 들어감 | 화면 모듈의 이벤트는 `Dom.addEventOnElement` 로 등록하고 `setTweakerValue` 로 값을 바꿈 | [값과 이벤트](/tweakers/custom-tweaker#값과-이벤트) |
 | 그리드 `onPreExpand` 콜백이 하나만 동작 | 다시 등록하면 이전 콜백을 대체함 | [펼칠 때 하위 행 불러오기](/datagridview/tree#펼칠-때-하위-행-불러오기) |
 | 그리드 `onInfiniteScroll` 콜백이 한 번만 옴 | 처리 끝에 `grid.infiniteScrollProcessDone()` 을 안 부름. 실패했을 때와 더 없을 때도 부름 | [스크롤이 끝에 닿으면 행 더하기](/datagridview/server-side#예제-5-대안-스크롤이-끝에-닿으면-행-더하기) |
 | 행이 적으면 그리드 `onInfiniteScroll` 이 안 옴 | 첫 묶음이 화면을 못 채우면 스크롤 막대가 없어 불리지 않음. 첫 묶음을 늘리거나 `onEndResizeOrOnReadyModelRequest` 사용 | [서버 사이드 데이터 주의](/datagridview/server-side#주의) |
@@ -122,6 +131,8 @@ ENOVIA 코드는 잘못 넣은 키나 이름을 **오류 없이 무시**하는 �
 | 그리드 행을 rowID 로 다시 찾으니 다른 행 | rowID 는 펼침, 정렬, 필터로 바뀜. `nodeModel` 을 보관 | [cellID 와 rowID](/datagridview/api/grid-methods#먼저-알아-둘-것-cellid-와-rowid) |
 | 그리드 컬럼 함수에서 `nodeModel` 이 undefined | 컬럼 헤더 셀(rowID -1)에도 호출됨. `cellInfos.nodeModel` 을 먼저 확인 | [nodeModel 이 있는지 확인하기](/datagridview/cell-functions#먼저-nodemodel-이-있는지-확인하기) |
 | 직접 그린 그리드 셀에 다른 행의 모양이 섞임 | 꺼낸 셀 내용에 이전 행 값이 남아 있음. 글자, 속성, 스타일을 매번 모두 다시 넣음 | [onCellRequest](/datagridview/custom-cell#oncellrequest) |
+| 2026 에서 툴바 layout 값의 `.value` 가 `undefined` | 2025 는 객체, 2026 은 문자열로 옴. `data.value || data` 로 읽음 | [보기 전환](/tweakers/generated-toolbar#보기-전환-layout-typeenums) |
+| 숫자 편집기 decimals 0 인데 값에 소수가 남음 | `decimals` 는 화면 자릿수일 뿐. 정수로 저장하려면 `valueType: 'integer'` | [숫자](/tweakers/editors#숫자) |
 | 그리드에서 `node.remove()` 해도 행이 남음 | 변경 트랜잭션 모드에서는 삭제 표시만 함. `acceptChanges()` 때 제거 | [행의 변경 상태](/datagridview/save-and-reflect#행의-변경-상태) |
 | 행을 묶은 그리드에서 선택된 행, CSV 에 빈 행이 섞임 | 그룹 행(품번 칸에 `상태: 승인 (3)` 같은 제목만 있는 행)이 TreeDocument 에 실제로 들어감. 헤더 전체 선택 체크박스로도 선택됨. `getNodeSource()` 로 걸러냄. `getRoots()` 도 그룹 행을 돌려줌 | [그룹 행은 어떤 행인가](/datagridview/row-grouping#그룹-행은-어떤-행인가) |
 | 행을 묶은 뒤 추가한 행이 그룹 밖에 나옴 | 자동으로 다시 묶지 않음. `grid.reapplyRowGrouping()` 호출 | [행을 추가한 뒤 다시 묶기](/datagridview/row-grouping#예제-9-행을-추가한-뒤-다시-묶기) |

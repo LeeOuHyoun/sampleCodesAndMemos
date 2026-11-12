@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>04. 편집기 직접 만들기</title>
+  <link rel="stylesheet" type="text/css" href="../Core/wux.css" />
+  <script type="text/javascript" src="../AmdLoader/AmdLoader.js"></script>
+  <style>
+    html, body { margin: 0; font-family: sans-serif; }
+    .page { padding: 12px; }
+    .page h2 { margin: 0 0 8px; font-size: 16px; }
+    .page h3 { margin: 16px 0 8px; font-size: 14px; }
+    .page p { margin: 0 0 8px; font-size: 12px; color: #555; }
+    .form { display: grid; grid-template-columns: 120px 260px; gap: 8px 12px; align-items: center; font-size: 13px; }
+    .buttons { margin: 12px 0; }
+    .buttons button { margin-right: 6px; }
+    #grid { position: relative; height: 200px; border: 1px solid #d1d4d4; }
+    #log { height: 160px; overflow: auto; margin-top: 8px; border: 1px solid #d1d4d4; padding: 6px; font: 12px monospace; background: #fafafa; }
+    .sample-stars { display: inline-flex; align-items: center; height: 100%; }
+    .sample-star { cursor: pointer; color: #c8cbcc; font-size: 18px; padding: 0 1px; }
+    .sample-star.on { color: #f5a623; }
+    .sample-stars[disabled] .sample-star { cursor: default; opacity: 0.5; }
+    .sample-measure { display: inline-flex; gap: 4px; align-items: center; height: 100%; }
+    .sample-measure input { width: 70px; }
+    .sample-measure-unit { color: #77797c; font-size: 11px; margin-left: 2px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2>04. 편집기 직접 만들기</h2>
+    <p>
+      TweakerBase 를 상속한 별점(1~5) 편집기와 "숫자 + 단위" 편집기를 만들어 폼(generateView)과 그리드 셀(typeRepresentation)에서 함께 씁니다.
+      <a href="index.html">목록으로</a>
+    </p>
+
+    <h3>폼 (factory.generateView)</h3>
+    <div class="form">
+      <label>평점 (starRating)</label><div id="formRating"></div>
+      <label>두께 (measure)</label><div id="formThickness"></div>
+    </div>
+    <div class="buttons">
+      <button id="btnRead">값 읽기</button>
+      <button id="btnWrite">코드로 값 넣기</button>
+      <button id="btnReadOnly">읽기 전용 전환</button>
+      <button id="btnDisabled">disabled 전환</button>
+    </div>
+
+    <h3>그리드 셀 (컬럼 typeRepresentation, 더블클릭으로 편집)</h3>
+    <div id="grid"></div>
+    <div id="log"></div>
+  </div>
+
+  <script type="text/javascript">
+    /* 템플릿 path 'DS/X/Y' 를 불러올 때 묶음 파일 'DS/X/X' 를 먼저 찾으므로 빈 모듈로 404 를 막습니다. */
+    define('DS/TweakersSample/TweakersSample', [], function () {
+      return {};
+    });
+
+    define('DS/TweakersSample/StarRatingTweaker', [
+      'UWA/Core',
+      'DS/Tweakers/TweakerBase',
+      'DS/Utilities/Utils',
+      'DS/Utilities/Dom'
+    ], function (UWA, TweakerBase, Utils, Dom) {
+      'use strict';
+
+      /* [1] 편집기 클래스: TweakerBase.inherit 로 상속하고 publishedProperties 에는 바꿀 속성만 적습니다.
+         getStringFromValue 는 읽기 모드 글자, 그리드 툴팁, 찾기에 쓰입니다. */
+      // #region star-tweaker
+      var StarRatingTweaker = TweakerBase.inherit({
+        name: 'starRatingTweaker',
+        publishedProperties: {
+          value: { defaultValue: 0, type: 'number', advancedSetter: true }
+        },
+        getStringFromValue: function (value) {
+          var count = value || 0;
+          return new Array(count + 1).join('★') + new Array(6 - count).join('☆');
+        }
+      });
+      // #endregion star-tweaker
+
+      /* [2] 편집 모드 화면 모듈: baseViewModule 을 상속해 buildView / handleEvents / setValue 를 채웁니다.
+         화면에서 값이 바뀌면 setTweakerValue 를 부르고, 이벤트는 Dom.addEventOnElement 로 등록해야 그리드에 반영됩니다.
+         VIEW_MODULES 에 readOnly 를 넣지 않았으므로 읽기 모드는 TweakerBase 기본 글자 표시(getStringFromValue)가 쓰입니다. */
+      // #region star-edit-view
+      var BaseView = TweakerBase.prototype.baseViewModule;
+
+      var StarEditView = function (tweaker, options) {
+        BaseView.call(this, tweaker, options);
+      };
+      Utils.applyMixin(StarEditView, BaseView);
+
+      StarEditView.prototype.buildView = function () {
+        this._view = UWA.createElement('div', { 'class': 'sample-stars' });
+        this._stars = [];
+        for (var i = 1; i <= 5; i++) {
+          var star = UWA.createElement('span', { 'class': 'sample-star', 'data-value': i });
+          star.textContent = '★';
+          this._stars.push(star.inject(this._view));
+        }
+        this.setValue(this._tweaker.value);
+        this.setDisabled(this._tweaker.disabled);
+      };
+
+      StarEditView.prototype.handleEvents = function () {
+        var self = this;
+        Dom.addEventOnElement(this._tweaker, this._view, 'click', function (e) {
+          var star = Number(e.target.getAttribute('data-value'));
+          if (star && !self._tweaker.disabled) {
+            self.setTweakerValue(star);
+          }
+        });
+      };
+
+      StarEditView.prototype.setValue = function (value) {
+        this._stars.forEach(function (star, index) {
+          star.classList.toggle('on', index < (value || 0));
+        });
+      };
+
+      StarEditView.prototype.setDisabled = function (disabled) {
+        this._view.toggleAttribute('disabled', !!disabled);
+      };
+
+      StarRatingTweaker.prototype.VIEW_MODULES = { edition: { classObject: StarEditView } };
+      // #endregion star-edit-view
+
+      return StarRatingTweaker;
+    });
+
+    define('DS/TweakersSample/MeasureTweaker', [
+      'UWA/Core',
+      'DS/Tweakers/TweakerBase',
+      'DS/Utilities/Utils',
+      'DS/Utilities/Dom'
+    ], function (UWA, TweakerBase, Utils, Dom) {
+      'use strict';
+
+      /* [3] 값이 객체({ amount, unit })인 편집기. units 는 직접 추가한 속성이며 semantics 로 넘어옵니다. */
+      // #region measure-tweaker
+      var MeasureTweaker = TweakerBase.inherit({
+        name: 'measureTweaker',
+        publishedProperties: {
+          value: { defaultValue: undefined, type: 'object', advancedSetter: true },
+          units: { defaultValue: ['mm', 'cm', 'm'], type: 'object' }
+        },
+        getStringFromValue: function (value) {
+          return value ? value.amount + ' ' + value.unit : '';
+        }
+      });
+      // #endregion measure-tweaker
+
+      /* [4] 편집 모드: 숫자칸 + 단위 콤보. 숫자칸은 입력 중 liveChange, 칸을 떠날 때 change 를 냅니다.
+         onPreEdit 로 편집 중 상태를 만들면 setTweakerValue 가 change 대신 liveChange 를 내고, onPostEdit 가 change 를 냅니다.
+         Esc 는 onCancelEdit 로 편집 전 값으로 되돌립니다 (부르지 않으면 그리드에서 Esc 가 입력값을 확정합니다).
+         input / select 의 브라우저 change 이벤트는 편집기 change 와 이름이 같아 위로 올라가지 않게 막습니다.
+         _getElementToFocus 는 그리드가 편집을 시작할 때 포커스를 줄 요소입니다. */
+      // #region measure-edit-view
+      var BaseView = TweakerBase.prototype.baseViewModule;
+
+      var MeasureEditView = function (tweaker, options) {
+        BaseView.call(this, tweaker, options);
+      };
+      Utils.applyMixin(MeasureEditView, BaseView);
+
+      MeasureEditView.prototype.buildView = function () {
+        var self = this;
+        this._view = UWA.createElement('div', { 'class': 'sample-measure' });
+        this._input = UWA.createElement('input', { type: 'number', step: 'any' }).inject(this._view);
+        this._select = UWA.createElement('select').inject(this._view);
+        this._tweaker.units.forEach(function (unit) {
+          self._select.add(new Option(unit, unit));
+        });
+        this.setValue(this._tweaker.value);
+        this.setDisabled(this._tweaker.disabled);
+      };
+
+      MeasureEditView.prototype.readValue = function () {
+        var amount = parseFloat(this._input.value);
+        return isNaN(amount) ? undefined : { amount: amount, unit: this._select.value };
+      };
+
+      MeasureEditView.prototype.handleEvents = function () {
+        var self = this;
+        var tweaker = this._tweaker;
+        Dom.addEventOnElement(tweaker, this._input, 'input', function () {
+          tweaker.onPreEdit();
+          self.setTweakerValue(self.readValue());
+        });
+        Dom.addEventOnElement(tweaker, this._input, 'blur', function () {
+          tweaker.onPostEdit();
+        });
+        Dom.addEventOnElement(tweaker, this._input, 'keydown', function (e) {
+          if (e.key === 'Escape') {
+            tweaker.onCancelEdit();
+          }
+        });
+        Dom.addEventOnElement(tweaker, this._input, 'change', function (e) {
+          e.stopPropagation();
+        });
+        Dom.addEventOnElement(tweaker, this._select, 'change', function (e) {
+          e.stopPropagation();
+          self.setTweakerValue(self.readValue());
+        });
+      };
+
+      MeasureEditView.prototype.setValue = function (value) {
+        if (!value) {
+          this._input.value = '';
+          return;
+        }
+        if (parseFloat(this._input.value) !== value.amount) {
+          this._input.value = value.amount;
+        }
+        this._select.value = value.unit;
+      };
+
+      MeasureEditView.prototype.setDisabled = function (disabled) {
+        this._input.disabled = !!disabled;
+        this._select.disabled = !!disabled;
+      };
+
+      MeasureEditView.prototype._getElementToFocus = function () {
+        return this._input;
+      };
+      // #endregion measure-edit-view
+
+      /* [5] 읽기 모드 화면 모듈을 따로 둔 경우. VIEW_MODULES 의 키는 displayStyle 값(edition)과 readOnly 입니다. */
+      // #region measure-read-view
+      var MeasureReadView = function (tweaker, options) {
+        BaseView.call(this, tweaker, options);
+      };
+      Utils.applyMixin(MeasureReadView, BaseView);
+
+      MeasureReadView.prototype.buildView = function () {
+        this._view = UWA.createElement('span', { 'class': 'wux-tweakers-string-label' });
+        this.setValue(this._tweaker.value);
+      };
+
+      MeasureReadView.prototype.setValue = function (value) {
+        this._view.textContent = value ? value.amount : '';
+        if (value) {
+          UWA.createElement('span', { 'class': 'sample-measure-unit', text: value.unit }).inject(this._view);
+        }
+      };
+
+      MeasureTweaker.prototype.VIEW_MODULES = {
+        edition: { classObject: MeasureEditView },
+        readOnly: { classObject: MeasureReadView }
+      };
+      // #endregion measure-read-view
+
+      return MeasureTweaker;
+    });
+
+    require([
+      'DS/Tweakers/TypeRepresentationFactory',
+      'DS/DataGridView/DataGridView',
+      'DS/TreeModel/TreeDocument',
+      'DS/TreeModel/TreeNodeModel'
+    ], function (TypeRepresentationFactory, DataGridView, TreeDocument, TreeNodeModel) {
+      'use strict';
+
+      var logEl = document.getElementById('log');
+
+      function log(text) {
+        logEl.textContent = new Date().toLocaleTimeString() + '  ' + text + '\n' + logEl.textContent;
+      }
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      function show(value) {
+        return value && typeof value === 'object' ? JSON.stringify(value) : String(value);
+      }
+
+      /* [6] 연결: 템플릿 id -> 모듈 경로(+ displayStyle), 타입 이름 -> 템플릿 id. 그리드를 만들기 전에 한 번 */
+      // #region register
+      var factory = new TypeRepresentationFactory();
+
+      factory.registerTypeTemplates({
+        sampleStarRating: { path: 'DS/TweakersSample/StarRatingTweaker', options: { displayStyle: 'edition' } },
+        sampleMeasure: { path: 'DS/TweakersSample/MeasureTweaker', options: { displayStyle: 'edition' } }
+      });
+      factory.registerTypeRepresentations({
+        starRating: { stdTemplate: 'sampleStarRating' },
+        measure: { stdTemplate: 'sampleMeasure', semantics: { units: ['mm', 'cm', 'm'] } }
+      });
+      // #endregion register
+
+      /* [7] 폼: 타입 이름을 typePath 로. 편집기 하나를 직접 쓰므로 change 이벤트를 바로 받습니다. */
+      // #region form
+      var formTweakers = {};
+
+      [['starRating', 3, 'formRating'], ['measure', { amount: 2.5, unit: 'mm' }, 'formThickness']].forEach(function (item) {
+        factory.generateView(item[1], { typePath: item[0] }).then(function (tweaker) {
+          formTweakers[item[0]] = tweaker.inject(byId(item[2]));
+          tweaker.addEventListener('change', function (e) {
+            log('폼 change     ' + item[0] + ' = ' + show(e.dsModel.value));
+          });
+          tweaker.addEventListener('liveChange', function (e) {
+            log('폼 liveChange ' + item[0] + ' = ' + show(e.options.value));
+          });
+        });
+      });
+      // #endregion form
+
+      /* [8] 그리드: 컬럼 typeRepresentation 에 같은 이름. 확정된 값은 nodeModel 에 들어가고 그리드 change 가 옵니다. */
+      // #region grid
+      var treeDocument = new TreeDocument();
+      treeDocument.prepareUpdate();
+      [
+        { label: 'PRT-0001', grid: { title: '브라켓', rating: 4, thickness: { amount: 2, unit: 'mm' } } },
+        { label: 'PRT-0002', grid: { title: '샤프트', rating: 2, thickness: { amount: 1.5, unit: 'cm' } } },
+        { label: 'PRT-0003', grid: { title: '하우징', rating: 5, thickness: { amount: 0.3, unit: 'm' } } }
+      ].forEach(function (row) {
+        treeDocument.addRoot(new TreeNodeModel(row));
+      });
+      treeDocument.pushUpdate();
+
+      var grid = new DataGridView({
+        treeDocument: treeDocument,
+        columns: [
+          { text: '품번', dataIndex: 'tree', width: 120 },
+          { text: '품명', dataIndex: 'title', width: 120 },
+          { text: '평점', dataIndex: 'rating', width: 130, typeRepresentation: 'starRating', editableFlag: true },
+          { text: '두께', dataIndex: 'thickness', width: 170, typeRepresentation: 'measure', editableFlag: true }
+        ]
+      }).inject(byId('grid'));
+
+      grid.addEventListener('change', function (e, cellInfos) {
+        if (cellInfos && cellInfos.nodeModel) {
+          log('그리드 change  ' + cellInfos.nodeModel.options.label + ' 열 ' + cellInfos.columnID);
+        }
+      });
+      treeDocument.onNodeModelUpdate(function (e) {
+        var node = e.data.nodeModel;
+        log('nodeModel     ' + node.options.label + ' rating=' + node.getAttributeValue('rating') +
+          ', thickness=' + show(node.getAttributeValue('thickness')));
+      });
+      // #endregion grid
+
+      window.sample = { factory: factory, grid: grid, treeDocument: treeDocument, form: formTweakers };
+
+      /* [9] 코드로 value / readOnly / disabled 를 바꾸면 화면 모듈의 setValue, 화면 모듈 교체, setDisabled 가 불립니다. */
+      // #region code-control
+      byId('btnRead').addEventListener('click', function () {
+        log('읽기  평점=' + formTweakers.starRating.value + ', 두께=' + show(formTweakers.measure.value));
+      });
+
+      byId('btnWrite').addEventListener('click', function () {
+        formTweakers.starRating.value = 1;
+        formTweakers.measure.value = { amount: 10, unit: 'cm' };
+      });
+
+      byId('btnReadOnly').addEventListener('click', function () {
+        var next = !formTweakers.starRating.readOnly;
+        formTweakers.starRating.readOnly = next;
+        formTweakers.measure.readOnly = next;
+        log('readOnly = ' + next);
+      });
+
+      byId('btnDisabled').addEventListener('click', function () {
+        var next = !formTweakers.starRating.disabled;
+        formTweakers.starRating.disabled = next;
+        formTweakers.measure.disabled = next;
+        log('disabled = ' + next);
+      });
+      // #endregion code-control
+    });
+  </script>
+</body>
+</html>

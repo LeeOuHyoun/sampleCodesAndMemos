@@ -332,14 +332,17 @@ const WEBAPPS_SIDEBAR = [
       {
         text: '가이드',
         items: [
+          { text: '편집기 종류별 사용법', link: '/tweakers/editors' },
           { text: '편집기 단독 사용', link: '/tweakers/standalone' },
           { text: '사용자 타입 등록', link: '/tweakers/custom-type' },
+          { text: '편집기 직접 만들기', link: '/tweakers/custom-tweaker' },
           { text: 'GeneratedToolbar', link: '/tweakers/generated-toolbar' }
         ]
       },
       {
         text: 'API 레퍼런스',
         items: [
+          { text: '이름 색인 (A-Z)', link: '/tweakers/api/key-index' },
           { text: 'Tweaker', link: '/tweakers/api/tweaker' },
           { text: 'semantics', link: '/tweakers/api/semantics' },
           { text: 'TypeRepresentationFactory', link: '/tweakers/api/type-representation-factory' },

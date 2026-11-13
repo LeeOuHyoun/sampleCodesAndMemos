@@ -266,7 +266,7 @@ Controls.js (2025, 2026) 의 Accordeon, Tab, TabBar, Toolbar, Breadcrumb, GroupB
 | <code>value</code> | <code>array</code> | <code>[]</code> | 항목 배열. 항목은 문자열 또는 <code>{ label, icon, value }</code>. <code>value</code> 를 비우면 <code>label</code> |
 | <code>selectedValues</code> | <code>array</code> | <code>[]</code> | 선택된 항목 |
 | <code>mode</code> | <code>enum</code> | <code>0</code> | <code>Breadcrumb.MODE</code>: <code>NAVIGATION</code>(0), <code>MULTIPLE_SELECTION</code>(1), <code>EXCLUSIVE_SELECTION</code>(2) |
-| <code>displayStyle</code> | <code>enum</code> | <code>0</code> | <code>Breadcrumb.DISPLAY_STYLE</code>: <code>LITE</code>(0, <code>\</code> 구분자, 넘치면 메뉴 아이콘), <code>IMMERSIVE</code>(1, 항목 전체 클릭) |
+| <code>displayStyle</code> | <code>enum</code> | <code>0</code> | <code>Breadcrumb.DISPLAY_STYLE</code>: <code>LITE</code>(0, <code>&#92;</code> 구분자, 넘치면 메뉴 아이콘), <code>IMMERSIVE</code>(1, 항목 전체 클릭) |
 | <code>displayIcons</code> / <code>displayLabels</code> | <code>enum</code> | <code>1</code> | <code>Breadcrumb.DISPLAY_ELEMENT</code>: <code>NONE</code>(0), <code>ALL</code>(1), <code>SELECTED</code>(2), <code>HOVERED</code>(3), <code>HOVERED_OR_SELECTED</code>(4) |
 | <code>expandableSeparatorFlag</code> | <code>boolean</code> | <code>false</code> | 구분자를 눌 수 있는 화살표(<code>chevron-right</code>)로 |
 | <code>onSeparatorClickEvent</code> | <code>function</code> | <code>null</code> | 구분자 클릭 처리 <code>fn({ index })</code>. 주면 <code>separatorClick</code> 이벤트 대신 호출 |

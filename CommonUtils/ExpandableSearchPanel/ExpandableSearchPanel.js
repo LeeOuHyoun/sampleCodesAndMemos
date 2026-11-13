@@ -9,8 +9,6 @@ define('DS/CommonUtils/ExpandableSearchPanel/ExpandableSearchPanel', [
 
   const ROW_STEPS = [1, 4, 12];
 
-  const iconOf = (iconName) => ({ iconName, fontIconFamily: WUXManagedFontIcons.Font3DS });
-
   const fieldFactories = {
     text: (field) => {
       const editor = new LineEditor({ placeholder: field.placeholder || '' });
@@ -67,7 +65,8 @@ define('DS/CommonUtils/ExpandableSearchPanel/ExpandableSearchPanel', [
       }
     });
 
-    const toggleButton = new Button({ displayStyle: 'lite', showLabelFlag: false, icon: iconOf('expand-down') });
+    const toggleIcon = UWA.createElement('span', { 'class': 'esp-toggle wux-ui-3ds' });
+    const expander = UWA.createElement('div', { 'class': 'esp-expander', html: [toggleIcon] });
 
     const applyStep = () => {
       const visibleCount = ROW_STEPS[stepIndex];
@@ -80,10 +79,12 @@ define('DS/CommonUtils/ExpandableSearchPanel/ExpandableSearchPanel', [
         row.element.toggleClassName('esp-row--open', open);
         row.element.inert = !open;
       });
-      toggleButton.icon = iconOf(stepIndex === ROW_STEPS.length - 1 ? 'expand-up' : 'expand-down');
+      const expanded = stepIndex === ROW_STEPS.length - 1;
+      toggleIcon.toggleClassName('wux-ui-3ds-expand-up', expanded);
+      toggleIcon.toggleClassName('wux-ui-3ds-expand-down', !expanded);
     };
 
-    toggleButton.addEventListener('buttonclick', () => {
+    expander.addEvent('click', () => {
       stepIndex = (stepIndex + 1) % ROW_STEPS.length;
       applyStep();
     });
@@ -98,7 +99,7 @@ define('DS/CommonUtils/ExpandableSearchPanel/ExpandableSearchPanel', [
             { 'class': 'esp-actions', html: [searchButton] }
           ]
         },
-        { 'class': 'esp-expander', html: [toggleButton] }
+        expander
       ]
     });
 

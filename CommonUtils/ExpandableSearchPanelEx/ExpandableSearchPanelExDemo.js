@@ -24,20 +24,24 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelExDemo', [
     return treeDocument;
   };
 
+  const textField = (id) => ({ id, label: id, editor: Adapters.text() });
+
   const createRows = () => {
-    const extraFields = [
-      { id: 'select', label: '드롭다운', editor: Adapters.select({ items: OPTION_ITEMS, placeholder: '선택' }) },
-      { id: 'dateRange', label: '날짜 범위', editor: Adapters.dateRange() },
-      { id: 'checkboxGroup', label: '체크박스 그룹', editor: Adapters.checkboxGroup({ items: OPTION_ITEMS }) },
-      { id: 'checkbox', label: '체크박스', editor: Adapters.checkbox({ label: '포함' }) },
-      { id: 'multiSelect', label: '드롭다운(멀티)', editor: Adapters.multiSelect({ items: OPTION_ITEMS, placeholder: '선택' }) }
+    const rowFields = [
+      [textField('item1'), { id: 'select', label: '드롭다운', editor: Adapters.select({ items: OPTION_ITEMS, placeholder: '선택' }) }],
+      [textField('item2'), { id: 'dateRange', label: '날짜 범위', editor: Adapters.dateRange() }],
+      [textField('item3'), { id: 'checkboxGroup', label: '체크박스 그룹', editor: Adapters.checkboxGroup({ items: OPTION_ITEMS }) }],
+      [textField('item4'), { id: 'checkbox', label: '체크박스', editor: Adapters.checkbox({ label: '포함' }) }],
+      [textField('item5'), { id: 'multiSelect', label: '드롭다운(멀티)', editor: Adapters.multiSelect({ items: OPTION_ITEMS, placeholder: '선택' }) }],
+      [textField('item6')],
+      [textField('item7')],
+      [textField('item8')],
+      [textField('item9')],
+      [textField('item10')],
+      [textField('item11')],
+      [textField('item12')]
     ];
-    return _.map(_.range(12), (index) => ({
-      fields: _.compact([
-        { id: `item${index + 1}`, label: `item${index + 1}`, editor: Adapters.text() },
-        extraFields[index]
-      ])
-    }));
+    return _.map(rowFields, (fields) => ({ fields }));
   };
 
   const render = (parent, onSearch) => {

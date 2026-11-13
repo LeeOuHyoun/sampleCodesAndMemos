@@ -113,12 +113,12 @@
 
 .espx-expander--split .espx-expander-part--up {
   justify-content: flex-end;
-  padding-right: 2px;
+  padding-right: 8px;
 }
 
 .espx-expander--split .espx-expander-part--down {
   justify-content: flex-start;
-  padding-left: 2px;
+  padding-left: 8px;
 }
 
 .espx-expander .espx-toggle {

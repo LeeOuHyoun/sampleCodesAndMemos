@@ -40,7 +40,7 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelExDemo', [
     }));
   };
 
-  const render = (parent) => {
+  const render = (parent, onSearch) => {
     const gridContainer = UWA.createElement('div', { styles: { height: 400 } }).inject(parent);
 
     const grid = new DataGridView({
@@ -54,7 +54,7 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelExDemo', [
 
     ExpandableSearchPanelEx.attachToGrid(grid, {
       rows: createRows(),
-      onSearch: (values) => console.log('검색', values)
+      onSearch: _.defaultTo(onSearch, (values) => console.log('검색', values))
     });
 
     return grid;

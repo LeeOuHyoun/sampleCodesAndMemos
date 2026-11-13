@@ -42,9 +42,13 @@ Tweakers.js 의 TweakerBase publishedProperties / prototype, Controls.js 의 Abs
 | `TweakerString` | `value` (`''`), `displayStyle` (`'lineEditor'`), `pattern`, `requiredFlag`, `autoCorrectFlag`, `minLengthBeforeSearch`, `typeDelayBeforeSearch`, `keepSearchResultsFlag` |
 | `TweakerNumber` | `value` (`0`), `displayStyle` (`'spinBox'`), `valueType` (`'number'`, `'integer'` 면 반올림해 저장), `stepValue` (`0.1`), `decimals` (`5`, 화면 자릿수), `units`, `colorFrom`, `colorTo`, `highExponentProperty`, `lowExponentProperty` |
 | `TweakerBoolean` | `value` (`false`), `displayStyle` (`'checkbox'`), `label` |
-| `TweakerColor` | `value` (`'ffffff'`, 앞에 `#` 없는 16진수. `'#368ec4'` 를 넣으면 `'368ec4'` 로 저장), `showAlphaFlag` |
+| `TweakerColor` | `value` (`'ffffff'`, 앞에 `#` 없는 16진수. `'#368ec4'` 를 넣으면 `'368ec4'` 로 저장), `valueType` (`'color'`), `displayStyle` (`'colorpicker'`, 그 밖에 `std`, `colorBar`, `canvas`), `showAlphaFlag` |
+| `TweakerFunction` | `label`, `icon`, `displayStyle` (`'button'`, 그 밖에 `menuIconWithCount` 등), `count` (999 를 넘으면 `999+`), `countLimit` <Badge type="warning" text="2026" /> (`-1` 이면 제한 없음), `emphasize` (`'secondary'`), `mainElementDisabledFlag`, `defaultModule`, `defaultFunction`. value 는 함수, `{ callback }`, `{ module, func, argument }` (AMD 모듈의 함수를 부름) |
+| `TweakerURLObject` | `value` (`{ label, url }`), `displayStyle` (`'clickableLabel'`, 그 밖에 `searchableLink`), `hyperlinkTarget` (`'_blank'`) |
 | `TweakerDate` | `value` (Date), `displayStyle` (`'date'`), `timePickerFlag`, `timePickerPrecision` (`'min'`) |
 | `TweakerEnum` | `displayStyle` (`'combo'`), `valueType` (`'enumString'`), `possibleValues` |
+
+기간, 배열, 벡터, 파일 같은 그 밖의 편집기는 [그 밖의 편집기와 보조 모듈](/tweakers/more-editors) 에 있습니다.
 
 ## 메서드
 

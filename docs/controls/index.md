@@ -21,6 +21,14 @@ Controls.js (Abstract, Button ...), Windows.js (Window, Dialog), UIKIT.js (Input
 | 체크박스, 스위치, 라디오 | `DS/Controls/Toggle` | `DS/UIKIT/Input/Toggle` | [WebUX 컨트롤](/controls/webux-controls#toggle) |
 | 한 줄 / 여러 줄 입력 | `DS/Controls/LineEditor`, `Editor` | `DS/UIKIT/Input/Text` | [WebUX 컨트롤](/controls/webux-controls#lineeditor-editor) |
 | 선택 목록 | `DS/Controls/ComboBox` | `DS/UIKIT/Input/Select` | [WebUX 컨트롤](/controls/webux-controls#combobox) |
+| 날짜, 날짜와 시간 | `DS/Controls/DatePicker`, `DS/Tweakers/TweakerDate` | - | [WebUX 컨트롤](/controls/webux-controls#날짜-datepicker-tweakerdate) |
+| 숫자 입력, 슬라이더 | `DS/Controls/SpinBox`, `Slider` | - | [입력 컨트롤](/controls/input-controls) |
+| 칩 (태그) 입력, 찾기, 파일 선택 | `DS/Controls/SelectionChipsEditor`, `Find`, `FilePicker` | - | [입력 컨트롤](/controls/input-controls) |
+| 펼침 목록, 탭, 툴바, 경로 표시 | `DS/Controls/Accordeon`, `Tab`, `Toolbar`, `Breadcrumb` | - | [레이아웃 컨트롤](/controls/layout) |
+| 색상 선택 | `DS/Controls/ColorPicker`, `ColorChooser` | - | [색상, 표시 컨트롤](/controls/display-controls) |
+| 게이지, 타임라인 | `DS/Controls/Gauge`, `Timeline` | - | [색상, 표시 컨트롤](/controls/display-controls) |
+| 타일 / 썸네일 카드, 간단한 트리 | `DS/Controls/ResponsiveTileView`, `TreeBase` | - | [목록, 트리, 타일 뷰](/controls/collection-views) |
+| 객체 카드, 로딩 패널, 코드 편집기 | `DS/ControlsEx/*` | - | [확장 컨트롤](/controls/controls-ex) |
 | 모달 다이얼로그 | `DS/Windows/Dialog` | `DS/UIKIT/Modal`, `SuperModal` | [다이얼로그](/controls/dialog) |
 | 확인 / 취소 묻기 | `DS/Windows/Dialog` + 버튼 2개 | `SuperModal.confirm` | [다이얼로그](/controls/dialog#확인-취소-묻기) |
 | 로딩 가리개 | `DS/Controls/ModalLoader` | `DS/UIKIT/Mask` | [WebUX 컨트롤](/controls/webux-controls#loader-modalloader), [UIKIT](/controls/uikit#mask) |
@@ -117,10 +125,16 @@ webapps 2025 전체에서 모듈 이름이 나오는 횟수입니다. 많이 쓰
 
 | 문서 | 내용 |
 | --- | --- |
-| [WebUX 컨트롤](/controls/webux-controls) | 공통 사용법, Button, Toggle, ButtonGroup, LineEditor, Editor, ComboBox, Label, Expander, Popup, ProgressBar, Loader |
+| [WebUX 컨트롤](/controls/webux-controls) | 공통 사용법, Button, Toggle, ButtonGroup, LineEditor, Editor, ComboBox, DatePicker, TweakerDate, Label, Expander, Popup, ProgressBar, Loader |
+| [입력 컨트롤](/controls/input-controls) | SpinBox, Slider, SelectionChips, SelectionChipsEditor, Find, FilePicker, 터치 키패드(Decorator), 예전 UWA 컨트롤 |
+| [레이아웃 컨트롤](/controls/layout) | Accordeon, Tab, TabBar, Toolbar, Breadcrumb, GroupBox, Flyout, Scroller, Stack, LayerSet, Deck, Stepper, DropdownButton, ModeChooser |
+| [색상, 표시 컨트롤](/controls/display-controls) | ColorPicker, ColorChooser, ColorPalette, Gauge, Timeline, Tooltip, 2026 툴팁 화면과 UserCard |
+| [목록, 트리, 타일 뷰](/controls/collection-views) | Responsive 타일 / 썸네일 카드, TreeBase, Tree, Tile, 옛 ThumbnailView / TileView |
+| [확장 컨트롤 (ControlsEx)](/controls/controls-ex) | Card, IDCard, LoadingPanel, CodeMirror, PathExplorer, Wizard, MagnitudeEditor |
 | [다이얼로그](/controls/dialog) | Dialog 열기 / 닫기, 표준 버튼, ImmersiveFrame, Panel |
 | [UIKIT](/controls/uikit) | Mask, Button, Text, Toggle, Select, Alert, Modal, SuperModal, Tooltip, Popover, Spinner, Scroller, DropdownMenu, Iconbar, Form |
 | [알림 메시지](/controls/notifications) | 화면 오른쪽 위에 뜨는 알림 (Notifications) |
 | [WebUX 컨트롤 API](/controls/api/webux-controls) | 컨트롤별 속성, 기본값, 이벤트 |
 | [Windows API](/controls/api/windows) | Window, Dialog, Panel, ImmersiveFrame 속성, 메서드, 이벤트, 열거형 |
 | [UIKIT API](/controls/api/uikit) | UIKIT 모듈별 옵션, 메서드, 이벤트 |
+| [입력](/controls/api/input-controls) · [레이아웃](/controls/api/layout) · [색상, 표시](/controls/api/display-controls) · [목록, 트리, 타일 뷰](/controls/api/collection-views) API | 그룹별 컨트롤 속성, 기본값, 이벤트, 메서드 |

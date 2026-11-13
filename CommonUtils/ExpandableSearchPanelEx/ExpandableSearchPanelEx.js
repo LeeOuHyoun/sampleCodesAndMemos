@@ -89,7 +89,6 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelEx', [
       ]
     });
 
-    element.style.setProperty('--espx-columns', _.max(_.map(rows, (row) => row.fields.length)));
     applyStep();
     _.head(rows).element.addClassName('espx-row--settled');
 

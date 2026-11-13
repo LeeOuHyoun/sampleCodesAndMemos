@@ -47,12 +47,12 @@
 }
 
 .espx-fields {
-  display: grid;
-  grid-template-columns: repeat(var(--espx-columns, 2), minmax(0, 1fr));
+  display: flex;
 }
 
 .espx-field {
   display: flex;
+  flex: 1 1 0;
   align-items: center;
   gap: 8px;
   min-width: 0;

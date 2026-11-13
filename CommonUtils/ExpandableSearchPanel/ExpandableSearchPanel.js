@@ -50,7 +50,7 @@ define('DS/CommonUtils/ExpandableSearchPanel/ExpandableSearchPanel', [
     return { field, input, element };
   };
 
-  const create = (target, options) => {
+  const create = (options) => {
     const validate = options.validate || (() => true);
     const rows = options.fields.map(createRow);
     let stepIndex = 0;
@@ -88,7 +88,7 @@ define('DS/CommonUtils/ExpandableSearchPanel/ExpandableSearchPanel', [
       applyStep();
     });
 
-    UWA.createElement('div', {
+    const element = UWA.createElement('div', {
       'class': 'esp',
       html: [
         {
@@ -100,13 +100,25 @@ define('DS/CommonUtils/ExpandableSearchPanel/ExpandableSearchPanel', [
         },
         { 'class': 'esp-expander', html: [toggleButton] }
       ]
-    }).inject(target);
+    });
 
     applyStep();
     rows[0].element.addClassName('esp-row--settled');
 
-    return { getValues };
+    return { element, getValues };
   };
 
-  return { create };
+  const attachToGrid = (grid, options) => {
+    const gridElement = grid.getContent();
+    const panel = create(options);
+    const gridHolder = UWA.createElement('div', { 'class': 'esp-grid-holder' });
+    UWA.createElement('div', {
+      'class': 'esp-layout',
+      html: [panel.element, gridHolder]
+    }).inject(gridElement, 'before');
+    gridHolder.appendChild(gridElement);
+    return panel;
+  };
+
+  return { create, attachToGrid };
 });

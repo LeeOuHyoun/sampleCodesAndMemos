@@ -12,6 +12,10 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelExDemo', [
 
   const OPTION_ITEMS = ['옵션A', '옵션B', '옵션C'];
 
+  const handleSearch = (values) => {
+    console.log('검색', values);
+  };
+
   const createTreeDocument = () => {
     const treeDocument = new TreeDocument();
     treeDocument.prepareUpdate();
@@ -44,7 +48,7 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelExDemo', [
     return _.map(rowFields, (fields) => ({ fields }));
   };
 
-  const render = (parent, onSearch) => {
+  const render = (parent) => {
     const gridContainer = UWA.createElement('div', { styles: { height: 400 } }).inject(parent);
 
     const grid = new DataGridView({
@@ -58,10 +62,8 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelExDemo', [
 
     ExpandableSearchPanelEx.attachToGrid(grid, {
       rows: createRows(),
-      onSearch: _.defaultTo(onSearch, (values) => console.log('검색', values))
+      onSearch: handleSearch
     });
-
-    return grid;
   };
 
   return { render };

@@ -52,12 +52,11 @@
 
 .espx-field {
   display: flex;
-  flex: 1 1 0;
+  flex: none;
   align-items: center;
   gap: 8px;
-  min-width: 0;
-  padding: 2px 12px 2px 0;
-  box-sizing: border-box;
+  padding: 2px 16px 2px 0;
+  white-space: nowrap;
 }
 
 .espx-label {
@@ -67,8 +66,8 @@
 }
 
 .espx-editor {
-  flex: 1;
-  min-width: 0;
+  flex: none;
+  min-width: 180px;
 }
 
 .espx-date-range {
@@ -78,8 +77,8 @@
 }
 
 .espx-date {
-  flex: 1;
-  min-width: 0;
+  flex: none;
+  width: 130px;
 }
 
 .espx-date-separator {

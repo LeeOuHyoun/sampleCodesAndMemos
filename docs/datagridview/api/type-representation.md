@@ -72,7 +72,7 @@ Tweakers/assets/defaultTypeRepresentations.json, typeTemplates.json
 | <code>date</code> | <code>TweakerDate</code> | <code>date</code> | - | 날짜 (값: Date) |
 | <code>datetime</code> | <code>TweakerDate</code> | <code>date + timePickerFlag</code> | - | 날짜 + 시간 |
 | <code>time</code> | <code>TweakerDate</code> | <code>time</code> | <code>timePickerPrecision 'sec'</code> | 시간 |
-| <code>dateRange</code> | <code>TweakerDuration</code> | <code>datePickers</code> | - | 기간(시작~끝) |
+| <code>dateRange</code> | <code>TweakerDuration</code> | <code>datePickers</code> | - | 기간(시작~끝). 값: <code>{ from, to }</code> 밀리초 숫자 (Date 아님, [TweakerDuration](/tweakers/more-editors#tweakerduration)) |
 | <code>duration</code> | <code>TweakerDuration</code> | <code>editors</code> | - | 기간 길이 |
 
 ## 링크 / 사용자 / 기타

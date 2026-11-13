@@ -67,6 +67,7 @@ TweakerNumber (displayStyle 'spinBox', semantics { stepValue: 1, decimals: 0 })
 | [편집기 종류별 사용법](/tweakers/editors) | 콤보, 숫자, 날짜 같은 편집기마다 만드는 법, value 형태, change 시점, 자주 쓰는 옵션 |
 | [편집기 직접 만들기](/tweakers/custom-tweaker) | TweakerBase 를 상속해 내장 편집기로 안 되는 편집기를 만들고 폼과 그리드 셀에 연결 |
 | [편집기 단독 사용](/tweakers/standalone) | 그리드 없이 편집기 하나를 화면에 놓고 값 주고받기 |
+| [그 밖의 편집기와 보조 모듈](/tweakers/more-editors) | 기간, 크기(단위), 배열, 벡터, 파일, 이미지, 객체 편집기와 TypeUtils 같은 보조 모듈 |
 | [사용자 타입 등록](/tweakers/custom-type) | 콤보 목록, 아이콘 토글을 타입 이름으로 등록 |
 | [GeneratedToolbar](/tweakers/generated-toolbar) | JSON 으로 툴바 만들기, 항목 상태 변경, 값 읽기 |
 | [이름 색인 (A-Z)](/tweakers/api/key-index) | 옵션, 함수, 이벤트 이름을 알파벳 순으로 찾기 |

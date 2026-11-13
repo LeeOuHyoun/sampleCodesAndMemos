@@ -1,6 +1,6 @@
 # 검증 대기 목록
 
-본문에 <Badge type="danger" text="검증 필요" /> 배지가 붙은 추정 사양 144 곳을 모은 목록입니다. 실무에 쓰기 전에 서버에서 확인합니다.
+본문에 <Badge type="danger" text="검증 필요" /> 배지가 붙은 추정 사양 153 곳을 모은 목록입니다. 실무에 쓰기 전에 서버에서 확인합니다.
 
 - 각 줄 앞의 링크는 그 문장이 있는 절로 갑니다.
 - 확인했으면 원래 페이지에서 배지를 지우고 문장을 단정형으로 고칩니다. 다르게 동작하면 내용을 고칩니다.
@@ -276,11 +276,43 @@
 
 - [Socket 으로 붙기](/uwa/intercom#socket-으로-붙기) : 넣어도 효과가 없는 것으로 보입니다.
 
-## 화면 컨트롤 (1)
+## 화면 컨트롤 (9)
+
+### 목록, 트리, 타일 뷰 API (1)
+
+- [TreeNodeBase](/controls/api/collection-views#treenodebase) : <code>expandAll()</code> : 두 단계까지만 펼쳐지는 것으로 보입니다
+
+### 레이아웃 컨트롤 API (1)
+
+- [Tab](/controls/api/layout#tab) : <code>responsiveFlag</code> <Badge type="warning" text="2026" /> : 폭이 모자라면 탭 글자를 숨기고 아이콘만 남기는 것으로 보입니다
+
+### WebUX 컨트롤 API (1)
+
+- [TimePicker](/controls/api/webux-controls#timepicker) : 이벤트: <code>change</code>, <code>show</code>, <code>hide</code>. <code>mode: 'duration'</code> 이면 값이 숫자이고 <code>02h 30m</code> 처럼 표시됩니다.
+
+### 목록, 트리, 타일 뷰 (1)
+
+- [펼치기, 찾기](/controls/collection-views#펼치기-찾기) : `node.expandAll()` 은 이름과 달리 두 단계까지만 펼치는 것으로 보입니다
+
+### 확장 컨트롤 (ControlsEx) (1)
+
+- [툴바 버튼과 접기](/controls/controls-ex#툴바-버튼과-접기) : `titleIcon` 은 크기를 16px 로 덧붙여 `Dom.generateIcon` 으로 그립니다. 앱(ENOProjectMgmtCommonComponents)은 아이콘 주소 문자열을 그대로 넣지만, 소스가 이 값에 `Object.assign` 으로 크기 옵션을 덧붙이므로 `{ iconPath: '주소' }` 객체로 주는 편이 안전한 것으로 보입니다
+
+### 색상, 표시 컨트롤 (1)
+
+- [UserCard](/controls/display-controls#usercard) : 형식은 ISO 2글자 국가 코드로 보입니다.
 
 ### 화면 컨트롤 개요 (1)
 
 - [무엇을 쓸까](/controls/#무엇을-쓸까) : UIKIT 은 UWA 컨트롤(`UWA/Controls/Abstract`) 위에 만든 예전 계열로 보입니다.
+
+### 입력 컨트롤 (숫자, 칩, 검색, 파일) (1)
+
+- [직접 바꾸기와 보여 주기 (customValidator, customFormatter)](/controls/input-controls#직접-바꾸기와-보여-주기-customvalidator-customformatter) : 2026 은 화면 글자를 `NumberUtils.formatNumberToString` 으로 만들어 지역 형식이 늘 적용되는 것으로 보입니다
+
+### WebUX 컨트롤 (1)
+
+- [값](/controls/webux-controls#값) : 입력칸에 포커스가 가면 숫자 형식(`2026/12/01`)으로 바뀌어 고치기 쉽게 됩니다.
 
 ## 이벤트, 선택, 끌어 놓기 (4)
 
@@ -321,3 +353,9 @@
 ### 서버 사이드 데이터 (1)
 
 - [정렬, 필터, 찾기는 어떻게 되나](/datagridview/server-side#정렬-필터-찾기는-어떻게-되나) : 그룹핑에서 서버가 그룹 행을 어떤 모양으로 돌려줘야 하는지는 호출 예가 없어 확인하지 못했습니다. `wux_group: true` 인 행을 돌려주는 것으로 보입니다.
+
+## Tweakers (1)
+
+### 그 밖의 편집기와 보조 모듈 (1)
+
+- [TweakerObjectBase](/tweakers/more-editors#tweakerobjectbase) : 속성 값을 바꿀 때 안쪽 속성 편집기의 `change` 가 위로 올라오며, 이때 `e.options` 가 `{ propertyChangePath, propertyChangeName, propertyChangeValue }` 로 바뀌어 나오는 것으로 보입니다

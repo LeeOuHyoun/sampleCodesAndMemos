@@ -5,7 +5,7 @@
 샘플: [01_webux_form.html](https://github.com/LeeOuHyoun/sampleCodesAndMemos/blob/master/ControlsSample/01_webux_form.html)
 
 ::: info 근거
-Controls.js 의 Abstract (publishedProperties, fire, addEventListener), Button, Toggle, ButtonGroup, AbstractEditor, LineEditor, Editor, ComboBoxBase, ComboBox, Label, Expander, Popup, ProgressBar, Loader, ModalLoader, ModalContainer. Core.js 의 BaseComponent (init, setProperties, inject), Core.js 의 TooltipModel. Utilities.js 의 WUXUWAUtils.generatePropertiesSettersAndGetters, Dom.generateIcon. 호출부: AuthGenericCommands, DELWebCommonControls, CAT3DAnnotationBaseCmds
+Controls.js 의 Abstract (publishedProperties, fire, addEventListener), Button, Toggle, ButtonGroup, AbstractEditor, LineEditor, Editor, ComboBoxBase, ComboBox, DatePicker, TimePicker, Calendar, Label, Expander, Popup, ProgressBar, Loader, ModalLoader, ModalContainer. Tweakers.js 의 TweakerDate (VIEW_MODULES, _upgradeValue), TweakerBase._resolveViewModuleToApply. Core.js 의 BaseComponent (init, setProperties, inject, _applyForAdvancedSetterProperty), Core.js 의 TooltipModel. Utilities.js 의 WUXUWAUtils.generatePropertiesSettersAndGetters, Dom.generateIcon. 호출부: AuthGenericCommands, DELWebCommonControls, CAT3DAnnotationBaseCmds, ENXMeetingMgmt, ENORouteMgmt, DocumentCreateNew
 :::
 
 ## 공통 사용법
@@ -90,7 +90,7 @@ WebUX 이벤트는 `bubbles: true` 로 만들어집니다. 부모 요소(다이�
 
 ### 툴팁
 
-모든 컨트롤의 `tooltipInfos` 에 일반 객체를 넘기면 `DS/Core/TooltipModel` 로 바뀝니다.
+모든 컨트롤의 `tooltipInfos` 에 일반 객체를 넘기면 `DS/Core/TooltipModel` 로 바뀝니다 (2025 `Abstract._preEditTooltipInfos`). <Badge type="warning" text="2026" /> 2026 은 속성 타입이 `Object` 이고 바꾸지 않아 넘긴 일반 객체가 그대로 남습니다. 넘기는 쪽 코드는 같습니다. 툴팁이 화면에 뜨는 과정은 [Tooltip](/controls/display-controls#tooltip) 에 있습니다.
 
 ```js
 new Button({
@@ -305,6 +305,109 @@ state.value = 'RELEASED';
 | <code>uncommittedChange</code> | 검색 입력 중 |
 
 `icon` 에 점(`.`)이 없는 문자열을 주면 `{ iconName: ... }` 로 바뀝니다.
+
+## 날짜 (DatePicker, TweakerDate)
+
+날짜 입력칸은 두 가지로 만듭니다. 화면은 같습니다. `TweakerDate` 가 안에서 `DatePicker` 를 만들기 때문입니다.
+
+| 모듈 | 쓰는 곳 | 특징 |
+| --- | --- | --- |
+| `DS/Controls/DatePicker` | 직접 조립하는 폼 (앱 24개 모듈) | 입력칸 + 달력 버튼. 값 없이 만들면 **오늘 날짜** |
+| `DS/Tweakers/TweakerDate` | 그리드 셀, Tweakers 폼 (앱 3개 모듈) | DatePicker / TimePicker 를 감싼 편집기. 값 없이 만들면 **빈 칸**. 읽기 전용 글자, 시간만 입력도 됨 |
+
+```js
+require(['DS/Controls/DatePicker', 'DS/Tweakers/TweakerDate'], function (DatePicker, TweakerDate) {
+  var due = new DatePicker({
+    value: new Date(2026, 11, 1),
+    minValue: new Date(2026, 10, 1),
+    allowUndefinedFlag: true
+  }).inject(el);
+  due.addEventListener('change', function (e) { console.log('납기', e.dsModel.value); });
+
+  var meeting = new TweakerDate({ value: '2026-12-01T09:30:00', timePickerFlag: true, allowResetToUndefinedByUIFlag: true })
+    .inject(el2);
+  meeting.addEventListener('change', function (e) { console.log('회의', e.dsModel.value); });
+});
+```
+
+### 값
+
+| | DatePicker | TweakerDate |
+| --- | --- | --- |
+| 값 타입 | `Date` (여러 개면 `Date[]`) | 같음 |
+| 처음 값 | `value` 를 안 주면 오늘. `value: undefined` 를 명시하면 빈 칸 | `undefined` (빈 칸) |
+| 문자열, 밀리초 숫자 | `Date` 로 바꿈 | `Date` 로 바꿈 |
+| 날짜로 못 바꾸는 값 (`'abc'`) | 무시 (이전 값 유지) | 무시 (이전 값 유지) |
+| 범위 밖 (코드) | `minValue` / `maxValue` 로 맞춤 | 같음 ([범위를 벗어난 값](/tweakers/editors#범위를-벗어난-값)) |
+| 범위 밖 (화면 입력) | 받지 않고 이전 값으로 되돌림 | 같음 |
+| 입력칸을 비우고 나감 | `allowUndefinedFlag: true` 면 `undefined`, 아니면 되돌림 | `allowResetToUndefinedByUIFlag: true` 면 `undefined` |
+| 비우기 (코드) | `picker.value = undefined` | `tweaker.value = undefined` |
+
+::: warning 시간 선택이 없으면 같은 날의 다른 시각은 무시됩니다
+DatePicker 는 새 값이 이전 값과 같은지 `timePickerFlag` 가 `false` 면 **날짜 단위** 로 비교합니다. `2026-12-01 09:00` 인 칸에 코드로 `2026-12-01 15:00` 을 넣으면 같은 값으로 보고 버립니다. `value` 는 09:00 그대로이고 `change` 도 오지 않습니다. 시각까지 저장해야 하면 `timePickerFlag: true` 로 둡니다.
+:::
+
+- 달력에서 날짜를 고르면 날짜만 바뀌고 시각은 이전 값의 시각(값이 없으면 지금 시각)이 남습니다. 한 개 선택이면 고르자마자 팝업이 닫힙니다.
+- 화면 글자는 브라우저 언어 형식(`2026년 12월 1일`)입니다. 입력칸에 포커스가 가면 숫자 형식(`2026/12/01`)으로 바뀌어 고치기 쉽게 됩니다. <Badge type="danger" text="검증 필요" /> 칠 때는 그 순서대로 숫자를 치고 구분자는 아무 기호나 됩니다.
+- 언어 설정이 바뀌면(`onFormatsLanguageChange`) 다시 그립니다.
+
+### DatePicker 옵션과 이벤트
+
+| 키 | 기본값 | 설명 |
+| --- | --- | --- |
+| <code>value</code> | 오늘 | 선택 날짜. <code>allowMultipleValuesFlag</code> 면 배열 |
+| <code>minValue</code> / <code>maxValue</code> | - | 고를 수 있는 범위. 달력에서 범위 밖 날짜는 못 고름 |
+| <code>timePickerFlag</code> | <code>false</code> | 달력 아래에 시간 칸 추가. 오늘 버튼이 "지금" 이 됨 |
+| <code>timePickerPrecision</code> | <code>'min'</code> | <code>min</code>, <code>sec</code> |
+| <code>allowUndefinedFlag</code> | <code>false</code> | 입력칸을 비워 <code>undefined</code> 로 만들 수 있음 |
+| <code>allowMultipleValuesFlag</code> | <code>false</code> | 여러 날짜. 입력칸 대신 칩 입력이 되고 달력 버튼이 숨음 |
+| <code>showWeekNumbers</code> | - | 달력에 주 번호 |
+| <code>popupVisibleFlag</code> | <code>false</code> | 달력 팝업 열림 여부. 코드로 열고 닫을 수 있음 |
+| <code>hideTodayOrNowButton</code> <Badge type="warning" text="2026" /> | <code>false</code> | 오늘 / 지금 버튼 숨김 |
+
+| 이벤트 | 시점 |
+| --- | --- |
+| <code>change</code> | <code>value</code> 변경. 입력칸은 Enter / 포커스 이동 때, 달력은 고를 때. 코드로 바꿔도 |
+| <code>show</code> / <code>hide</code> | 달력 팝업 열림 / 닫힘 |
+
+메서드: `incrementDay()`, `decrementDay()`, `incrementMonth()`, `decrementMonth()` (하루 / 한 달 앞뒤로. `change` 발생).
+
+### TweakerDate 화면 고르기
+
+TweakerDate 는 옵션 조합으로 안에 만들 컨트롤을 고릅니다.
+
+| 조건 | 안의 화면 | value |
+| --- | --- | --- |
+| `displayStyle: 'date'` (기본) | DatePicker | `Date` |
+| `displayStyle: 'date'` + `timePickerFlag: true` | DatePicker + 시간 칸 | `Date` (시각 포함) |
+| `displayStyle: 'date'` + `allowMultipleValuesFlag: true` | 날짜 글자 + 펼치면 여러 날짜 DatePicker | `Date[]` |
+| `displayStyle: 'time'` | TimePicker (시간만) | `Date` (날짜 부분은 그대로) |
+| `readOnly: true` | 글자만 (`getStringFromValue` 결과) | - |
+
+| 키 | 기본값 | 설명 |
+| --- | --- | --- |
+| <code>value</code> | <code>undefined</code> | <code>Date</code>. 문자열, 숫자는 <code>Date</code> 로 바뀜 |
+| <code>minValue</code> / <code>maxValue</code> | - | 범위. 문자열도 됨. 날짜로 못 바꾸면 범위 없음 |
+| <code>timePickerFlag</code> | <code>false</code> | 날짜 + 시간 |
+| <code>timePickerPrecision</code> | <code>'min'</code> | <code>min</code>, <code>sec</code>. 화면 글자에 초 표시도 이것으로 정함 |
+| <code>displayStyle</code> | <code>'date'</code> | <code>date</code>, <code>time</code> |
+| <code>allowResetToUndefinedByUIFlag</code> | <code>false</code> | 비우기 허용. 안의 DatePicker / TimePicker <code>allowUndefinedFlag</code> 로 전달 |
+| <code>allowMultipleValuesFlag</code> | <code>false</code> | 여러 날짜 (<code>date</code> 에서만) |
+| <code>readOnly</code> | <code>false</code> | 글자로만 표시 |
+| <code>viewOptions</code> | - | 반영되는 키는 <code>showWeekNumbers</code> 하나 |
+
+- 모든 키는 [TweakerBase](/tweakers/api/tweaker) 속성도 함께 가집니다. `placeholder` 는 날짜 칸에 쓰이지 않습니다. DatePicker 가 언어 형식(`년/월/일`)을 안내 글자로 넣습니다.
+- `displayStyle: 'time'` 이면 `minValue` / `maxValue` 가 TimePicker 에 전달되지 않아 화면에서 범위를 막지 않습니다.
+- 이벤트는 다른 편집기와 같은 `change`, `liveChange`, `show` / `hide` 입니다. 오는 시점은 [날짜와 시간](/tweakers/editors#날짜와-시간) 에 있습니다.
+- `TweakerDate.getDateAsString(date, intlOptions)` 는 `Intl.DateTimeFormat` 으로 날짜를 글자로 바꾸는 정적 함수입니다. 언어는 플랫폼 형식 언어를 씁니다. 같은 모양의 글자를 화면 밖(엑셀, 메일 본문)에 쓸 때 씁니다.
+
+```js
+TweakerDate.getDateAsString(new Date(), { year: 'numeric', month: 'short', day: 'numeric' });
+```
+
+::: tip 그리드 셀
+DataGridView 컬럼의 `typeRepresentation: 'date'` / `'datetime'` / `'time'` 이 TweakerDate 입니다 ([타입 표현](/datagridview/api/type-representation)).
+:::
 
 ## Label
 

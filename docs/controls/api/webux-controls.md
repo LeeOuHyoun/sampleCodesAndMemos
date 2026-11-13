@@ -251,6 +251,89 @@ Controls.js 각 모듈의 `publishedProperties` getter (2025 는 `Object.defineP
 | <code>uncommittedChange</code> | 검색 입력 중 |
 | <code>click</code> | 눌림 |
 
+## DatePicker
+
+`DS/Controls/DatePicker`. 입력칸(LineEditor) + 달력 버튼. 달력(Calendar)은 처음 열 때 불러옵니다.
+
+| 키 | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| <code>value</code> | <code>date</code> | <code>undefined</code> | 선택 날짜. 만들 때 오늘로 채워지므로 옵션에 키가 없으면 오늘. <code>allowMultipleValuesFlag</code> 면 배열 |
+| <code>minValue</code> | <code>date</code> | <code>undefined</code> | 최소. 바꾸면 현재 값도 범위로 맞춤 |
+| <code>maxValue</code> | <code>date</code> | <code>undefined</code> | 최대 |
+| <code>timePickerFlag</code> | <code>boolean</code> | <code>false</code> | 시간 칸 추가. 값 비교도 시각 단위가 됨 |
+| <code>timePickerPrecision</code> | <code>string</code> | <code>'min'</code> | <code>min</code>, <code>sec</code> |
+| <code>popupVisibleFlag</code> | <code>boolean</code> | <code>false</code> | 달력 팝업 열림 |
+| <code>allowUndefinedFlag</code> | <code>boolean</code> | <code>false</code> | 화면에서 비우기 허용 |
+| <code>allowMultipleValuesFlag</code> | <code>boolean</code> | <code>false</code> | 여러 날짜 (칩 입력) |
+| <code>showWeekNumbers</code> | <code>boolean</code> | <code>undefined</code> | 주 번호 |
+| <code>hideTodayOrNowButton</code> <Badge type="warning" text="2026" /> | <code>boolean</code> | <code>false</code> | 오늘 / 지금 버튼 숨김 |
+
+| 이벤트 | 시점 |
+| --- | --- |
+| <code>change</code> | <code>value</code> 변경 (코드로 바꿔도) |
+| <code>show</code> / <code>hide</code> | 달력 팝업 열림 / 닫힘 |
+
+메서드: <code>incrementDay()</code>, <code>decrementDay()</code>, <code>incrementMonth()</code>, <code>decrementMonth()</code>
+
+## TimePicker
+
+`DS/Controls/TimePicker`. 시간 입력칸 + 시간 선택 팝업. DatePicker 의 시간 칸과 TweakerDate `displayStyle: 'time'` 이 이것입니다.
+
+| 키 | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| <code>value</code> | <code>date</code> | 지금 | 시각. 만들 때 현재 시각으로 채워짐 |
+| <code>precision</code> | <code>string</code> | <code>'min'</code> | <code>min</code>, <code>sec</code> |
+| <code>mode</code> | <code>string</code> | <code>'24'</code> (2026: <code>'time'</code>) | 2025: <code>24</code>, <code>12</code>, <code>duration</code>. 2026: <code>time</code> (언어 형식), <code>24</code>, <code>duration</code>. 그 밖의 값은 <code>time</code> 으로 바뀜 |
+| <code>hoursStep</code> / <code>minutesStep</code> / <code>secondsStep</code> | <code>integer</code> | <code>1</code> | 팝업 증감 단위 |
+| <code>popupVisibleFlag</code> | <code>boolean</code> | <code>false</code> | 팝업 열림 |
+| <code>allowUndefinedFlag</code> | <code>boolean</code> | <code>false</code> | 비우기 허용 |
+
+이벤트: <code>change</code>, <code>show</code>, <code>hide</code>. <code>mode: 'duration'</code> 이면 값이 숫자이고 <code>02h 30m</code> 처럼 표시됩니다. <Badge type="danger" text="검증 필요" />
+
+## Calendar
+
+`DS/Controls/Calendar`. 달력만 화면에 붙일 때 씁니다 (앱 2개 모듈).
+
+| 키 | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| <code>value</code> | <code>date</code> | 오늘 | 선택 날짜 (배열 가능) |
+| <code>referenceDate</code> | <code>date</code> | <code>value</code> 또는 오늘 | 보이는 달 |
+| <code>minValue</code> / <code>maxValue</code> | <code>date</code> | - | 고를 수 있는 범위 |
+| <code>allowMultipleValuesFlag</code> | <code>boolean</code> | <code>false</code> | 여러 날짜 |
+| <code>allowUndefinedFlag</code> | <code>boolean</code> | <code>false</code> | 선택 해제 허용 |
+| <code>showWeekNumbers</code> | <code>boolean</code> | - | 주 번호 |
+| <code>hideTodayOrNowButton</code> <Badge type="warning" text="2026" /> | <code>boolean</code> | <code>false</code> | 오늘 버튼 숨김 |
+
+이벤트: <code>change</code>
+
+## TweakerDate
+
+`DS/Tweakers/TweakerDate` (부모 `TweakerRange` → `TweakerBase`). 컨트롤이 아니라 편집기지만 날짜 입력칸으로 같이 쓰여 여기에 둡니다. 공통 속성은 [Tweaker API](/tweakers/api/tweaker) 에 있습니다.
+
+| 키 | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| <code>value</code> | <code>date</code> | <code>undefined</code> | 문자열, 숫자는 <code>new Date(값)</code> 으로 바뀜. 못 바꾸면 이전 값 유지 |
+| <code>minValue</code> / <code>maxValue</code> | <code>date</code> | <code>undefined</code> | 범위. 못 바꾸는 값은 <code>undefined</code> |
+| <code>timePickerFlag</code> | <code>boolean</code> | <code>false</code> | 날짜 + 시간 |
+| <code>timePickerPrecision</code> | <code>string</code> | <code>'min'</code> | <code>min</code>, <code>sec</code> |
+| <code>displayStyle</code> | <code>string</code> | <code>'date'</code> | <code>date</code>, <code>time</code> |
+| <code>stepValue</code> | <code>object</code> | <code>undefined</code> | TweakerRange 에서 옴. 날짜 화면에서는 쓰이지 않음 |
+
+| 화면 모듈 (VIEW_MODULES) | 고르는 조건 | 안의 컨트롤 |
+| --- | --- | --- |
+| <code>date</code> | 기본 | DatePicker |
+| <code>date_allowMultipleValues</code> | <code>allowMultipleValuesFlag: true</code> | 글자 + 펼치면 DatePicker (여러 날짜) |
+| <code>time</code> | <code>displayStyle: 'time'</code> | TimePicker |
+| <code>readOnly</code> (TweakerBase) | <code>readOnly: true</code> | 글자 |
+
+| 함수 | 설명 |
+| --- | --- |
+| <code>getStringFromValue(v)</code> | 화면 글자. <code>{ year: 'numeric', month: 'short', day: 'numeric' }</code> (+ 시, 분, 초) |
+| <code>compare(a, b)</code> | 정렬용 비교. 날짜끼리는 <code>DateUtils.compare</code> |
+| <code>TweakerDate.getDateAsString(date, intlOptions)</code> | 정적. <code>Intl.DateTimeFormat</code> 결과를 캐시해 씀 |
+
+이벤트: <code>change</code>, <code>liveChange</code>, <code>show</code>, <code>hide</code> 와 TweakerBase 이벤트
+
 ## Label
 
 `DS/Controls/Label`

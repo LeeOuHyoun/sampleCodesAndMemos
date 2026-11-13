@@ -26,7 +26,7 @@ Tweakers.js 의 TweakerBase, TweakerString / Number / Boolean / Date / Enum, Typ
 
 | 편집기 | 기본 | displayStyle |
 | --- | --- | --- |
-| `TweakerString` | `lineEditor` | `lineEditor`, `password`, `link`, `combo`, `icon`, `buttonGroup`, `toggleGroup`, `color`, `editor`, `editorInline`, `editor2Inline`, `editorVerticallyResizable`, `tag` |
+| `TweakerString` | `lineEditor` | `lineEditor`, `password`, `link`, `combo`, `icon`, `buttonGroup`, `toggleGroup`, `color`, `editor`, `editorInline`, `editor2Inline`, `editorVerticallyResizable`, `editorVerticallyResizableInline`, `tag` |
 | `TweakerNumber` | `spinBox` | `spinBox`, `spinBoxLite`, `slider`, `sliderAndSpinBox`, `progress`, `progressNoAnim`, `colorSlider`, `pagination` |
 | `TweakerBoolean` | `checkbox` | `checkbox`, `switch`, `radio`, `toggleIcon` |
 | `TweakerDate` | `date` | `date`, `time` |

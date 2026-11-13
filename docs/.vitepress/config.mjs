@@ -222,6 +222,11 @@ const WEBAPPS_SIDEBAR = [
         text: '가이드',
         items: [
           { text: 'WebUX 컨트롤', link: '/controls/webux-controls' },
+          { text: '입력 컨트롤 (숫자, 칩, 검색, 파일)', link: '/controls/input-controls' },
+          { text: '레이아웃 컨트롤', link: '/controls/layout' },
+          { text: '색상, 표시 컨트롤', link: '/controls/display-controls' },
+          { text: '목록, 트리, 타일 뷰', link: '/controls/collection-views' },
+          { text: '확장 컨트롤 (ControlsEx)', link: '/controls/controls-ex' },
           { text: '다이얼로그 (Windows)', link: '/controls/dialog' },
           { text: 'UIKIT', link: '/controls/uikit' },
           { text: '알림 메시지', link: '/controls/notifications' }
@@ -231,6 +236,10 @@ const WEBAPPS_SIDEBAR = [
         text: 'API 레퍼런스',
         items: [
           { text: 'WebUX 컨트롤 API', link: '/controls/api/webux-controls' },
+          { text: '입력 컨트롤 API', link: '/controls/api/input-controls' },
+          { text: '레이아웃 컨트롤 API', link: '/controls/api/layout' },
+          { text: '색상, 표시 컨트롤 API', link: '/controls/api/display-controls' },
+          { text: '목록, 트리, 타일 뷰 API', link: '/controls/api/collection-views' },
           { text: 'Windows API', link: '/controls/api/windows' },
           { text: 'UIKIT API', link: '/controls/api/uikit' }
         ]
@@ -334,6 +343,7 @@ const WEBAPPS_SIDEBAR = [
         items: [
           { text: '편집기 종류별 사용법', link: '/tweakers/editors' },
           { text: '편집기 단독 사용', link: '/tweakers/standalone' },
+          { text: '그 밖의 편집기와 보조 모듈', link: '/tweakers/more-editors' },
           { text: '사용자 타입 등록', link: '/tweakers/custom-type' },
           { text: '편집기 직접 만들기', link: '/tweakers/custom-tweaker' },
           { text: 'GeneratedToolbar', link: '/tweakers/generated-toolbar' }

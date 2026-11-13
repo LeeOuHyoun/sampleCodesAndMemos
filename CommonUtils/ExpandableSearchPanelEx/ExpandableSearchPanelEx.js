@@ -51,8 +51,16 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelEx', [
       }
     });
 
-    const toggleIcon = UWA.createElement('span', { 'class': 'espx-toggle wux-ui-3ds' });
-    const expander = UWA.createElement('div', { 'class': 'espx-expander', html: [toggleIcon] });
+    const lastStepIndex = ROW_STEPS.length - 1;
+
+    const createExpanderPart = (direction) => UWA.createElement('div', {
+      'class': `espx-expander-part espx-expander-part--${direction}`,
+      html: [{ tag: 'span', 'class': `espx-toggle wux-ui-3ds wux-ui-3ds-expand-${direction}` }]
+    });
+
+    const collapsePart = createExpanderPart('up');
+    const expandPart = createExpanderPart('down');
+    const expander = UWA.createElement('div', { 'class': 'espx-expander', html: [collapsePart, expandPart] });
 
     const applyStep = () => {
       const visibleCount = ROW_STEPS[stepIndex];
@@ -65,13 +73,18 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelEx', [
         row.element.toggleClassName('espx-row--open', open);
         row.element.inert = !open;
       });
-      const expanded = stepIndex === ROW_STEPS.length - 1;
-      toggleIcon.toggleClassName('wux-ui-3ds-expand-up', expanded);
-      toggleIcon.toggleClassName('wux-ui-3ds-expand-down', !expanded);
+      collapsePart.toggleClassName('espx-expander-part--hidden', stepIndex === 0);
+      expandPart.toggleClassName('espx-expander-part--hidden', stepIndex === lastStepIndex);
+      expander.toggleClassName('espx-expander--split', stepIndex > 0 && stepIndex < lastStepIndex);
     };
 
-    expander.addEvent('click', () => {
-      stepIndex = (stepIndex + 1) % ROW_STEPS.length;
+    collapsePart.addEvent('click', () => {
+      stepIndex = 0;
+      applyStep();
+    });
+
+    expandPart.addEvent('click', () => {
+      stepIndex = _.min([stepIndex + 1, lastStepIndex]);
       applyStep();
     });
 

@@ -85,9 +85,22 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/SearchFieldAdapters', [
     };
   };
 
+  const createDatePicker = () => new TweakerDate({ allowResetToUndefinedByUIFlag: true });
+
+  const date = () => {
+    const picker = createDatePicker();
+    return {
+      content: UWA.createElement('div', { 'class': 'espx-date', html: [picker] }),
+      getValue: () => formatDate(picker.value),
+      reset: () => {
+        picker.value = undefined;
+      }
+    };
+  };
+
   const dateRange = () => {
-    const from = new TweakerDate({ allowResetToUndefinedByUIFlag: true });
-    const to = new TweakerDate({ allowResetToUndefinedByUIFlag: true });
+    const from = createDatePicker();
+    const to = createDatePicker();
     from.addEventListener('change', () => {
       to.minValue = from.value;
     });
@@ -111,5 +124,5 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/SearchFieldAdapters', [
     };
   };
 
-  return { text, checkbox, checkboxGroup, select, multiSelect, dateRange };
+  return { text, checkbox, checkboxGroup, select, multiSelect, date, dateRange };
 });

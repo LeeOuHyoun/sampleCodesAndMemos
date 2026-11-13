@@ -37,7 +37,7 @@ define('DS/CommonUtils/ExpandableSearchPanelEx/ExpandableSearchPanelExDemo', [
       [textField('item3'), { id: 'checkboxGroup', label: '체크박스 그룹', editor: Adapters.checkboxGroup({ items: OPTION_ITEMS }) }],
       [textField('item4'), { id: 'checkbox', label: '체크박스', editor: Adapters.checkbox({ label: '포함' }) }],
       [textField('item5'), { id: 'multiSelect', label: '드롭다운(멀티)', editor: Adapters.multiSelect({ items: OPTION_ITEMS, placeholder: '선택' }) }],
-      [textField('item6')],
+      [textField('item6'), { id: 'date', label: '날짜', editor: Adapters.date() }],
       [textField('item7')],
       [textField('item8')],
       [textField('item9')],

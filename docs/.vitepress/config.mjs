@@ -379,6 +379,12 @@ export default defineConfig({
   base: '/sampleCodesAndMemos/',
   cleanUrls: true,
   lastUpdated: true,
+  markdown: {
+    config: (md) => {
+      md.renderer.rules.table_open = () => '<div class="table-wrap"><table>\n'
+      md.renderer.rules.table_close = () => '</table></div>\n'
+    }
+  },
   themeConfig: {
     nav: [
       { text: '이 문서에 대해', link: '/guide/', activeMatch: '^/guide/($|roadmap|contributing)' },

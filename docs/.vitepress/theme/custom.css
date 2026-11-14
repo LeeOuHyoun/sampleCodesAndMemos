@@ -1,0 +1,23 @@
+:root {
+  --vp-layout-max-width: 1680px;
+}
+
+.VPContent .VPDoc.has-aside .content-container {
+  max-width: 1080px;
+}
+
+@media (min-width: 960px) {
+  .vp-doc table {
+    display: table;
+    width: 100%;
+  }
+}
+
+.vp-doc th,
+.vp-doc td:first-child {
+  white-space: nowrap;
+}
+
+.vp-doc td:last-child {
+  min-width: 18em;
+}

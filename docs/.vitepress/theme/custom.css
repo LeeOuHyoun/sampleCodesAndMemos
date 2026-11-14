@@ -6,18 +6,25 @@
   max-width: 1080px;
 }
 
+.vp-doc th,
+.vp-doc td {
+  min-width: 7em;
+  word-break: keep-all;
+}
+
+.vp-doc th {
+  white-space: nowrap;
+}
+
+@media (max-width: 959px) {
+  .vp-doc td {
+    min-width: 9em;
+  }
+}
+
 @media (min-width: 960px) {
   .vp-doc table {
     display: table;
     width: 100%;
   }
-}
-
-.vp-doc th,
-.vp-doc td:first-child {
-  white-space: nowrap;
-}
-
-.vp-doc td:last-child {
-  min-width: 18em;
 }
